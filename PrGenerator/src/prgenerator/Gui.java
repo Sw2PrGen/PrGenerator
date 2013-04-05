@@ -15,7 +15,7 @@ import javax.swing.*;
  */
 public class Gui extends JFrame {
 
-    private JLabel backgroundPicture = new JLabel(new ImageIcon("C:/Users/sandrock/DHBW/4. Semester/Software Eng/GUI/GUI_backgroundpicture.png"));
+    private JLabel backgroundPicture = new JLabel(new ImageIcon("GUI_backgroundpicture.png"));
     private JTextField userInput = new JTextField();
     private JButton generateTextButton = new JButton();
 
