@@ -11,3 +11,4 @@ package prgenerator;
 public class AbstractCreator {
     
 }
+
