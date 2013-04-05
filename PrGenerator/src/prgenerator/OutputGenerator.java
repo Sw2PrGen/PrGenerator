@@ -19,4 +19,7 @@ public class OutputGenerator {
     public static PictureChooser mainPictureChooser = new PictureChooser();
     public static TextCreator mainTextCreator = new TextCreator();
     
+    public void generateOutput(){
+        
+    }
 }

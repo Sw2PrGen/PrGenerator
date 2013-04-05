@@ -6,8 +6,19 @@ package prgenerator;
 
 /**
  *
- * @author rusinda
+ * @author Dawid Rusin, Katharina Sandrock
  */
 public class Gui {
     
+    public void setInput() {
+        
+    }
+    
+    public void showResult() {
+        
+    }
+    
+    public boolean saveResult() {
+        return true;
+    }
 }
