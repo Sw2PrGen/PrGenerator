@@ -17,8 +17,8 @@ public class Database {
     private String createdText;
     private String createdAbstract;
     private String createdHeading;
-    private LinkedList<String> templatesAbstract; //<Template>
-    private LinkedList<String> templatesHeading;  //<Template>
+    private LinkedList<Template> templatesAbstract;
+    private LinkedList<Template> templatesHeading;
     private String finalDocument;
     private String finalHtmlDokument;
     private LinkedList<String> pictureList;
@@ -112,28 +112,28 @@ public class Database {
     /**
      * @return the templatesAbstract
      */
-    public LinkedList<String> getTemplatesAbstract() {
+    public LinkedList<Template> getTemplatesAbstract() {
         return templatesAbstract;
     }
 
     /**
      * @param templatesAbstract the templatesAbstract to set
      */
-    public void setTemplatesAbstract(LinkedList<String> templatesAbstract) {
+    public void setTemplatesAbstract(LinkedList<Template> templatesAbstract) {
         this.templatesAbstract = templatesAbstract;
     }
 
     /**
      * @return the templatesHeading
      */
-    public LinkedList<String> getTemplatesHeading() {
+    public LinkedList<Template> getTemplatesHeading() {
         return templatesHeading;
     }
 
     /**
      * @param templatesHeading the templatesHeading to set
      */
-    public void setTemplatesHeading(LinkedList<String> templatesHeading) {
+    public void setTemplatesHeading(LinkedList<Template> templatesHeading) {
         this.templatesHeading = templatesHeading;
     }
 

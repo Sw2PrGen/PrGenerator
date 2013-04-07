@@ -15,7 +15,7 @@ import javax.swing.*;
  */
 public class Gui extends JFrame {
 
-    private JLabel backgroundPicture = new JLabel(new ImageIcon("GUI_backgroundpicture.png"));
+    private JLabel backgroundPicture = new JLabel(new ImageIcon("src\\prgenerator\\GUI_backgroundpicture.png"));
     private JTextField userInput = new JTextField();
     private JButton generateTextButton = new JButton();
 
@@ -42,8 +42,6 @@ public class Gui extends JFrame {
             }
         });
 
-
-
         add(userInput);
         add(generateTextButton);
         add(backgroundPicture);
@@ -57,12 +55,9 @@ public class Gui extends JFrame {
     }
 
     private void setInput(ActionEvent evt) {
-        /*
-         *
-         * Database data = new Database();
-         * data.setUserInput(userInput.getText());
-         *
-         */
+        
+         PrGenerator.mainDatabase.setUserInput(userInput.getText());
+         
     }
 
     public void showResult() {
