@@ -51,24 +51,24 @@ public class AbstractCreator {
     public void createAbstract(String path, String location, String date, String keyAspect){
         
         XMLReader xmlReader = new XMLReader();
-        String abstractTempateQuery = "";
+        String abstractTemplateQuery = "";
         if(location != null){
-            abstractTempateQuery += xmlReader.readXML(path, "templateOrt");
-            abstractTempateQuery = abstractTempateQuery.replace("_location_", location);
+            abstractTemplateQuery += xmlReader.readXML(path, "templateOrt");
+            abstractTemplateQuery = abstractTemplateQuery.replace("_location_", location);
         }
         
         if(date != null){
-            abstractTempateQuery += xmlReader.readXML(path, "templateDate");
-            abstractTempateQuery = abstractTempateQuery.replace("_date_", date);
+            abstractTemplateQuery += xmlReader.readXML(path, "templateDate");
+            abstractTemplateQuery = abstractTemplateQuery.replace("_date_", date);
         }
         if (keyAspect != null){
-            abstractTempateQuery += xmlReader.readXML(path, "templateKeyAspect");
-            abstractTempateQuery = abstractTempateQuery.replace("_keyAspect_", keyAspect);
+            abstractTemplateQuery += xmlReader.readXML(path, "templateKeyAspect");
+            abstractTemplateQuery = abstractTemplateQuery.replace("_keyAspect_", keyAspect);
         }
         
         
 
-        System.out.println(abstractTempateQuery);
+        System.out.println(abstractTemplateQuery);
        
     }
    public static void main(String [] arg){
