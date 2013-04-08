@@ -37,6 +37,7 @@ public class Gui extends JFrame {
 
         generateTextButton.addActionListener(new java.awt.event.ActionListener() {
 
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 setInput(evt);
             }
@@ -55,9 +56,9 @@ public class Gui extends JFrame {
     }
 
     private void setInput(ActionEvent evt) {
-        
-         PrGenerator.mainDatabase.setUserInput(userInput.getText());
-         
+
+        PrGenerator.mainDatabase.setUserInput(userInput.getText());
+
     }
 
     public void showResult() {
