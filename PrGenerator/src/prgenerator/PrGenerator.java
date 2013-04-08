@@ -31,6 +31,8 @@ public class PrGenerator {
         mainPictureChooser = new PictureChooser();
         mainTextCreator = new TextCreator();
         mainGui = new Gui();
+        
+        //mainDatabase.manageData();
                 
                 
         

@@ -4,6 +4,11 @@
  */
 package prgenerator;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.LinkedList;
 
 /**
@@ -11,7 +16,12 @@ import java.util.LinkedList;
  * @author rusinda
  */
 public class Database {
-    
+
+    private final String DHBW_URL = "http://www.dhbw-mannheim.de/";
+    private final String DHBW_AKTUELLES_URL = "http://www.dhbw-mannheim.de/aktuelles/details/id/";
+    private final String DHBW_MORE_TAG = "<span class=\"more\">";
+    private final String DHBW_NEWURL_START = "details/id/";
+    private final String DHBW_NEWURL_END = "/\" title";
     private LinkedList<String> currentData;
     private String userInput;
     private String createdText;
@@ -20,30 +30,113 @@ public class Database {
     private LinkedList<Template> templatesAbstract;
     private LinkedList<Template> templatesHeading;
     private String finalDocument;
-    private String finalHtmlDokument;
+    private String finalHtmlDocument;
     private LinkedList<String> pictureList;
     private LinkedList<String> userInputFiltered;
     private String[] templateFill;
     private String chosenPicture;
-    
-    private boolean loadNewData(){
+
+    private String getNextUrl(String url) {
+        int i = Integer.parseInt(url.split("/")[url.split("/").length - 1]) -1;
+        while (i <= 0) {
+            String nexturl = Integer.toString(i);
+            BufferedReader reader = getWebsite(nexturl);
+            try{
+                String s;
+                while((s = reader.readLine()) !=null){
+                    if(s.contains("<title>Page not found</title>")){
+                        
+                    }
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            
+        }
+        return "";
+    }
+
+    private BufferedReader getWebsite(String adress) {
+        BufferedReader reader = null;
+        try {
+            URL url = new URL(adress);
+            URLConnection connection = url.openConnection();
+            InputStream is = connection.getInputStream();
+            reader = new BufferedReader(new InputStreamReader(is));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return reader;
+    }
+
+    private String getLatestNewsUrl() {
+        String s = "";
+        BufferedReader reader = getWebsite(DHBW_URL);
+        try {
+            while (s != null & !s.contains(DHBW_MORE_TAG)) {
+                s = reader.readLine();
+            }
+            if (s == null) {
+                return s;
+            }
+            s = s.substring(s.indexOf(DHBW_NEWURL_START) + DHBW_NEWURL_START.length(), s.indexOf(DHBW_NEWURL_END));
+            return DHBW_AKTUELLES_URL + s;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return s;
+    }
+
+    private String getText(BufferedReader reader) {
+        String finishedText = "";
+        String s = "";
+        StringBuilder sb = new StringBuilder();
+        while (s != null & !s.contains("<div class=\"csc-textpic-text\">")) {
+            try {
+                s = reader.readLine();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            while ((s = reader.readLine()) != null && !s.contains("</div>")) {
+                s = s.replaceAll("\t", "");
+                s = s.replaceAll("<(\"[^\"]*\"|'[^']*'|[^'\">])*>", "");
+                sb.append(s);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        finishedText = sb.toString();
+        return finishedText;
+    }
+
+    private boolean loadNewData() {
+        String latestUrl = getLatestNewsUrl();
+        if (latestUrl == null) {
+            return false;
+        }
+        String finishedText = getText(getWebsite(latestUrl));
+        System.out.print(finishedText);
+
         return true;
     }
-    
-    private boolean loadBackup(){
+
+    private boolean loadBackup() {
         return true;
     }
-    
-    private boolean updateBackup(){
+
+    private boolean updateBackup() {
         return true;
     }
-    
+
     private boolean isLoaded() {
         return true;
     }
-    
-    public void manageData(){
-        
+
+    public void manageData() {
+        loadNewData();
     }
 
     /**
@@ -154,15 +247,15 @@ public class Database {
     /**
      * @return the finalHtmlDokument
      */
-    public String getFinalHtmlDokument() {
-        return finalHtmlDokument;
+    public String getFinalHtmlDocument() {
+        return finalHtmlDocument;
     }
 
     /**
      * @param finalHtmlDokument the finalHtmlDokument to set
      */
-    public void setFinalHtmlDokument(String finalHtmlDokument) {
-        this.finalHtmlDokument = finalHtmlDokument;
+    public void setFinalHtmlDocument(String finalHtmlDokument) {
+        this.finalHtmlDocument = finalHtmlDokument;
     }
 
     /**
@@ -213,5 +306,4 @@ public class Database {
     public void setChosenPicture(String chosenPicture) {
         this.chosenPicture = chosenPicture;
     }
-    
 }
