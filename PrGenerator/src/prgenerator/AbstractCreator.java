@@ -50,19 +50,19 @@ public class AbstractCreator {
     
     public void createAbstract(String path, String location, String date, String keyAspect){
         
-        XMLReader xmlReader = new XMLReader();
+        Template templateReader = new Template();
         String abstractTemplateQuery = "";
         if(location != null){
-            abstractTemplateQuery += xmlReader.readXML(path, "templateOrt");
+            abstractTemplateQuery += templateReader.readXML(path, "templateOrt");
             abstractTemplateQuery = abstractTemplateQuery.replace("_location_", location);
         }
         
         if(date != null){
-            abstractTemplateQuery += xmlReader.readXML(path, "templateDate");
+            abstractTemplateQuery += templateReader.readXML(path, "templateDate");
             abstractTemplateQuery = abstractTemplateQuery.replace("_date_", date);
         }
         if (keyAspect != null){
-            abstractTemplateQuery += xmlReader.readXML(path, "templateKeyAspect");
+            abstractTemplateQuery += templateReader.readXML(path, "templateKeyAspect");
             abstractTemplateQuery = abstractTemplateQuery.replace("_keyAspect_", keyAspect);
         }
         
@@ -78,41 +78,6 @@ public class AbstractCreator {
 }
 
 
-class XMLReader{
-    public XMLReader(){
-        
-    }
-    
-    public String readXML(String path, String tagName){
-        try {
- 
-	File fXmlFile = new File(path);
-	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-	Document doc = dBuilder.parse(fXmlFile);
- 
 
-	doc.getDocumentElement().normalize();
- 
-	NodeList nList = doc.getElementsByTagName(tagName);
-        
-        Random generator = new Random();
-        int length = nList.getLength();
-        int i = nList.getLength()-1 - generator.nextInt(nList.getLength());
-        
-        Node nNode = nList.item(i);
-        
-        String text = nNode.getTextContent();
-	
-	return text;
-	
-    } catch (Exception e) {
-	e.printStackTrace();
-    }
-        return null;
-  }
-
-}
-    
     
     
