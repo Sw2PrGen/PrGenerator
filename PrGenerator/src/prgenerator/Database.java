@@ -4,11 +4,11 @@
  */
 package prgenerator;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
@@ -36,62 +36,126 @@ public class Database {
     private String[] templateFill;
     private String chosenPicture;
 
-    private String getNextUrl(String url) {
-        int i = Integer.parseInt(url.split("/")[url.split("/").length - 1]) -1;
-        while (i <= 0) {
-            String nexturl = Integer.toString(i);
-            BufferedReader reader = getWebsite(nexturl);
-            try{
-                String s;
-                while((s = reader.readLine()) !=null){
-                    if(s.contains("<title>Page not found</title>")){
-                        
-                    }
-                }
-            }catch (Exception e){
-                e.printStackTrace();
+    private void makelist(String input){     
+        LinkedList<String> help = new LinkedList<>(Arrays.asList(input.split("[.][ ]")));
+        LinkedList<Integer> del = new LinkedList<>();
+        for(int i=0; i<help.size(); i++){
+            if(help.get(i).contains("(at)") | help.get(i).length() < 6){
+                del.add(i);
             }
-            
         }
-        return "";
+        for(int i = 0; i< del.size(); i++){
+            help.remove(del.get(i) - i);
+        }
+        while(help.size()>0){
+            System.out.println(help.pop());
+        }
+    }
+    
+    /**
+     * Writes a file on the hdd
+     * @param text the content of the file to write
+     * @param filename the name of the file
+     * @throws Exception
+     */
+    private void writeFile(String text, String filename) throws Exception {
+        String[] str = filename.split("/");
+        String dirs = new String();
+        for (int i = 0; i < str.length - 1; i++) {
+            dirs += str[i] + "/";
+        }
+        File file = new File(dirs);
+        file.mkdirs();
+        BufferedWriter fileWriter = new BufferedWriter(new FileWriter(filename));
+        fileWriter.write(text);
+        fileWriter.close();
     }
 
+    /**
+     * Gets the url of the next news item
+     * @param url url to the current news item as String
+     * @return a String containing the url to the next news item
+     */
+    private String getNextUrl(String url) {
+        int i = Integer.parseInt(url.split("/")[url.split("/").length - 1]) - 1;    //get the last part of the url (is a 4-digit number), parse it to int and decrement
+        while (i >= 0) {    //I don't believe there should be negative numbers in the url
+            String nexturl = Integer.toString(i); //parse the new number to string
+            if (!checkWebsite(DHBW_AKTUELLES_URL + nexturl)) {  //check if the site exists
+                i--;                //decrement if does not exist
+            } else {
+                return DHBW_AKTUELLES_URL + nexturl;    //return the new url if site does exist
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Checks if a web site exists (faster then getWebsite())
+     * @param adress the url to the web site
+     * @return true if it exists, false otherwise
+     */
+    private boolean checkWebsite(String adress) {
+        try {
+            HttpURLConnection con = (HttpURLConnection) new URL(adress).openConnection();   //Connect to the site
+            con.setRequestMethod("HEAD");                                       //only need header to check if site exists
+            return (con.getResponseCode() == HttpURLConnection.HTTP_OK);        //true if site exists, false otherwise
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * Opens a website and returns a reader to read HTML
+     * @param adress the url to the web site as a String
+     * @return a Buffered Reader with the content of the web site
+     */
     private BufferedReader getWebsite(String adress) {
         BufferedReader reader = null;
         try {
             URL url = new URL(adress);
-            URLConnection connection = url.openConnection();
-            InputStream is = connection.getInputStream();
+            URLConnection connection = url.openConnection();    //connect to the web site
+            InputStream is = connection.getInputStream();       //get an input stream to read html
             reader = new BufferedReader(new InputStreamReader(is));
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
+            return null;
         }
         return reader;
     }
 
+    /**
+     * Checks the DHBW-Site for the url to the latest news item
+     * @return string with the url to the latest news item
+     */
     private String getLatestNewsUrl() {
         String s = "";
-        BufferedReader reader = getWebsite(DHBW_URL);
+        BufferedReader reader = getWebsite(DHBW_URL);       //go tho the dhbw-homepage
         try {
-            while (s != null & !s.contains(DHBW_MORE_TAG)) {
+            while (s != null & !s.contains(DHBW_MORE_TAG)) {    //this tag is used to display news items
                 s = reader.readLine();
             }
             if (s == null) {
                 return s;
             }
-            s = s.substring(s.indexOf(DHBW_NEWURL_START) + DHBW_NEWURL_START.length(), s.indexOf(DHBW_NEWURL_END));
+            s = s.substring(s.indexOf(DHBW_NEWURL_START) + DHBW_NEWURL_START.length(), s.indexOf(DHBW_NEWURL_END)); //get the last part of the url to the news item
             return DHBW_AKTUELLES_URL + s;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return s;
+        return null;    //return null if sth went wrong
     }
 
+    /**
+     * Reads a text from a buffered reader and strips it out of HTML-tags
+     * @param reader The buffered reader containing the text to process
+     * @return a string with the processed text
+     */
     private String getText(BufferedReader reader) {
         String finishedText = "";
         String s = "";
         StringBuilder sb = new StringBuilder();
-        while (s != null & !s.contains("<div class=\"csc-textpic-text\">")) {
+        while (s != null && !s.contains("<div class=\"csc-textpic-text\">")) {  //go to the text passage in the html-code
             try {
                 s = reader.readLine();
             } catch (Exception e) {
@@ -99,44 +163,65 @@ public class Database {
             }
         }
         try {
-            while ((s = reader.readLine()) != null && !s.contains("</div>")) {
-                s = s.replaceAll("\t", "");
-                s = s.replaceAll("<(\"[^\"]*\"|'[^']*'|[^'\">])*>", "");
-                sb.append(s);
+            while ((s = reader.readLine()) != null && !s.contains("</div>")) {  //read all until the end of the text passage
+                s = s.replaceAll("\t", "");                                     //delete all tabulators
+                s = s.replaceAll("<(\"[^\"]*\"|'[^']*'|[^'\">])*>", "");        //delete all html-tags
+                s = s.replaceAll("&nbsp;", "");                                 //delete "&nbsp;"
+                s = s.trim();
+                sb.append(s);                                                   //append to the stringbuilder
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        finishedText = sb.toString();
-        return finishedText;
+        finishedText = sb.toString();                                           //make a string out of the stringbuilder
+        return finishedText;                                    
     }
 
+    /**
+     * 
+     * @return
+     */
     private boolean loadNewData() {
-        String latestUrl = getLatestNewsUrl();
+        String latestUrl = getLatestNewsUrl();      //get the url to the latest news item
         if (latestUrl == null) {
-            return false;
+            return false;               //did not work if null, probably no connection
         }
-        String finishedText = getText(getWebsite(latestUrl));
-        System.out.print(finishedText);
+        makelist(getText(getWebsite(latestUrl)));
 
         return true;
     }
 
+    /**
+     * 
+     * @return
+     */
     private boolean loadBackup() {
         return true;
     }
 
+    /**
+     * 
+     * @return
+     */
     private boolean updateBackup() {
         return true;
     }
 
+    /**
+     * 
+     * @return
+     */
     private boolean isLoaded() {
         return true;
     }
 
+    /**
+     * Tries to pull new data from the DHBW-Site and update the backup
+     * afterwards, loads the backup otherwise
+     */
     public void manageData() {
-        loadNewData();
+        loadNewData();      //try to get new data
     }
 
     /**
