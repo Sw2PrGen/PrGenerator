@@ -37,9 +37,10 @@ public class Database {
     private String chosenPicture;
 
     private void makelist(String input){     
-        LinkedList<String> help = new LinkedList<>(Arrays.asList(input.split("[.][ ]")));
+        LinkedList<String> help = new LinkedList<>(Arrays.asList(input.split("[.]")));
         LinkedList<Integer> del = new LinkedList<>();
         for(int i=0; i<help.size(); i++){
+            help.set(i,help.get(i).trim());
             if(help.get(i).contains("(at)") | help.get(i).length() < 6){
                 del.add(i);
             }
@@ -47,8 +48,15 @@ public class Database {
         for(int i = 0; i< del.size(); i++){
             help.remove(del.get(i) - i);
         }
+        StringBuilder sb = new StringBuilder();
         while(help.size()>0){
-            System.out.println(help.pop());
+            sb.append(help.pop());
+            sb.append("\n");
+        }
+        try{
+        writeFile(sb.toString(), "test.txt");
+        }catch(Exception e){
+            e.printStackTrace();
         }
     }
     
@@ -159,14 +167,16 @@ public class Database {
             try {
                 s = reader.readLine();
             } catch (Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
         try {
             while ((s = reader.readLine()) != null && !s.contains("</div>")) {  //read all until the end of the text passage
                 s = s.replaceAll("\t", "");                                     //delete all tabulators
+                s = s.replaceAll("<i>.*?</i>", "");
                 s = s.replaceAll("<(\"[^\"]*\"|'[^']*'|[^'\">])*>", "");        //delete all html-tags
                 s = s.replaceAll("&nbsp;", "");                                 //delete "&nbsp;"
+                s = s.replaceAll(".+[^(. )]$", "");
                 s = s.trim();
                 sb.append(s);                                                   //append to the stringbuilder
             }
@@ -187,7 +197,7 @@ public class Database {
         if (latestUrl == null) {
             return false;               //did not work if null, probably no connection
         }
-        makelist(getText(getWebsite(latestUrl)));
+        makelist(getText(getWebsite("http://www.dhbw-mannheim.de/aktuelles/details/id/1350/")));
 
         return true;
     }
