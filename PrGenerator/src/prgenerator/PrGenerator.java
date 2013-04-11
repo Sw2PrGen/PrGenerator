@@ -33,6 +33,7 @@ public class PrGenerator {
         mainGui = new Gui();
         
         //mainDatabase.manageData();
+        // mainPictureChooser.choosePicture();
                 
                 
         
