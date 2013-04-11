@@ -13,6 +13,9 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 
@@ -46,8 +49,38 @@ import java.util.Random;
 
 public class AbstractCreator {
     
-   
+        String whenSL[] = new String[1];
+
+    String whenL[] = new String[19];
+
+    String whereSL[] = new String[2];
+
+    String notNounL[] = new String[5];
     
+    LinkedList<String> whenWL = new LinkedList<>(); // when word list
+    LinkedList<Integer> whenCL = new LinkedList<>(); // when couter list
+    
+    LinkedList<String> whereWL = new LinkedList<>(); 
+    LinkedList<Integer> whereCL = new LinkedList<>(); 
+    
+    LinkedList<String> whatWL = new LinkedList<>(); 
+    LinkedList<Integer> whatCL = new LinkedList<>(); 
+
+
+    public void initializeLists(){
+        whenSL[0]= "am"; 
+        // kann man mehrere Werte gleichzeitig in Array schieben?
+        whenL[0] ="Montag";
+        whenL[6]="Sonntag";
+        whenL[7] = "Januar";
+        whenL[18]="Dezember";
+        
+        whereSL[0] ="in";
+        whereSL[1]="aus";
+        
+    }
+    
+  
     public void createAbstract(String path, String location, String date, String keyAspect){
         
         Template templateReader = new Template();
