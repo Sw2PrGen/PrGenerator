@@ -26,11 +26,11 @@ public class PictureChooser {
      *       - find picts for completely input not only for separated words 
      */
     private final String START_URL="https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=1&imgsz=medium&as_filetype=jpg&userip=192.168.0.1&hl=de&q=";
-    private  LinkedList<String> helperList= new <String>LinkedList();
+   // private  LinkedList<String> helperList= new <String>LinkedList();
     
     public void choosePicture(){
         
-        //just for current testing
+        /*just for current testing
         LinkedList <String> myList=new <String>LinkedList();
         myList.add("alles banane");
         myList.add("zwei");
@@ -41,7 +41,7 @@ public class PictureChooser {
         myTemplate[2]="heidelberg";
         PrGenerator.mainDatabase.setTemplateFill(myTemplate);        
         PrGenerator.mainDatabase.setUserInputFiltered(myList);
-                  
+        */          
         
        configureURLs();
        
@@ -84,7 +84,7 @@ public class PictureChooser {
             findPictures(address);            
         }
               
-        PrGenerator.mainDatabase.setPictureList(helperList);        
+        // PrGenerator.mainDatabase.setPictureList(helperList);        
         for ( Iterator<String> i = PrGenerator.mainDatabase.getPictureList().iterator(); i.hasNext(); )
         {
         String s = i.next();
@@ -110,8 +110,8 @@ public class PictureChooser {
                 JSONObject json = new JSONObject(builder.toString());                         
                 String imageUrl = json.getJSONObject("responseData").getJSONArray("results").getJSONObject(0).getString("url");
                 System.out.println("alles im grünen Bereich =)");
-                
-                helperList.add(imageUrl);
+                PrGenerator.mainDatabase.getPictureList().add(imageUrl);
+                // helperList.add(imageUrl);
                 
                 
             } catch (Exception e) { 
