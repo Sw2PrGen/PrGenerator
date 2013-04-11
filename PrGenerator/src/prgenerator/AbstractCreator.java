@@ -14,6 +14,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -49,12 +50,9 @@ import java.util.Random;
 
 public class AbstractCreator {
     
-        String whenSL[] = new String[1];
-
+    String whenSL[] = new String[1];
     String whenL[] = new String[19];
-
     String whereSL[] = new String[2];
-
     String notNounL[] = new String[5];
     
     LinkedList<String> whenWL = new LinkedList<>(); // when word list
@@ -65,11 +63,15 @@ public class AbstractCreator {
     
     LinkedList<String> whatWL = new LinkedList<>(); 
     LinkedList<Integer> whatCL = new LinkedList<>(); 
+    
+    //String maintext = PrGenerator.mainDatabase.getCreatedText();
+    String maintext = "Nach meiner Promotion habe ich eine Professur für ABWL, Personal und Organisation an der Ostfalia HAW in Wolfsburg verwaltet, bevor ich am 1.März 2013 an die DHBW Mannheim berufen wurde. Dies hat z.B. dazu geführt, dass ich an der Universität Mannheim gemeinsam mit Kollegen ein Seminar zur Mitarbeiterführung entwickelt habe, das stark auf meinen Erfahrungen aus der beruflichen Praxis aufbaute.Für Studieninteressierte, die gerne Studium und Praxisausbildung verbinden möchten, bietet das duale Studium an der DHBW eine attraktive Möglichkeit mit hervorragenden Berufsaussichten und Karrierechancen.";
 
 
     public void initializeLists(){
-        whenSL[0]= "am"; 
         // kann man mehrere Werte gleichzeitig in Array schieben?
+        whenSL[0]= "am"; 
+        
         whenL[0] ="Montag";
         whenL[6]="Sonntag";
         whenL[7] = "Januar";
@@ -78,6 +80,26 @@ public class AbstractCreator {
         whereSL[0] ="in";
         whereSL[1]="aus";
         
+        notNounL[0]="Die";
+        
+    }
+    
+    
+    public void analyzeText(){
+        int ix = 0;
+        maintext = maintext.replaceAll("\\.","");
+        maintext = maintext.replaceAll("!","");
+        maintext = maintext.replaceAll("\\?","");
+        maintext = maintext.replaceAll(";","");
+        maintext = maintext.replaceAll(",","");
+        LinkedList<String> words = new LinkedList<>(Arrays.asList(maintext.split(" ")));
+        int txtLength = words.size();
+        for (int i =0; i<txtLength; i++){
+            //String nWord = nextWord(i);
+            //System.out.println(nWord);
+        }
+        //String nWord = nextWord(0);
+        System.out.println(maintext);
     }
     
   
@@ -106,7 +128,9 @@ public class AbstractCreator {
     }
    public static void main(String [] arg){
        AbstractCreator abstractCreator = new AbstractCreator();
-       abstractCreator.createAbstract("d:\\xmlTemplate.xml", "Bad Kreuznach", "12.12.12", "Fussball");
+       //abstractCreator.createAbstract("d:\\xmlTemplate.xml", "Bad Kreuznach", "12.12.12", "Fussball");
+       abstractCreator.initializeLists();
+       abstractCreator.analyzeText();
    } 
 }
 
