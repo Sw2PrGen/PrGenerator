@@ -23,6 +23,7 @@ public class PictureChooser {
      *       - comments
      *       -error if pic not found - invoke back up
      *       -üöäß replace
+     *       - find picts for completely input not only for separated words 
      */
     private final String START_URL="https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=1&imgsz=medium&as_filetype=jpg&userip=192.168.0.1&hl=de&q=";
     private  LinkedList<String> helperList= new <String>LinkedList();
