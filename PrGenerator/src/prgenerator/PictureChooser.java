@@ -4,12 +4,16 @@
  */
 package prgenerator;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import org.json.JSONObject;
 
 /**
@@ -52,7 +56,7 @@ public class PictureChooser {
         myTemplate[2] = "heidelberg";
         PrGenerator.mainDatabase.setTemplateFill(myTemplate);
         PrGenerator.mainDatabase.setUserInputFiltered(myList);
-        PrGenerator.mainDatabase.setCreatedHeading("DHBW Mannheim ist die beste");
+        PrGenerator.mainDatabase.setCreatedHeading("dhbw mannheim ist die beste uni");
 
         configureRequests();
 
@@ -65,12 +69,21 @@ public class PictureChooser {
             int randomNumber = (int) (Math.random() * (PrGenerator.mainDatabase.getPictureList().size()));
             String choosenPicture = PrGenerator.mainDatabase.getPictureList().get(randomNumber);
             PrGenerator.mainDatabase.setChosenPicture(choosenPicture);
-            System.out.println("pictureList: ");
-            for (Iterator<String> i = PrGenerator.mainDatabase.getPictureList().iterator(); i.hasNext();) {
+            //show choosen picture just for current testing         
+            try{
+            BufferedImage image = ImageIO.read(new URL(choosenPicture));
+            JOptionPane.showMessageDialog(null, "", "", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(image));
+            }
+            catch (Exception e){
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Failure", JOptionPane.ERROR_MESSAGE);
+            }
+            
+           /* System.out.println("pictureList: ");
+            * for (Iterator<String> i = PrGenerator.mainDatabase.getPictureList().iterator(); i.hasNext();) {
                 String s = i.next();
                 System.out.println(s);
             }
-
+            */
             System.out.println("\n" + "Choosen Picture is " + PrGenerator.mainDatabase.getChosenPicture());
         }
     }
