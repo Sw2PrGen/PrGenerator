@@ -38,6 +38,8 @@ public class PrGenerator {
         //   mainTextCreator.createMainText();  
         
 //        mainOutputGenerator.generateOutput();
-//        mainGui.showResult();        
+//        mainGui.showResult(); 
+        
+       // mainInputAnalyzer.modifyInputtoString();
     }
 }
