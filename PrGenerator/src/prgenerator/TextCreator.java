@@ -111,7 +111,7 @@ public class TextCreator {
     
     /**
      * Method to find sentences related to the user input
-     * 
+     * @param input filtered user input
      */
     private void findInput(LinkedList input) {
 
