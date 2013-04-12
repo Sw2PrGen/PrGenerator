@@ -15,7 +15,7 @@ import java.util.LinkedList;
 public class TextCreator extends ArrayList<String>{
      
         
-    //variabel for number of found sentences
+    //variabels for number of found sentences
     private static LinkedList databasetext =new <String>LinkedList();
     private  LinkedList pretext = new <String>LinkedList();
     private  LinkedList dhtext = new <String>LinkedList();
@@ -26,17 +26,27 @@ public class TextCreator extends ArrayList<String>{
     
        
   
-
+/**
+ * Method to find a sentence related with a relation to a special time
+ * 
+ */
     public  void findTime() {
+        
+        //temporary String for the current list element
         String current;
       
         int count = 0;
+        
+        //itearation trough the whole database
        for(Iterator<String> i=databasetext.iterator();i.hasNext();){
             current = i.next();
-
+            
+            //checking if sentence says something about a relation to a special time
             if (current.matches(".*\\s(Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonnabend|Sonntag|heute|gestern|morgen|Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember|Weihnachten|Ostern|Silvester)\\s.*")) {
                 timetext.add(current);
                 count = count + 1;
+                                   //deletion of found sentence to avoid doubling
+
                 databasetext.remove(i);
                  if(count>2){break;}
                 
@@ -49,10 +59,18 @@ public class TextCreator extends ArrayList<String>{
 
     }
 
-    public  void findPlace() {
+    /**
+     * 
+     * method to find a description of a place
+     */      
+      public  void findPlace() {
+        
+        //string for the current list element
         String current;
     
         int count = 0;
+        
+        //iteration through the list to find a place
        for(Iterator<String> i=databasetext.iterator();i.hasNext();){
             current = i.next();
         //    System.out.println(current);
@@ -60,6 +78,8 @@ public class TextCreator extends ArrayList<String>{
             if (current.matches(".*\\sin\\s[A-Z].*")) {
                 placetext.add(current);
                 count = count + 1;
+                                   //deletion of found sentence to avoid doubling
+
                 databasetext.remove(i);
                  if(count>2){break;}
                 
@@ -73,29 +93,39 @@ public class TextCreator extends ArrayList<String>{
 
     /**
      *
-     * @param liste Liste mit allen Sätzen
-     * @return Satz welcher den DH-Bezug sicherstellt
+     * 
+     * Funtion to find a sentence related to the DH
      */
     private  void findDhRelation() {
+        
+        //String for the current sentence
         String current;
         int counter=0; 
+        
+       // Iteration through the list to find a sentece about the DH
         for(Iterator<String> i=databasetext.iterator();i.hasNext();){
             
             current = i.next();
             if (current.contains("DHBW")) {
                 dhtext.add(current);
+                                   //deletion of found sentence to avoid doubling
+
                 databasetext.remove(i);
                 counter++;
                 if(counter>2){break;}
             }
             if (current.contains("DH")) {
                 dhtext.add(current);
+                                   //deletion of found sentence to avoid doubling
+
                 databasetext.remove(i);
                 counter++; 
                 if(counter>2){break;}
             }
             if (current.contains("Duale Hochschule Baden")) {
                dhtext.add(current);
+                                  //deletion of found sentence to avoid doubling
+
                databasetext.remove(i);
                counter++;
                if(counter>2){break;}
@@ -104,12 +134,16 @@ public class TextCreator extends ArrayList<String>{
         }
         
     }
-    
+    /**
+     * Method to find sentences related to the user input
+     * 
+     */
     private  void findInput( LinkedList input) {
-        
+        //crrent sentence
         String current;
+        //current user input
         String currentinput; 
-        
+        //iteration through the list to find all sentences with a relation to the user input
         while (!input.isEmpty()) {
             
            
@@ -120,6 +154,7 @@ public class TextCreator extends ArrayList<String>{
                if(current.toString().toLowerCase().contains(currentinput)){
                    
                    pretext.add(current);
+                   //deletion of found sentence to avoid doubling
                    databasetext.remove(i);
              }
             
@@ -130,16 +165,25 @@ public class TextCreator extends ArrayList<String>{
         System.out.println("preText: " + pretext);
     
     }
+    
+    /**Method to combine all the found sentences to a complete text 
+     * 
+     */
     private  void selectSentences(){
-        
+       
+        //adding all the textparts to the final text
        finaltext.addAll(dhtext);
        finaltext.addAll(timetext);
        finaltext.addAll(placetext);
+       
+       //adding the sentence from the user input 
        for(int i=0; i<20-finaltext.size();i++){
            if(i>pretext.size()){break;}
            finaltext.add(pretext.get(i));
              }
        int randomNumber; 
+       
+       //optional filling of the text with random sentences if there where not found enough sentences related to the user input
        for(int i=0; i<20-finaltext.size();i++){
           randomNumber=(int) Math.random()*databasetext.size()+1;
            finaltext.add(databasetext.get(randomNumber));
@@ -208,11 +252,15 @@ public class TextCreator extends ArrayList<String>{
         findDhRelation();
         findTime();
         selectSentences();
-        Collections.shuffle(finaltext);
         
+        //shuffeling the final text
+        Collections.shuffle(finaltext);
+        //avoiding of sentence which should not start the text
         while (finaltext.getFirst().toString().startsWith("(Sie)|(Er)|(Das)")){
         Collections.shuffle(finaltext); 
         }
+        
+        //adding all the sentences to a final string
         for ( Iterator<String> i = finaltext.iterator(); i.hasNext(); )
         {
         textStr=textStr+i.next();
