@@ -35,7 +35,7 @@ public class PrGenerator {
         //mainDatabase.manageData();
         // mainPictureChooser.choosePicture();
                 
-                
+        //   mainTextCreator.createMainText();  
         
 //        mainOutputGenerator.generateOutput();
 //        mainGui.showResult();        
