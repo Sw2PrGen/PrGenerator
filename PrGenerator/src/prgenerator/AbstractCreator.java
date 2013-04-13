@@ -30,20 +30,6 @@ import java.util.Random;
  * 
  * Abstractgenerator: Methode createAbstract() funktioniert. Als Eingabe wurde folgende XML-DAtei verwendet:
  * 
-     <?xml version="1.0"?>
-     <template>
-	<templateOrt> Ich war in _location_ . </templateOrt>
-	<templateOrt> Ich war nicht in _location_ .</templateOrt>
-	<templateOrt> Ich wollte nach _location_ .</templateOrt>
-	<templateOrt> Ich möchte gern nach _location_ .</templateOrt>
-	<templateOrt> Ich werde nach _location_ gehen.</templateOrt>
-	<templateDate> Es war der _date_ .</templateDate>
-	<templateDate> Es war am _date_ .</templateDate>
-	<templateDate> Es sollte der _date_ sein.</templateDate>
-	<templateKeyAspect> Ich war hier um _keyAspect_ zu spielen.</templateKeyAspect>
-	<templateKeyAspect> Ich war dort um _keyAspect_ zu spielen.</templateKeyAspect>
-     </template>
- * 
  * 
  */
 
@@ -225,29 +211,84 @@ public class AbstractCreator {
     }
     
   
-    public void createAbstract(String path, String location, String date, String keyAspect){
+   public void createAbstract(String path, String location, String date, String keyAspect){
+       
+        
+       String [ ] sentences= new String[5]; 
         
         Template templateReader = new Template();
         String abstractTemplateQuery = "";
+        sentences[0] = "";
+        sentences[1] = "";
+        sentences[2] = "";
         if(location != null){
-            abstractTemplateQuery += templateReader.readXML(path, "templateOrt");
-            abstractTemplateQuery = abstractTemplateQuery.replace("_location_", location);
+            sentences[0] = templateReader.readXML(path, "templateOrt");
+            sentences[0] = sentences[0].replace("_location_", location);
+            //abstractTemplateQuery += templateReader.readXML(path, "templateOrt");
+            //abstractTemplateQuery = abstractTemplateQuery.replace("_location_", location);
         }
         
         if(date != null){
-            abstractTemplateQuery += templateReader.readXML(path, "templateDate");
-            abstractTemplateQuery = abstractTemplateQuery.replace("_date_", date);
+            sentences[1] = templateReader.readXML(path, "templateDate");
+            sentences[1] = sentences[1].replace("_date_", date);
+            //abstractTemplateQuery += templateReader.readXML(path, "templateDate");
+            //abstractTemplateQuery = abstractTemplateQuery.replace("_date_", date);
         }
         if (keyAspect != null){
-            abstractTemplateQuery += templateReader.readXML(path, "templateKeyAspect");
-            abstractTemplateQuery = abstractTemplateQuery.replace("_keyAspect_", keyAspect);
+            sentences[2] = templateReader.readXML(path, "templateKeyAspect");
+            sentences[2] = sentences[2].replace("_keyAspect_", keyAspect);
+            //abstractTemplateQuery += templateReader.readXML(path, "templateKeyAspect");
+            //abstractTemplateQuery = abstractTemplateQuery.replace("_keyAspect_", keyAspect);
+        }
+        
+        if ((keyAspect != null) && (location != null)){
+            sentences[3] = templateReader.readXML(path, "templateKeyAspectandOrt");
+            sentences[3] = sentences[3].replace("_keyAspect_", keyAspect);
+            sentences[3] = sentences[3].replace("_location_", location);
+            //abstractTemplateQuery += templateReader.readXML(path, "templateKeyAspect");
+            //abstractTemplateQuery = abstractTemplateQuery.replace("_keyAspect_", keyAspect);
+        }
+        
+        if ((date != null) && (location != null)){
+            sentences[4] = templateReader.readXML(path, "templateOrtanddate");
+            sentences[4] = sentences[4].replace("_date_", date);
+            sentences[4] = sentences[4].replace("_location_", location);
+            //abstractTemplateQuery += templateReader.readXML(path, "templateKeyAspect");
+            //abstractTemplateQuery = abstractTemplateQuery.replace("_keyAspect_", keyAspect);
         }
         
         
-
-        System.out.println(abstractTemplateQuery);
-       
-    }
+        
+        Random generator = new Random();
+        int combinations = 11;
+        int i = combinations - generator.nextInt(combinations);
+        
+        switch(i){
+            case 1: abstractTemplateQuery = sentences [0] + sentences [1] + sentences [2];
+                    break;
+            case 2: abstractTemplateQuery = sentences [0] + sentences [2] + sentences [1];
+                    break;
+            case 3: abstractTemplateQuery = sentences [1] + sentences [0] + sentences [2];
+                    break;
+            case 4: abstractTemplateQuery = sentences [1] + sentences [2] + sentences [0];
+                    break;
+            case 5: abstractTemplateQuery = sentences [2] + sentences [0] + sentences [1];
+                    break;
+            case 6: abstractTemplateQuery = sentences [2] + sentences [1] + sentences [0];
+                    break;
+            case 7: abstractTemplateQuery = sentences [2] + sentences [1] + sentences [0];
+                    break;
+            case 8: abstractTemplateQuery = sentences [1] + sentences [3];
+                    break;
+            case 9: abstractTemplateQuery = sentences [3] + sentences [1];
+                    break;
+            case 10: abstractTemplateQuery = sentences [2] + sentences [4];
+                    break;
+            case 11 : abstractTemplateQuery = sentences [4] + sentences [2];
+                    break;
+                
+        }
+   }
    public static void main(String [] arg){
        AbstractCreator abstractCreator = new AbstractCreator();
        //abstractCreator.analyzeText();     // when live!!!!!
