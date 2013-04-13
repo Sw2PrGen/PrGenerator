@@ -114,45 +114,57 @@ public class AbstractCreator {
         for (int i =0; i<txtLength; i++){
             String nWord = words.get(i);
             
+            //store "when" words
             if (nWord.matches(".*(Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonnabend|Sonntag|heute|gestern|morgen|Weihnachten|Ostern|Silvester)"))
-            { // store directly time word
+            { 
                 // storeWord(nWord, whenWL, whenCL);
                 System.out.println("1 "+nWord);
                 
-            } else if (nWord.matches(".*(Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember).*"))
-            { // store special date --> proof!
+            } else if (nWord.matches(".*(Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember).*")){
                 
                 // add number of day within the month 
-                if (words.get(i-1).matches("[0-9]{1,2}\\.")){
-                    nWord = words.get(i-1)+" "+nWord;
+                if (i-1 >=0){ // if month is at the beginning of the text
+                    if (words.get(i-1).matches("[0-9]{1,2}\\.")){
+                        nWord = words.get(i-1)+" "+nWord;
+                    }
                 }
+                
                 // add year
-                if (i+1 <txtLength){
+                if (i+1 <txtLength){ // if end of text is reached with the month
                     if (words.get(i+1).matches("[0-9]{1,4}")){
                         nWord = nWord +" "+words.get(i+1);
                     }
                 }
                 // -->  DO TO: Es kann einmal 1. Januar 2012 genau stehen und dann aber weiter mit "im Januar" gehen.
                 //      Dann vielleicht nochmal zusätzlich einfach den Monat alleine Zählen
+                
                 //storeWordwD(nWord, whenWL, whenCL); // store word with date word, WL, CL
                 System.out.println("2 "+nWord);
                 
             } else if (nWord.matches(".*(Woche|Wochen).*")){
-                // regex for 3 Wochen, einer Woche, drei Wochen
-                if (words.get(i-1).matches("[0-9]{1,2}|einer|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn")){
-                    nWord = words.get(i-1) +" "+nWord;
-                    //storeWord(nWord,whenWL, whenCL);
-                    System.out.println("3 "+nWord);
+                if (i-1 >=0){
+                    if (words.get(i-1).matches("[0-9]{1,2}|einer|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn")){
+                        nWord = words.get(i-1) +" "+nWord;
+                        //storeWord(nWord,whenWL, whenCL);
+                        System.out.println("3 "+nWord);
+                    }
                 }
-                                              
+            
+            // "what" words: stores words which stat with a capital letter
             } else if (nWord.matches("[A-Z]{1,}.*")){ 
                 //storeWord(nWord, whatWL, whatCL);
                 System.out.println("4 "+nWord);
+                
+            // stores locations    
             } else if (nWord.matches("in|aus")){
-                if (words.get(i+1).matches("[A-Z]{1,}.*")){
-                    //storeWord(words.get(i+1),whereWL, whereCL);
-                    System.out.println("5 "+nWord +" "+ words.get(i+1));
+                if (i+1 < txtLength){
+                    if (words.get(i+1).matches("[A-Z]{1,}.*")){
+                        nWord = words.get(i+1);       
+                        //nWord = nWord +" "+ words.get(i+1); // if with additional words like "in, aus"
+                    }
                 }
+                //storeWord(nWord,whereWL, whereCL);
+                System.out.println("5 "+nWord);
             }
             
         }
