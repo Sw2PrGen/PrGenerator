@@ -62,10 +62,11 @@ public class AbstractCreator {
     LinkedList<Integer> whereCL = new LinkedList<>(); 
     
     LinkedList<String> whatWL = new LinkedList<>(); 
-    LinkedList<Integer> whatCL = new LinkedList<>(); 
+    LinkedList<Integer> whatCL = new LinkedList<>();
+    
     
     //String maintext = PrGenerator.mainDatabase.getCreatedText();
-    String maintext = "Nach meiner August Montag heute Montag 1. Februar 2012 12.März Dezember 2012 Promotion habe ich Mittwoch heute eine Professur 3 Wochen einer Woche eine Woche fünf Wochen in Mannheim für ABWL, Personal und Organisation an der Ostfalia HAW in Wolfsburg verwaltet, bevor ich am 1.März 2013 an die DHBW Mannheim berufen wurde. Dies hat z.B. dazu geführt, dass ich an der Universität Mannheim gemeinsam mit Kollegen ein Seminar zur Mitarbeiterführung entwickelt habe, das stark auf meinen Erfahrungen aus der beruflichen Praxis aufbaute.Für Studieninteressierte, die gerne Studium und Praxisausbildung verbinden möchten, bietet das duale Studium an der DHBW eine attraktive Möglichkeit mit hervorragenden Berufsaussichten und Karrierechancen. August. ";
+    String maintext = "Nach meiner In August Montag heute Montag 1. Februar 2012 12.März Dezember 2012 Promotion habe ich Mittwoch heute eine Professur 3 Wochen einer Woche eine Woche fünf Wochen in Mannheim für ABWL, Personal und Organisation an der Ostfalia HAW in Wolfsburg verwaltet, bevor ich am 1.März 2013 an die DHBW Mannheim berufen wurde. Dies hat z.B. dazu geführt, dass ich an der Universität Mannheim gemeinsam mit Kollegen ein Seminar zur Mitarbeiterführung entwickelt habe, das stark auf meinen Erfahrungen aus der beruflichen Praxis aufbaute.Für Studieninteressierte, die gerne Studium und Praxisausbildung verbinden möchten, bietet das duale Studium an der DHBW eine attraktive Möglichkeit mit hervorragenden Berufsaussichten und Karrierechancen. August. ";
 
 
 //    public void initializeLists(){
@@ -91,6 +92,8 @@ public class AbstractCreator {
 //        
 //    }
     
+    
+    
     public void storeWord(String sWord, List WL, List CL){
         if (WL.contains(sWord)){
             int i = WL.indexOf(sWord);          // als Wahrheitswert benutzen?
@@ -98,7 +101,7 @@ public class AbstractCreator {
             int counter = (Integer) CL.get(i);  // current value of counter
             counter++;  // inc counter
             CL.remove(i);       // delete list object at index i
-            CL.add(i, counter); // add list object at index i
+            CL.add(i, counter); // add list object at index i with new counter value
                                 // old list object has to be removed because with "add" it would not be overwriten 
                 //System.out.println(WL.get(i)+" "+CL.get(i));
         } else {
@@ -108,7 +111,26 @@ public class AbstractCreator {
         }
     }
     
-    public void analyzeText(){
+    
+    
+    public int getWordIndex(List CL){
+        int min = 0;
+        int idx = 0;
+        
+        // looks from last element of the list if the counter_new >= counter_old
+        // so the word which was first found and is mostly used will be applied
+        for (int i= CL.size()-1;i>=0;i--){
+            if ((Integer)CL.get(i)>=min){
+                min = (Integer)CL.get(i);
+                idx =i;
+            }
+        }
+        return idx;
+    }
+    
+    
+    //public void analyzeText(){    // when live!!!!!!!
+    public String[] analyzeText(){
         
         maintext = maintext.replaceAll("([0-9]{1,2})\\. ","$1."); // alle "ZAHL. " in "ZAHL." umwandeln
         maintext = maintext.replaceAll("\\. "," ");     // alle ". " in " " umwandeln
@@ -161,11 +183,6 @@ public class AbstractCreator {
                     }
                 }
             
-            // "what" words: stores words which stat with a capital letter
-            } else if (nWord.matches("[A-Z]{1,}.*")){ 
-                //storeWord(nWord, whatWL, whatCL);
-                System.out.println("4 "+nWord);
-                
             // stores locations    
             } else if (nWord.matches("in|aus")){
                 if (i+1 < txtLength){
@@ -177,11 +194,34 @@ public class AbstractCreator {
                 }
 
                 System.out.println("5 "+nWord);
+                
+            // "what" words: stores words which stat with a capital letter
+            // TO DO: Alle Wörter mit Großbuchstaben am Anfang + mindestens 3 Zeichen (Der, Die, Das fällt weg, aber Nach oder Außerdem nicht
+                // Liste erweitern!
+            } else if (nWord.matches("[A-Z]{1,}.{3,}") && !nWord.matches("Nach|Außerdem|Dies")){ 
+                storeWord(nWord, whatWL, whatCL);
+                System.out.println("4 "+nWord);
             }
             
         }
+        
+        int whereidx = getWordIndex(whereCL);
+        int whenidx = getWordIndex(whenCL);
+        int whatidx = getWordIndex(whatCL);
+        
+        System.out.println(whenidx);
+        System.out.println(whenWL.get(whenidx));
+        String[] awords = {whereWL.get(whereidx), whenWL.get(whenidx), whatWL.get(whatidx)};
+        
+        // saves the three words Where, When, What into Database
+        //PrGenerator.mainDatabase.setTemplateFill(awords);
+        
         System.out.println(maintext);
         System.out.println(whenWL +" "+whenCL);
+        System.out.println(whereWL +" "+whereCL);
+        System.out.println(whatWL +" "+whatCL);
+        
+        return awords;
     }
     
   
@@ -210,8 +250,13 @@ public class AbstractCreator {
     }
    public static void main(String [] arg){
        AbstractCreator abstractCreator = new AbstractCreator();
-       //abstractCreator.createAbstract("d:\\xmlTemplate.xml", "Bad Kreuznach", "12.12.12", "Fussball");
-       abstractCreator.analyzeText();
+       //abstractCreator.analyzeText();     // when live!!!!!
+       String[] templateFill = abstractCreator.analyzeText();
+
+       //String[] templateFill = PrGenerator.mainDatabase.getTemplateFill();    // when live!!!!!!!
+       
+       abstractCreator.createAbstract("src/sources/templates_abstract.xml", "Wo","Wann","Was");//(String)templateFill[0], (String)templateFill[1], (String)templateFill[2]);
+       
    } 
 }
 
