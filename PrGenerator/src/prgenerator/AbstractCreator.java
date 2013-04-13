@@ -65,7 +65,7 @@ public class AbstractCreator {
     LinkedList<Integer> whatCL = new LinkedList<>(); 
     
     //String maintext = PrGenerator.mainDatabase.getCreatedText();
-    String maintext = "Nach meiner Promotion habe ich Mittwoch heute eine Professur in Mannheim für ABWL, Personal und Organisation an der Ostfalia HAW in Wolfsburg verwaltet, bevor ich am 1.März 2013 an die DHBW Mannheim berufen wurde. Dies hat z.B. dazu geführt, dass ich an der Universität Mannheim gemeinsam mit Kollegen ein Seminar zur Mitarbeiterführung entwickelt habe, das stark auf meinen Erfahrungen aus der beruflichen Praxis aufbaute.Für Studieninteressierte, die gerne Studium und Praxisausbildung verbinden möchten, bietet das duale Studium an der DHBW eine attraktive Möglichkeit mit hervorragenden Berufsaussichten und Karrierechancen. ";
+    String maintext = "Nach meiner August 1. Februar 2012 12.März Dezember 2012 Promotion habe ich Mittwoch heute eine Professur 3 Wochen einer Woche eine Woche fünf Wochen in Mannheim für ABWL, Personal und Organisation an der Ostfalia HAW in Wolfsburg verwaltet, bevor ich am 1.März 2013 an die DHBW Mannheim berufen wurde. Dies hat z.B. dazu geführt, dass ich an der Universität Mannheim gemeinsam mit Kollegen ein Seminar zur Mitarbeiterführung entwickelt habe, das stark auf meinen Erfahrungen aus der beruflichen Praxis aufbaute.Für Studieninteressierte, die gerne Studium und Praxisausbildung verbinden möchten, bietet das duale Studium an der DHBW eine attraktive Möglichkeit mit hervorragenden Berufsaussichten und Karrierechancen. August. ";
 
 
     public void initializeLists(){
@@ -94,7 +94,9 @@ public class AbstractCreator {
     
     public void analyzeText(){
         int ix = 0;
-        maintext = maintext.replaceAll("\\. "," ");
+        maintext = maintext.replaceAll("([0-9]{1,2})\\. ","$1."); // alle "ZAHL. " in "ZAHL." umwandeln
+        maintext = maintext.replaceAll("\\. "," ");     // alle ". " in " " umwandeln
+        maintext = maintext.replaceAll("([0-9]{1,2})\\.","$1. ");   // alle "ZAHL." in "ZAHL. " umwandeln
         maintext = maintext.replaceAll("!","");
         maintext = maintext.replaceAll("\\?","");
         maintext = maintext.replaceAll(";","");
@@ -112,22 +114,41 @@ public class AbstractCreator {
         for (int i =0; i<txtLength; i++){
             String nWord = words.get(i);
             
-            if (nWord.matches(".*(Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonnabend|Sonntag|heute|gestern|morgen|Weihnachten|Ostern|Silvester).*"))
+            if (nWord.matches(".*(Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonnabend|Sonntag|heute|gestern|morgen|Weihnachten|Ostern|Silvester)"))
             { // store directly time word
                 // storeWord(nWord, whenWL, whenCL);
                 System.out.println("1 "+nWord);
+                
             } else if (nWord.matches(".*(Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember).*"))
             { // store special date --> proof!
-                //storeWordwD(nWord, i, whenWL, whenCL); // store word with date word,stelle in Liste, WL, CL
+                
+                // add number of day within the month 
+                if (words.get(i-1).matches("[0-9]{1,2}\\.")){
+                    nWord = words.get(i-1)+" "+nWord;
+                }
+                // add year
+                if (i+1 <txtLength){
+                    if (words.get(i+1).matches("[0-9]{1,4}")){
+                        nWord = nWord +" "+words.get(i+1);
+                    }
+                }
+                // -->  DO TO: Es kann einmal 1. Januar 2012 genau stehen und dann aber weiter mit "im Januar" gehen.
+                //      Dann vielleicht nochmal zusätzlich einfach den Monat alleine Zählen
+                //storeWordwD(nWord, whenWL, whenCL); // store word with date word, WL, CL
                 System.out.println("2 "+nWord);
+                
             } else if (nWord.matches(".*(Woche|Wochen).*")){
+                // regex for 3 Wochen, einer Woche, drei Wochen
+                if (words.get(i-1).matches("[0-9]{1,2}|einer|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn")){
+                    nWord = words.get(i-1) +" "+nWord;
+                    //storeWord(nWord,whenWL, whenCL);
+                    System.out.println("3 "+nWord);
+                }
                                               
-            } else if (nWord.matches("[A-Z]{1,}.*"))
-            { 
+            } else if (nWord.matches("[A-Z]{1,}.*")){ 
                 //storeWord(nWord, whatWL, whatCL);
                 System.out.println("4 "+nWord);
-            } else if (nWord.matches("in|aus"))
-            {
+            } else if (nWord.matches("in|aus")){
                 if (words.get(i+1).matches("[A-Z]{1,}.*")){
                     //storeWord(words.get(i+1),whereWL, whereCL);
                     System.out.println("5 "+nWord +" "+ words.get(i+1));
