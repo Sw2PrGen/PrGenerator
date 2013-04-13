@@ -65,14 +65,21 @@ public class AbstractCreator {
     LinkedList<Integer> whatCL = new LinkedList<>(); 
     
     //String maintext = PrGenerator.mainDatabase.getCreatedText();
-    String maintext = "Nach meiner Promotion habe ich eine Professur für ABWL, Personal und Organisation an der Ostfalia HAW in Wolfsburg verwaltet, bevor ich am 1.März 2013 an die DHBW Mannheim berufen wurde. Dies hat z.B. dazu geführt, dass ich an der Universität Mannheim gemeinsam mit Kollegen ein Seminar zur Mitarbeiterführung entwickelt habe, das stark auf meinen Erfahrungen aus der beruflichen Praxis aufbaute.Für Studieninteressierte, die gerne Studium und Praxisausbildung verbinden möchten, bietet das duale Studium an der DHBW eine attraktive Möglichkeit mit hervorragenden Berufsaussichten und Karrierechancen.";
+    String maintext = "Nach meiner Promotion habe ich Mittwoch heute eine Professur in Mannheim für ABWL, Personal und Organisation an der Ostfalia HAW in Wolfsburg verwaltet, bevor ich am 1.März 2013 an die DHBW Mannheim berufen wurde. Dies hat z.B. dazu geführt, dass ich an der Universität Mannheim gemeinsam mit Kollegen ein Seminar zur Mitarbeiterführung entwickelt habe, das stark auf meinen Erfahrungen aus der beruflichen Praxis aufbaute.Für Studieninteressierte, die gerne Studium und Praxisausbildung verbinden möchten, bietet das duale Studium an der DHBW eine attraktive Möglichkeit mit hervorragenden Berufsaussichten und Karrierechancen. ";
 
 
     public void initializeLists(){
         // kann man mehrere Werte gleichzeitig in Array schieben?
+        
+        // Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonnabend|Sonntag|heute|gestern|morgen|Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember|Weihnachten|Ostern|Silvester
         whenSL[0]= "am"; 
         
         whenL[0] ="Montag";
+        whenL[1] ="Dienstag";
+        whenL[2] ="Mittwoch";
+        whenL[3] ="Montag";
+        whenL[4] ="Montag";
+        whenL[5] ="Montag";
         whenL[6]="Sonntag";
         whenL[7] = "Januar";
         whenL[18]="Dezember";
@@ -92,12 +99,41 @@ public class AbstractCreator {
         maintext = maintext.replaceAll("\\?","");
         maintext = maintext.replaceAll(";","");
         maintext = maintext.replaceAll(",","");
-        maintext = maintext.replaceAll(" {1}[A-Za-z]{0,4} {1}","");
+        //maintext = maintext.replaceAll("\\s[^A-Za-z]{0,4}\\s","");
+        
+        
         LinkedList<String> words = new LinkedList<>(Arrays.asList(maintext.split(" ")));
         int txtLength = words.size();
+//        System.out.println(txtLength);
+//        System.out.println(words.get(0));
+//        System.out.println(words.get(txtLength-1));
+        
+        
         for (int i =0; i<txtLength; i++){
-            //String nWord = nextWord(i);
-            //System.out.println(nWord);
+            String nWord = words.get(i);
+            
+            if (nWord.matches(".*(Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonnabend|Sonntag|heute|gestern|morgen|Weihnachten|Ostern|Silvester).*"))
+            { // store directly time word
+                // storeWord(nWord, whenWL, whenCL);
+                System.out.println("1 "+nWord);
+            } else if (nWord.matches(".*(Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember).*"))
+            { // store special date --> proof!
+                //storeWordwD(nWord, i, whenWL, whenCL); // store word with date word,stelle in Liste, WL, CL
+                System.out.println("2 "+nWord);
+            } else if (nWord.matches(".*(Woche|Wochen).*")){
+                                              
+            } else if (nWord.matches("[A-Z]{1,}.*"))
+            { 
+                //storeWord(nWord, whatWL, whatCL);
+                System.out.println("4 "+nWord);
+            } else if (nWord.matches("in|aus"))
+            {
+                if (words.get(i+1).matches("[A-Z]{1,}.*")){
+                    //storeWord(words.get(i+1),whereWL, whereCL);
+                    System.out.println("5 "+nWord +" "+ words.get(i+1));
+                }
+            }
+            
         }
         //String nWord = nextWord(0);
         System.out.println(maintext);
