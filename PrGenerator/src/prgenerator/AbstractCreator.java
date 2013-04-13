@@ -87,11 +87,12 @@ public class AbstractCreator {
     
     public void analyzeText(){
         int ix = 0;
-        maintext = maintext.replaceAll("\\.","");
+        maintext = maintext.replaceAll("\\. "," ");
         maintext = maintext.replaceAll("!","");
         maintext = maintext.replaceAll("\\?","");
         maintext = maintext.replaceAll(";","");
         maintext = maintext.replaceAll(",","");
+        maintext = maintext.replaceAll(" {1}[A-Za-z]{0,4} {1}","");
         LinkedList<String> words = new LinkedList<>(Arrays.asList(maintext.split(" ")));
         int txtLength = words.size();
         for (int i =0; i<txtLength; i++){
