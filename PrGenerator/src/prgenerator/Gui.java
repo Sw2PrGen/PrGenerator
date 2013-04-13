@@ -8,9 +8,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.html.HTMLEditorKit;
@@ -161,7 +158,7 @@ public class Gui extends JFrame {
             }
 
             chooser.setVisible(false);
-      return true;
+            return true;
         }
         chooser.setVisible(false);
         return false;
