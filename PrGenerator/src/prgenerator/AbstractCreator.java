@@ -288,6 +288,7 @@ public class AbstractCreator {
                     break;
                 
         }
+        System.out.println(abstractTemplateQuery);
    }
    public static void main(String [] arg){
        AbstractCreator abstractCreator = new AbstractCreator();
