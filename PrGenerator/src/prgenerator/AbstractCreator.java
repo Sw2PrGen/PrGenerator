@@ -65,35 +65,51 @@ public class AbstractCreator {
     LinkedList<Integer> whatCL = new LinkedList<>(); 
     
     //String maintext = PrGenerator.mainDatabase.getCreatedText();
-    String maintext = "Nach meiner August 1. Februar 2012 12.März Dezember 2012 Promotion habe ich Mittwoch heute eine Professur 3 Wochen einer Woche eine Woche fünf Wochen in Mannheim für ABWL, Personal und Organisation an der Ostfalia HAW in Wolfsburg verwaltet, bevor ich am 1.März 2013 an die DHBW Mannheim berufen wurde. Dies hat z.B. dazu geführt, dass ich an der Universität Mannheim gemeinsam mit Kollegen ein Seminar zur Mitarbeiterführung entwickelt habe, das stark auf meinen Erfahrungen aus der beruflichen Praxis aufbaute.Für Studieninteressierte, die gerne Studium und Praxisausbildung verbinden möchten, bietet das duale Studium an der DHBW eine attraktive Möglichkeit mit hervorragenden Berufsaussichten und Karrierechancen. August. ";
+    String maintext = "Nach meiner August Montag heute Montag 1. Februar 2012 12.März Dezember 2012 Promotion habe ich Mittwoch heute eine Professur 3 Wochen einer Woche eine Woche fünf Wochen in Mannheim für ABWL, Personal und Organisation an der Ostfalia HAW in Wolfsburg verwaltet, bevor ich am 1.März 2013 an die DHBW Mannheim berufen wurde. Dies hat z.B. dazu geführt, dass ich an der Universität Mannheim gemeinsam mit Kollegen ein Seminar zur Mitarbeiterführung entwickelt habe, das stark auf meinen Erfahrungen aus der beruflichen Praxis aufbaute.Für Studieninteressierte, die gerne Studium und Praxisausbildung verbinden möchten, bietet das duale Studium an der DHBW eine attraktive Möglichkeit mit hervorragenden Berufsaussichten und Karrierechancen. August. ";
 
 
-    public void initializeLists(){
-        // kann man mehrere Werte gleichzeitig in Array schieben?
-        
-        // Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonnabend|Sonntag|heute|gestern|morgen|Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember|Weihnachten|Ostern|Silvester
-        whenSL[0]= "am"; 
-        
-        whenL[0] ="Montag";
-        whenL[1] ="Dienstag";
-        whenL[2] ="Mittwoch";
-        whenL[3] ="Montag";
-        whenL[4] ="Montag";
-        whenL[5] ="Montag";
-        whenL[6]="Sonntag";
-        whenL[7] = "Januar";
-        whenL[18]="Dezember";
-        
-        whereSL[0] ="in";
-        whereSL[1]="aus";
-        
-        notNounL[0]="Die";
-        
+//    public void initializeLists(){
+//        // kann man mehrere Werte gleichzeitig in Array schieben?
+//        
+//        // Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonnabend|Sonntag|heute|gestern|morgen|Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember|Weihnachten|Ostern|Silvester
+//        whenSL[0]= "am"; 
+//        
+//        whenL[0] ="Montag";
+//        whenL[1] ="Dienstag";
+//        whenL[2] ="Mittwoch";
+//        whenL[3] ="Montag";
+//        whenL[4] ="Montag";
+//        whenL[5] ="Montag";
+//        whenL[6]="Sonntag";
+//        whenL[7] = "Januar";
+//        whenL[18]="Dezember";
+//        
+//        whereSL[0] ="in";
+//        whereSL[1]="aus";
+//        
+//        notNounL[0]="Die";
+//        
+//    }
+    
+    public void storeWord(String sWord, List WL, List CL){
+        if (WL.contains(sWord)){
+            int i = WL.indexOf(sWord);          // als Wahrheitswert benutzen?
+                //System.out.println(WL.get(i)+" "+CL.get(i));
+            int counter = (Integer) CL.get(i);  // current value of counter
+            counter++;  // inc counter
+            CL.remove(i);       // delete list object at index i
+            CL.add(i, counter); // add list object at index i
+                                // old list object has to be removed because with "add" it would not be overwriten 
+                //System.out.println(WL.get(i)+" "+CL.get(i));
+        } else {
+            // adds new word and sets counter to 1
+            WL.add(sWord); 
+            CL.add(1);
+        }
     }
     
-    
     public void analyzeText(){
-        int ix = 0;
+        
         maintext = maintext.replaceAll("([0-9]{1,2})\\. ","$1."); // alle "ZAHL. " in "ZAHL." umwandeln
         maintext = maintext.replaceAll("\\. "," ");     // alle ". " in " " umwandeln
         maintext = maintext.replaceAll("([0-9]{1,2})\\.","$1. ");   // alle "ZAHL." in "ZAHL. " umwandeln
@@ -101,23 +117,18 @@ public class AbstractCreator {
         maintext = maintext.replaceAll("\\?","");
         maintext = maintext.replaceAll(";","");
         maintext = maintext.replaceAll(",","");
-        //maintext = maintext.replaceAll("\\s[^A-Za-z]{0,4}\\s","");
         
         
         LinkedList<String> words = new LinkedList<>(Arrays.asList(maintext.split(" ")));
         int txtLength = words.size();
-//        System.out.println(txtLength);
-//        System.out.println(words.get(0));
-//        System.out.println(words.get(txtLength-1));
-        
-        
+       
         for (int i =0; i<txtLength; i++){
             String nWord = words.get(i);
             
             //store "when" words
             if (nWord.matches(".*(Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonnabend|Sonntag|heute|gestern|morgen|Weihnachten|Ostern|Silvester)"))
             { 
-                // storeWord(nWord, whenWL, whenCL);
+                storeWord(nWord, whenWL, whenCL);
                 System.out.println("1 "+nWord);
                 
             } else if (nWord.matches(".*(Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember).*")){
@@ -138,14 +149,14 @@ public class AbstractCreator {
                 // -->  DO TO: Es kann einmal 1. Januar 2012 genau stehen und dann aber weiter mit "im Januar" gehen.
                 //      Dann vielleicht nochmal zusätzlich einfach den Monat alleine Zählen
                 
-                //storeWordwD(nWord, whenWL, whenCL); // store word with date word, WL, CL
+                storeWord(nWord, whenWL, whenCL); // store word with date word, WL, CL
                 System.out.println("2 "+nWord);
                 
             } else if (nWord.matches(".*(Woche|Wochen).*")){
                 if (i-1 >=0){
                     if (words.get(i-1).matches("[0-9]{1,2}|einer|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn")){
                         nWord = words.get(i-1) +" "+nWord;
-                        //storeWord(nWord,whenWL, whenCL);
+                        storeWord(nWord,whenWL, whenCL);
                         System.out.println("3 "+nWord);
                     }
                 }
@@ -161,15 +172,16 @@ public class AbstractCreator {
                     if (words.get(i+1).matches("[A-Z]{1,}.*")){
                         nWord = words.get(i+1);       
                         //nWord = nWord +" "+ words.get(i+1); // if with additional words like "in, aus"
+                        storeWord(nWord,whereWL, whereCL);
                     }
                 }
-                //storeWord(nWord,whereWL, whereCL);
+
                 System.out.println("5 "+nWord);
             }
             
         }
-        //String nWord = nextWord(0);
         System.out.println(maintext);
+        System.out.println(whenWL +" "+whenCL);
     }
     
   
@@ -199,7 +211,6 @@ public class AbstractCreator {
    public static void main(String [] arg){
        AbstractCreator abstractCreator = new AbstractCreator();
        //abstractCreator.createAbstract("d:\\xmlTemplate.xml", "Bad Kreuznach", "12.12.12", "Fussball");
-       abstractCreator.initializeLists();
        abstractCreator.analyzeText();
    } 
 }
