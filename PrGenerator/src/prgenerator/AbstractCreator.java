@@ -188,17 +188,19 @@ public class AbstractCreator {
                         nWord = words.get(i+1);       
                         //nWord = nWord +" "+ words.get(i+1); // if with additional words like "in, aus"
                         storeWord(nWord,whereWL, whereCL);
+                        i++;    // if there was a Noun after "in,aus" (maybe a location) 
+                                // this will not saved into the list with words with capital letter
                     }
                 }
 
-                System.out.println("5 "+nWord);
+                System.out.println("4 "+nWord);
                 
             // "what" words: stores words which stat with a capital letter
             // TO DO: Alle Wörter mit Großbuchstaben am Anfang + mindestens 3 Zeichen (Der, Die, Das fällt weg, aber Nach oder Außerdem nicht
                 // Liste erweitern!
             } else if (nWord.matches("[A-Z]{1,}.{3,}") && !nWord.matches("Nach|Außerdem|Dies")){ 
                 storeWord(nWord, whatWL, whatCL);
-                System.out.println("4 "+nWord);
+                System.out.println("5 "+nWord);
             }
             
         }
