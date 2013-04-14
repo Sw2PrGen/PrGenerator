@@ -79,7 +79,12 @@ public class AbstractCreator {
 //    }
     
     
-    
+    /**
+     * 
+     * @param sWord
+     * @param WL
+     * @param CL 
+     */
     public void storeWord(String sWord, List WL, List CL){
         if (WL.contains(sWord)){
             int i = WL.indexOf(sWord);          // als Wahrheitswert benutzen?
@@ -98,7 +103,11 @@ public class AbstractCreator {
     }
     
     
-    
+    /**
+     * 
+     * @param CL
+     * @return 
+     */
     public int getWordIndex(List CL){
         int min = 0;
         int idx = 0;
@@ -114,7 +123,10 @@ public class AbstractCreator {
         return idx;
     }
     
-    
+    /**
+     * 
+     * @return 
+     */
     //public void analyzeText(){    // when live!!!!!!!
     public String[] analyzeText(){
         
@@ -200,7 +212,7 @@ public class AbstractCreator {
         String[] awords = {whereWL.get(whereidx), whenWL.get(whenidx), whatWL.get(whatidx)};
         
         // saves the three words Where, When, What into Database
-        //PrGenerator.mainDatabase.setTemplateFill(awords);
+        //PrGenerator.mainDatabase.setTemplateFill(awords);     // when live!!!!!
         
         System.out.println(maintext);
         System.out.println(whenWL +" "+whenCL);
@@ -210,7 +222,13 @@ public class AbstractCreator {
         return awords;
     }
     
-  
+   /**
+    * 
+    * @param path
+    * @param location
+    * @param date
+    * @param keyAspect 
+    */
    public void createAbstract(String path, String location, String date, String keyAspect){
        
         
@@ -292,12 +310,13 @@ public class AbstractCreator {
    }
    public static void main(String [] arg){
        AbstractCreator abstractCreator = new AbstractCreator();
+       
        //abstractCreator.analyzeText();     // when live!!!!!
        String[] templateFill = abstractCreator.analyzeText();
 
        //String[] templateFill = PrGenerator.mainDatabase.getTemplateFill();    // when live!!!!!!!
        
-       abstractCreator.createAbstract("src/sources/templates_abstract.xml", "Wo","Wann","Was");//(String)templateFill[0], (String)templateFill[1], (String)templateFill[2]);
+       abstractCreator.createAbstract("src/sources/templates_abstract.xml", (String)templateFill[0], (String)templateFill[1], (String)templateFill[2]);
        
    } 
 }
