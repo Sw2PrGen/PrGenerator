@@ -26,7 +26,7 @@ import java.util.Random;
  * 
  * 
  * 
- * @author Dominik Künne
+ * @author Dominik Künne, Jörg Woditschka, Tobias Mauritz
  * 
  * Abstractgenerator: Methode createAbstract() funktioniert. Als Eingabe wurde folgende XML-DAtei verwendet:
  * 
@@ -54,33 +54,11 @@ public class AbstractCreator {
     //String maintext = PrGenerator.mainDatabase.getCreatedText();
     String maintext = "Nach meiner In August Montag heute Montag 1. Februar 2012 12.März Dezember 2012 Promotion habe ich Mittwoch heute eine Professur 3 Wochen einer Woche eine Woche fünf Wochen in Mannheim für ABWL, Personal und Organisation an der Ostfalia HAW in Wolfsburg verwaltet, bevor ich am 1.März 2013 an die DHBW Mannheim berufen wurde. Dies hat z.B. dazu geführt, dass ich an der Universität Mannheim gemeinsam mit Kollegen ein Seminar zur Mitarbeiterführung entwickelt habe, das stark auf meinen Erfahrungen aus der beruflichen Praxis aufbaute.Für Studieninteressierte, die gerne Studium und Praxisausbildung verbinden möchten, bietet das duale Studium an der DHBW eine attraktive Möglichkeit mit hervorragenden Berufsaussichten und Karrierechancen. August. ";
 
-
-//    public void initializeLists(){
-//        // kann man mehrere Werte gleichzeitig in Array schieben?
-//        
-//        // Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonnabend|Sonntag|heute|gestern|morgen|Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember|Weihnachten|Ostern|Silvester
-//        whenSL[0]= "am"; 
-//        
-//        whenL[0] ="Montag";
-//        whenL[1] ="Dienstag";
-//        whenL[2] ="Mittwoch";
-//        whenL[3] ="Montag";
-//        whenL[4] ="Montag";
-//        whenL[5] ="Montag";
-//        whenL[6]="Sonntag";
-//        whenL[7] = "Januar";
-//        whenL[18]="Dezember";
-//        
-//        whereSL[0] ="in";
-//        whereSL[1]="aus";
-//        
-//        notNounL[0]="Die";
-//        
-//    }
     
     
     /**
      * 
+     * @author Tobias Mauritz
      * @param sWord
      * @param WL
      * @param CL 
@@ -105,6 +83,7 @@ public class AbstractCreator {
     
     /**
      * 
+     * @author Tobias Mauritz
      * @param CL
      * @return 
      */
@@ -125,13 +104,13 @@ public class AbstractCreator {
     
     /**
      * 
-     * @return 
+     * @author Tobias Mauritz
      */
     //public void analyzeText(){    // when live!!!!!!!
     public String[] analyzeText(){
         
-        maintext = maintext.replaceAll("([0-9]{1,2})\\. ","$1."); // alle "ZAHL. " in "ZAHL." umwandeln
-        maintext = maintext.replaceAll("\\. "," ");     // alle ". " in " " umwandeln
+        maintext = maintext.replaceAll("([0-9]{1,2})\\. ","$1.");   // alle "ZAHL. " in "ZAHL." umwandeln
+        maintext = maintext.replaceAll("\\. "," ");                 // alle ". " in " " umwandeln
         maintext = maintext.replaceAll("([0-9]{1,2})\\.","$1. ");   // alle "ZAHL." in "ZAHL. " umwandeln
         maintext = maintext.replaceAll("!","");
         maintext = maintext.replaceAll("\\?","");
@@ -146,12 +125,12 @@ public class AbstractCreator {
             String nWord = words.get(i);
             
             //store "when" words
-            if (nWord.matches(".*(Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonnabend|Sonntag|heute|gestern|morgen|Weihnachten|Ostern|Silvester)"))
+            if (nWord.matches("(Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonnabend|Sonntag|heute|gestern|morgen|Weihnachten|Ostern|Silvester)"))
             { 
                 storeWord(nWord, whenWL, whenCL);
                 System.out.println("1 "+nWord);
                 
-            } else if (nWord.matches(".*(Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember).*")){
+            } else if (nWord.matches("(Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember)")){
                 
                 // add number of day within the month 
                 if (i-1 >=0){ // if month is at the beginning of the text
