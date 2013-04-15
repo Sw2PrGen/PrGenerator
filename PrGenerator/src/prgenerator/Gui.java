@@ -25,6 +25,7 @@ public class Gui extends JFrame {
     private JTextField userInput = new JTextField();
     private JButton generateTextButton = new JButton();
     private String finalHtmlDocument = PrGenerator.mainDatabase.getFinalHtmlDocument();
+    private JProgressBar bar = new JProgressBar();
 
     /*
      * this constructor will display the main page
@@ -54,6 +55,7 @@ public class Gui extends JFrame {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 setInput(evt);
+                openBar(evt);
 
             }
         });
@@ -87,7 +89,7 @@ public class Gui extends JFrame {
      */
     public void showResult() {
 
-
+        bar.setVisible(false);
         JFrame outputFrame = new JFrame();
         JPanel rightPanel = new JPanel();
         JEditorPane leftPanel = new JEditorPane();
@@ -200,5 +202,14 @@ public class Gui extends JFrame {
         }
         chooser.setVisible(false);
         return false;
+    }
+
+    private void openBar(ActionEvent evt) {
+
+        bar.setIndeterminate(true);
+        bar.setBounds(227, 170, 100, 20);
+        add(bar);
+
+
     }
 }
