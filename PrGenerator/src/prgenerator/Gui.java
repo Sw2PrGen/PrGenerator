@@ -8,22 +8,32 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.html.HTMLEditorKit;
 
 /**
  *
- * @author Dawid Rusin, Katharina Sandrock
+ * @author Katharina Sandrock
  */
 public class Gui extends JFrame {
 
+    //set variables needed for the frame that will display the starting page 
     private JLabel backgroundPicture = new JLabel(new ImageIcon("src\\prgenerator\\GUI_backgroundpicture.png"));
     private JTextField userInput = new JTextField();
     private JButton generateTextButton = new JButton();
-    private   String finalHtmlDocument = PrGenerator.mainDatabase.getFinalHtmlDocument();
+    private String finalHtmlDocument = PrGenerator.mainDatabase.getFinalHtmlDocument();
+    private JProgressBar bar = new JProgressBar();
 
+    /*
+     * this constructor will display the main page
+     *
+     */
     public Gui() {
+
+
 
         setLayout(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -39,12 +49,14 @@ public class Gui extends JFrame {
         generateTextButton.setForeground(Color.white);
 
 
+        // implementing of an action listener on the "Start"- Button to react on user input
         generateTextButton.addActionListener(new java.awt.event.ActionListener() {
 
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 setInput(evt);
-                
+                openBar(evt);
+
             }
         });
 
@@ -60,13 +72,24 @@ public class Gui extends JFrame {
 
     }
 
+    /*
+     * method reacts on the click of the button with filling in the user input
+     * into the database and start the modfying method of the input
+     */
     private void setInput(ActionEvent evt) {
 
         PrGenerator.mainDatabase.setUserInput(userInput.getText());
+        PrGenerator.mainInputAnalyzer.modifyInputtoString();
 
     }
 
+    /*
+     * this method creates the output frame with the preview of the press
+     * release and the possibility to save it as .html document
+     */
     public void showResult() {
+
+        bar.setVisible(false);
         JFrame outputFrame = new JFrame();
         JPanel rightPanel = new JPanel();
         JEditorPane leftPanel = new JEditorPane();
@@ -74,37 +97,39 @@ public class Gui extends JFrame {
         JButton saveButton = new JButton();
         JButton closeButton = new JButton();
         JButton showInBrowser = new JButton();
-      
-        
+
+
         outputFrame.setLayout(null);
         outputFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        
+
         rightPanel.setBounds(350, 0, 150, 300);
         rightPanel.setBackground(Color.white);
-        
+
         leftPanel.setEditable(false);
         HTMLEditorKit eKit = new HTMLEditorKit();
         leftPanel.setEditorKit(eKit);
         leftPanel.setText(finalHtmlDocument);
-        
+
         rightPanel.setLayout(null);
         saveButton.setBounds(20, 50, 100, 26);
         saveButton.setForeground(Color.white);
         saveButton.setBackground(Color.red);
         saveButton.setText("speichern");
-        
+
         closeButton.setBounds(20, 100, 100, 26);
         closeButton.setForeground(Color.white);
         closeButton.setBackground(Color.red);
         closeButton.setText("beenden");
-        
+
         rightPanel.add(saveButton);
         rightPanel.add(closeButton);
-        
+
         outputFrame.add(rightPanel);
         outputFrame.add(leftScrollPane);
-        
-          closeButton.addActionListener(new java.awt.event.ActionListener() {
+
+        //action listener that reacts on the click of the close Button with the exit of the programm 
+
+        closeButton.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 closeFrame(evt);
@@ -115,13 +140,16 @@ public class Gui extends JFrame {
             }
         });
 
+
+        //save button action listener - calls method saveResult() if save Button was clicked
+
         saveButton.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    saveResult(null);                
+                saveResult(null);
             }
         });
-        
+
         outputFrame.setResizable(false);
         outputFrame.setPreferredSize(new Dimension(500, 330));
         outputFrame.setLocation(25, 25);
@@ -129,13 +157,18 @@ public class Gui extends JFrame {
         outputFrame.setVisible(true);
     }
 
+    /**
+     * method opens a browser dialog window and implements the possibility to
+     * save the file
+     *
+     */
     public boolean saveResult(String path) {
+
         JFileChooser chooser;
         if (path == null) {
             path = System.getProperty("user.home");
         }
         File file = new File(path.trim());
-
         chooser = new JFileChooser(path);
         chooser.setDialogType(JFileChooser.SAVE_DIALOG);
         FileNameExtensionFilter markUpFilter = new FileNameExtensionFilter(
@@ -152,10 +185,16 @@ public class Gui extends JFrame {
             path = chooser.getSelectedFile().toString();
             file = new File(path);
             if (markUpFilter.accept(file)) {
-                System.out.println(path + " kann gespeichert werden.");
-                //PrGenerator.mainDatabase.saveFile(finalHtmlDocument,path);
-          } else {
-                System.out.println(path + " ist der falsche Dateityp.");
+                if (!(path.endsWith(".html") || path.endsWith(".htm"))) {
+                    path = path + ".html";
+                }
+                try {
+                    PrGenerator.mainDatabase.writeFile(finalHtmlDocument, path);
+                } catch (Exception ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Datei kann unter diesem Dateityp nicht gespeichert werden! Bitte anderen Dateityp angeben.", "Fehler", JOptionPane.ERROR_MESSAGE);
             }
 
             chooser.setVisible(false);
@@ -163,5 +202,14 @@ public class Gui extends JFrame {
         }
         chooser.setVisible(false);
         return false;
+    }
+
+    private void openBar(ActionEvent evt) {
+
+        bar.setIndeterminate(true);
+        bar.setBounds(227, 170, 100, 20);
+        add(bar);
+
+
     }
 }

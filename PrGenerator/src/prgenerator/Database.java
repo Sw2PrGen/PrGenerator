@@ -90,7 +90,7 @@ public class Database {
      * @param filename the name of the file
      * @throws Exception
      */
-    private void writeFile(String text, String filename) throws Exception {
+    public void writeFile(String text, String filename) throws Exception {
         String[] str = filename.split("/");
         String dirs = new String();
         for (int i = 0; i < str.length - 1; i++) {
