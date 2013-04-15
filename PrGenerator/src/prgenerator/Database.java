@@ -10,6 +10,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.regex.*;
 
 /**
  *
@@ -33,35 +34,36 @@ public class Database {
     private String finalHtmlDocument;
     private LinkedList<String> pictureList;
     private LinkedList<String> userInputFiltered;
-    private String[] templateFill;
+    private String[] templateFill = new String[3];
     private String chosenPicture;
 
-    private void makelist(String input){     
+    private void makelist(String input) {
         LinkedList<String> help = new LinkedList<>(Arrays.asList(input.split("[.]")));
         LinkedList<Integer> del = new LinkedList<>();
-        for(int i=0; i<help.size(); i++){
-            help.set(i,help.get(i).trim());
-            if(help.get(i).contains("(at)") | help.get(i).length() < 6){
+        for (int i = 0; i < help.size(); i++) {
+            help.set(i, help.get(i).trim());
+            if (help.get(i).contains("(at)") | help.get(i).length() < 6) {
                 del.add(i);
             }
         }
-        for(int i = 0; i< del.size(); i++){
+        for (int i = 0; i < del.size(); i++) {
             help.remove(del.get(i) - i);
         }
         StringBuilder sb = new StringBuilder();
-        while(help.size()>0){
+        while (help.size() > 0) {
             sb.append(help.pop());
             sb.append("\n");
         }
-        try{
-        writeFile(sb.toString(), "test.txt");
-        }catch(Exception e){
+        try {
+            writeFile(sb.toString(), "test.txt");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Writes a file on the hdd
+     *
      * @param text the content of the file to write
      * @param filename the name of the file
      * @throws Exception
@@ -81,6 +83,7 @@ public class Database {
 
     /**
      * Gets the url of the next news item
+     *
      * @param url url to the current news item as String
      * @return a String containing the url to the next news item
      */
@@ -99,6 +102,7 @@ public class Database {
 
     /**
      * Checks if a web site exists (faster then getWebsite())
+     *
      * @param adress the url to the web site
      * @return true if it exists, false otherwise
      */
@@ -115,6 +119,7 @@ public class Database {
 
     /**
      * Opens a website and returns a reader to read HTML
+     *
      * @param adress the url to the web site as a String
      * @return a Buffered Reader with the content of the web site
      */
@@ -134,6 +139,7 @@ public class Database {
 
     /**
      * Checks the DHBW-Site for the url to the latest news item
+     *
      * @return string with the url to the latest news item
      */
     private String getLatestNewsUrl() {
@@ -154,8 +160,20 @@ public class Database {
         return null;    //return null if sth went wrong
     }
 
+    private String replaceSpecPattern(String string, String regex, String lookFor, String replaceWith) {
+        Pattern pattern = Pattern.compile(regex);                   //user pattern to save "." from dates
+        Matcher matcher = pattern.matcher(string);
+        String help;
+        while (matcher.find()) {                                          //is it a date?
+            help = matcher.group();
+            string = string.replace(help, help.replaceAll(lookFor, replaceWith));            //replace . with #
+        }
+        return string;
+    }
+
     /**
      * Reads a text from a buffered reader and strips it out of HTML-tags
+     *
      * @param reader The buffered reader containing the text to process
      * @return a string with the processed text
      */
@@ -173,10 +191,16 @@ public class Database {
         try {
             while ((s = reader.readLine()) != null && !s.contains("</div>")) {  //read all until the end of the text passage
                 s = s.replaceAll("\t", "");                                     //delete all tabulators
-                s = s.replaceAll("<i>.*?</i>", "");
+                s = s.replaceAll("<i>.*?</i>", "");                             //delete everything cursive, since usually not normal sentences
                 s = s.replaceAll("<(\"[^\"]*\"|'[^']*'|[^'\">])*>", "");        //delete all html-tags
                 s = s.replaceAll("&nbsp;", "");                                 //delete "&nbsp;"
-                s = s.replaceAll(".+[^(. )]$", "");
+                s = s.replaceAll(".+[^(. )]$", "");                             //delete every codeline that does not conclude with a full stop
+
+                s = replaceSpecPattern(s, "\\d+\\.", "\\.", "#");               //replace all . in dates
+                s = replaceSpecPattern(s, " [a-zA-Z]{1,2}\\.", "\\.", "#");     //replace all . in 
+                s = replaceSpecPattern(s, "#[a-zA-Z]{1,2}\\.", "\\.", "#");
+                s = replaceSpecPattern(s, "Prof\\.", "\\.", "#");
+
                 s = s.trim();
                 sb.append(s);                                                   //append to the stringbuilder
             }
@@ -185,11 +209,11 @@ public class Database {
         }
 
         finishedText = sb.toString();                                           //make a string out of the stringbuilder
-        return finishedText;                                    
+        return finishedText;
     }
 
     /**
-     * 
+     *
      * @return
      */
     private boolean loadNewData() {
@@ -203,7 +227,7 @@ public class Database {
     }
 
     /**
-     * 
+     *
      * @return
      */
     private boolean loadBackup() {
@@ -211,7 +235,7 @@ public class Database {
     }
 
     /**
-     * 
+     *
      * @return
      */
     private boolean updateBackup() {
@@ -219,7 +243,7 @@ public class Database {
     }
 
     /**
-     * 
+     *
      * @return
      */
     private boolean isLoaded() {
