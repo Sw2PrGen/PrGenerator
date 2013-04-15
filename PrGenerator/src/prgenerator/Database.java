@@ -23,42 +23,64 @@ public class Database {
     private final String DHBW_MORE_TAG = "<span class=\"more\">";
     private final String DHBW_NEWURL_START = "details/id/";
     private final String DHBW_NEWURL_END = "/\" title";
-    private LinkedList<String> currentData;
+    private int latestUrlNo;
+    private int lastLatestUrlNo = 0;
+    private LinkedList<String> currentData = new LinkedList<>();
     private String userInput;
     private String createdText;
     private String createdAbstract;
     private String createdHeading;
-    private LinkedList<Template> templatesAbstract;
-    private LinkedList<Template> templatesHeading;
+    private LinkedList<Template> templatesAbstract = new LinkedList<>();
+    private LinkedList<Template> templatesHeading = new LinkedList<>();
     private String finalDocument;
     private String finalHtmlDocument;
-    private LinkedList<String> pictureList;
-    private LinkedList<String> userInputFiltered;
+    private LinkedList<String> pictureList = new LinkedList<>();
+    private LinkedList<String> userInputFiltered = new LinkedList<>();
     private String[] templateFill = new String[3];
     private String chosenPicture;
-
-    private void makelist(String input) {
+    
+    private LinkedList<String> makelist(String input) {
         LinkedList<String> help = new LinkedList<>(Arrays.asList(input.split("[.]")));
         LinkedList<Integer> del = new LinkedList<>();
         for (int i = 0; i < help.size(); i++) {
             help.set(i, help.get(i).trim());
-            if (help.get(i).contains("(at)") | help.get(i).length() < 6) {
+            if (help.get(i).contains("(at)") | help.get(i).length() < 6 | help.get(i).contains("#i#") | help.get(i).contains("#/i#")) {
                 del.add(i);
+            } else {
+                help.set(i, help.get(i).replaceAll("#","\\.") + ".");
             }
         }
         for (int i = 0; i < del.size(); i++) {
             help.remove(del.get(i) - i);
         }
-        StringBuilder sb = new StringBuilder();
-        while (help.size() > 0) {
-            sb.append(help.pop());
-            sb.append("\n");
+        return help;
+    }
+    
+    /**
+     * reads a file
+     *
+     * @param filename name of the file to read from
+     * @return chained list of chained lists with the content of the rows
+     * @throws Exception
+     */
+    static public LinkedList<LinkedList> readFile(String filename) throws Exception {
+
+        LinkedList<LinkedList> list = new LinkedList<>();
+        BufferedReader reader = new BufferedReader(new FileReader(filename));
+
+        String dataRow = reader.readLine();
+        while (dataRow != null) {           //runs until it gets to an empty row
+            LinkedList<String> strList = new LinkedList<>();
+            String[] dataArray = dataRow.split("\n");      //the row is split on the separator and put into an array
+            strList.addAll(Arrays.asList(dataArray));   //the array is loaded into a string list
+            list.add(strList);                  //the list with the strings is added to the main linked list
+
+            dataRow = reader.readLine(); // Read next line of data.
         }
-        try {
-            writeFile(sb.toString(), "test.txt");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // Close the file once all data has been read.
+        reader.close();
+
+        return list;
     }
 
     /**
@@ -89,7 +111,7 @@ public class Database {
      */
     private String getNextUrl(String url) {
         int i = Integer.parseInt(url.split("/")[url.split("/").length - 1]) - 1;    //get the last part of the url (is a 4-digit number), parse it to int and decrement
-        while (i >= 0) {    //I don't believe there should be negative numbers in the url
+        while (i >= lastLatestUrlNo) {    //I don't believe there should be negative numbers in the url
             String nexturl = Integer.toString(i); //parse the new number to string
             if (!checkWebsite(DHBW_AKTUELLES_URL + nexturl)) {  //check if the site exists
                 i--;                //decrement if does not exist
@@ -153,6 +175,7 @@ public class Database {
                 return s;
             }
             s = s.substring(s.indexOf(DHBW_NEWURL_START) + DHBW_NEWURL_START.length(), s.indexOf(DHBW_NEWURL_END)); //get the last part of the url to the news item
+            latestUrlNo = Integer.parseInt(s);
             return DHBW_AKTUELLES_URL + s;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -165,7 +188,7 @@ public class Database {
         Matcher matcher = pattern.matcher(string);
         String help;
         while (matcher.find()) {                                          //is it a date?
-            help = matcher.group();
+            help = matcher.group(matcher.groupCount());
             string = string.replace(help, help.replaceAll(lookFor, replaceWith));            //replace . with #
         }
         return string;
@@ -190,16 +213,27 @@ public class Database {
         }
         try {
             while ((s = reader.readLine()) != null && !s.contains("</div>")) {  //read all until the end of the text passage
+                if(s.contains("www") | s.contains("<a>") | s.contains("<i>") | s.contains("<td ")){
+                    continue;
+                }
                 s = s.replaceAll("\t", "");                                     //delete all tabulators
-                s = s.replaceAll("<i>.*?</i>", "");                             //delete everything cursive, since usually not normal sentences
                 s = s.replaceAll("<(\"[^\"]*\"|'[^']*'|[^'\">])*>", "");        //delete all html-tags
                 s = s.replaceAll("&nbsp;", "");                                 //delete "&nbsp;"
                 s = s.replaceAll(".+[^(. )]$", "");                             //delete every codeline that does not conclude with a full stop
+                s = s.replaceAll("„", "");
+                s = s.replaceAll("“", "");
+                s = s.replaceAll("&amp;", "&");
+                s = s.replaceAll("&quot;", "");
 
                 s = replaceSpecPattern(s, "\\d+\\.", "\\.", "#");               //replace all . in dates
-                s = replaceSpecPattern(s, " [a-zA-Z]{1,2}\\.", "\\.", "#");     //replace all . in 
-                s = replaceSpecPattern(s, "#[a-zA-Z]{1,2}\\.", "\\.", "#");
+                s = replaceSpecPattern(s, " [a-zA-Z]{1,3}\\.", "\\.", "#");     //replace all . in 
+                s = replaceSpecPattern(s, "#[a-zA-Z]{1,3}\\.", "\\.", "#");
                 s = replaceSpecPattern(s, "Prof\\.", "\\.", "#");
+                s = replaceSpecPattern(s, "Dipl\\.", "\\.", "#");
+                s = replaceSpecPattern(s, "Angl\\.", "\\.", "#");
+                s = replaceSpecPattern(s, "bspw\\.", "\\.", "#");
+                
+                
 
                 s = s.trim();
                 sb.append(s);                                                   //append to the stringbuilder
@@ -217,11 +251,32 @@ public class Database {
      * @return
      */
     private boolean loadNewData() {
+        LinkedList<String> backupFile = null;
+        try{
+            
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         String latestUrl = getLatestNewsUrl();      //get the url to the latest news item
         if (latestUrl == null) {
             return false;               //did not work if null, probably no connection
         }
-        makelist(getText(getWebsite("http://www.dhbw-mannheim.de/aktuelles/details/id/1350/")));
+        currentData.addAll(makelist(getText(getWebsite(latestUrl))));
+        for(int i = 0; i< 100; i++){
+            latestUrl = getNextUrl(latestUrl);
+            currentData.addAll(makelist(getText(getWebsite(latestUrl))));
+        }
+        try{
+            StringBuilder s = new StringBuilder();
+            for(int i = 0; i< currentData.size(); i++){
+                s.append(currentData.get(i));
+                s.append("\n");
+            }
+            writeFile(s.toString(), "testest.txt");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        System.out.println("fertig");
 
         return true;
     }

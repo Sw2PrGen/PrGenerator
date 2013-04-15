@@ -32,7 +32,7 @@ public class PrGenerator {
         mainTextCreator = new TextCreator();
         mainGui = new Gui();
         
-        //mainDatabase.manageData();
+        mainDatabase.manageData();
         // mainPictureChooser.choosePicture();
                 
         //   mainTextCreator.createMainText();  
