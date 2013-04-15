@@ -425,4 +425,13 @@ public class Database {
     public void setChosenPicture(String chosenPicture) {
         this.chosenPicture = chosenPicture;
     }
+    
+    /**
+     * 
+     * @param pictureList  the picture List to set
+     */
+    public void setPictureList(LinkedList<String> pictureList)
+    {
+        this.pictureList=pictureList;
+    }
 }

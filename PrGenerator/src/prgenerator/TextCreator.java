@@ -3,171 +3,177 @@
  * and open the template in the editor.
  */
 package prgenerator;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
  *
- * @author rusinda
+ * @author Stefan Dreher, Yuliya Kuznetsova
  */
-public class TextCreator extends ArrayList<String>{
- 
+public class TextCreator {
+             
     
-    
-    
-    
-    //variabel for number of found sentences
-    private int counter=0; 
-     private static LinkedList databasetext =new <String>LinkedList();
-    private static LinkedList pretext = new <String>LinkedList();
-    private static LinkedList dhtext = new <String>LinkedList();
-    private static LinkedList placetext =new <String>LinkedList();
-    private static LinkedList timetext =new <String>LinkedList();
-    private static LinkedList finaltext=new <String>LinkedList();
-    
-    
-    @Override
-    public boolean contains(Object o) {
-        String paramStr = (String)o;
-        for (String s : this) {
-            if (paramStr.equalsIgnoreCase(s)){ return true;}
-        }
-        return false;
-    }
-
-    
-    
-    
-  
-
-    public static void findTime() {
-        String current;
-      
-        int count = 0;
-       for(Iterator<String> i=databasetext.iterator();i.hasNext();){
-            current = i.next();
-
-            if (current.matches(".*\\s(Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonnabend|Sonntag|heute|gestern|morgen|Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember|Weihnachten|Ostern|Silvester)\\s.*")) {
-                timetext.add(current);
-                count = count + 1;
-                databasetext.remove(i);
-                 if(count>2){break;}
-                
-            }
-
-           
-        }
-
-      
-
-    }
-
-    public static void findPlace() {
-        String current;
-    
-        int count = 0;
-       for(Iterator<String> i=databasetext.iterator();i.hasNext();){
-            current = i.next();
-        //    System.out.println(current);
-
-            if (current.matches(".*\\sin\\s[A-Z].*")) {
-                placetext.add(current);
-                count = count + 1;
-                databasetext.remove(i);
-                 if(count>2){break;}
-                
-            }
-
-          
-        }
-
+    private static LinkedList databaseText =new <String>LinkedList(); // PrGenerator.mainDatabase.get...
+    private  LinkedList preText = new <String>LinkedList();     // list for founded sentences that match with user input
+    private  LinkedList dhText = new <String>LinkedList();      // list for founded sentences that have a relation to DHBW
+    private  LinkedList placeText =new <String>LinkedList();    // list for founded sentences that contain a location/place 
+    private  LinkedList timeText =new <String>LinkedList();     // list for founded sentences that contain time
+    private  LinkedList finalText=new <String>LinkedList();     // finalText
+         
+/**
+ * Method to find a sentence with a relation to a special time
+ * 
+ */
+    private void findTime() {
         
+        String current;      // temporary String for the current list element
+        int count = 0;      //  counter for number of founded sentences    
+        
+        //itearation trough the whole database
+        for (Iterator<String> i = databaseText.iterator(); i.hasNext();) {
+            current = i.next();
+            //checking if sentence says something about a relation to a special time
+            if (current.matches(".*\\s(Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonnabend|Sonntag|heute|gestern|morgen|Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember|Weihnachten|Ostern|Silvester)\\s.*")) {
+                timeText.add(current);
+                count = count + 1;
+                databaseText.remove(i); // deletion of found sentence to avoid doubling
+                if (count > 2) {  
+                    break; // condition to break the loop if more than 2 sentences are found 
+                }                
+            }
+        }
+    }
+
+    /**
+     * 
+     * method to find a description of a place
+     */      
+      private void findPlace() {
+          
+        String current;  //string for the current list element  
+        int count = 0; //counter for number of founded sentences        
+
+        //iteration through the list to find a place
+        for (Iterator<String> i = databaseText.iterator(); i.hasNext();) {
+            current = i.next();
+            //check with regular expression if there are "in" in the sentence and after that a capital letter in order to indicate a place in a sentence
+            if (current.matches(".*\\sin\\s[A-Z].*")) {
+                placeText.add(current);
+                count = count + 1;
+                databaseText.remove(i); //deletion of found sentence to avoid doubling
+                if (count > 2) {
+                    break; // condition to break the loop if more than 2 sentences are found 
+                }                
+            }
+        }
     }
 
     /**
      *
-     * @param liste Liste mit allen Sätzen
-     * @return Satz welcher den DH-Bezug sicherstellt
+     * 
+     * Funtion to find a sentence related to the DH
      */
-    private static void finddhbezug() {
-        String current;
-        int counter=0; 
-        for(Iterator<String> i=databasetext.iterator();i.hasNext();){
-            
+    private void findDhRelation() {
+        
+        String current; //String for the current sentence
+        int counter = 0;  //counter for number of founded sentences
+
+        // Iteration through the list to find a sentece about the DH
+        for (Iterator<String> i = databaseText.iterator(); i.hasNext();) {
             current = i.next();
             if (current.contains("DHBW")) {
-                dhtext.add(current);
-                databasetext.remove(i);
+                dhText.add(current);
+                databaseText.remove(i); //deletion of found sentence to avoid doubling
                 counter++;
-                if(counter>2){break;}
+                if (counter > 2) {
+                    break; // condition to break the loop if more than 2 sentences are found
+                }
             }
             if (current.contains("DH")) {
-                dhtext.add(current);
-                databasetext.remove(i);
-                counter++; 
-                if(counter>2){break;}
+                dhText.add(current);
+                databaseText.remove(i); //deletion of found sentence to avoid doubling
+                counter++;
+                if (counter > 2) {
+                    break; // condition to break the loop if more than 2 sentences are found
+                }
             }
             if (current.contains("Duale Hochschule Baden")) {
-               dhtext.add(current);
-               databasetext.remove(i);
-               counter++;
-               if(counter>2){break;}
+                dhText.add(current);
+                databaseText.remove(i); //deletion of found sentence to avoid doubling
+                counter++;
+                if (counter > 2) {
+                    break; // condition to break the loop if more than 2 sentences are found
+                }
             }
-            
         }
-        
     }
     
-    private static void findinput( LinkedList input) {
-        String current;
-        String currentinput; 
-        
+    /**
+     * Method to find sentences related to the user input
+     * @param input filtered user input
+     */
+    private void findInput(LinkedList input) {
+
+        String current; //current sentence        
+        String currentinput; //current user input
+        //iteration through the list to find all sentences with a relation to the user input
         while (!input.isEmpty()) {
-            
-           
-            currentinput=(String) input.getFirst(); 
-             for(Iterator<String> i=databasetext.iterator();i.hasNext();){
-               current=i.next();
-               if(current.contains(currentinput)){
-                   
-                   pretext.add(current);
-                   databasetext.remove(i);
-             }
-            
+            currentinput = (String) input.getFirst().toString().toLowerCase(); 
+           // System.out.println(currentinput);
+            for (Iterator<String> i = databaseText.iterator(); i.hasNext();) {
+                current = i.next();
+                if (current.toString().toLowerCase().contains(currentinput)) {  // check for matches of user input with current sentence from the database (both uncapitalized)
+                    preText.add(current);
+                    databaseText.remove(i); //deletion of found sentence to avoid doubling
+                }
+            }
+            input.removeFirst(); 
         }
- input.removeFirst();
-       
+        // System.out.println("preText: " + preText);
     }
     
-    }
-    public static  void createText(){
-        
-       finaltext.addAll(dhtext);
-       finaltext.addAll(timetext);
-       finaltext.addAll(placetext);
-       for(int i=0; i<20-finaltext.size();i++){
-           if(i>pretext.size()){break;}
-           finaltext.add(pretext.get(i));
-             }
-       int randomNumber; 
-       for(int i=0; i<20-finaltext.size();i++){
-          randomNumber=(int) Math.random()*databasetext.size()+1;
-           finaltext.add(databasetext.get(randomNumber));
-       }
-       
+    /** 
+     * Method to combine all the found sentences to a complete text 
+     * 
+     */
+    private void selectSentences() {
+
+        //adding all the textparts to the final text
+        finalText.addAll(dhText);
+        finalText.addAll(timeText);
+        finalText.addAll(placeText);
+
+        //adding the sentence from the user input;  
+        for (int i = 0; i < 20 - finalText.size(); i++) {
+            if (i > preText.size()) {
+                break;
+            }
+            finalText.add(preText.get(i));
+        }
+
+        int randomNumber;
+        //optional filling of the text with random sentences if there where not found enough sentences related to the user input
+        for (int i = 0; i < 20 - finalText.size(); i++) {
+            randomNumber = (int) Math.random() * databaseText.size() + 1;
+            finalText.add(databaseText.get(randomNumber));
+        }
         //System.out.println(finaltext);
     }
-    
-    public static void main(String[] args) {
-        // TODO code application logic here
+    /**
+     * 
+     * Method for creating the main text of a programm.
+     * Invokes findTime(), findPlace(), findDhRelation(), findInput() and selectSentences(),
+     * then shuffles the final text to get random order of sentences 
+     * 
+     */
+    public void createMainText() {
 
-        // linked list für alle sätze und text für die liste der nachher verwedndeten sätez 
         LinkedList liste = new <String>LinkedList();
         LinkedList text = new <String>LinkedList();
         LinkedList input = new <String>LinkedList();
 
-        liste.add("Die Duale Hochschule Baden-Würtemberg hat noch freie Plätzefür 2014");
+        liste.add("HALLO Die Duale Hochschule Baden-Würtemberg hat noch freie Plätzefür 2014");
         liste.add("Am Montag den 23 April findet eine Inforverantsaltung zu künstlicher Intelligenz statt");
         liste.add("Viele Studenten werden für die Vorstellung der neuen Elefanten erwartet");
         liste.add("Das Wohltätigleitskponzert der Hochschule war ein voller Erfolg für alle anwesenden");
@@ -203,46 +209,88 @@ public class TextCreator extends ArrayList<String>{
         liste.add("Schon zu Beginn des Hoodie-Verkaufs hat sich die Studierendenvertretung darauf festgelegt, einen Teil des Erlöses an das Kinderhospiz Sterntaler zu spenden");
         liste.add("Dass gerade auch vor diesem schwierigen Thema die Studierenden ihre Auge nicht verschließen, liegt Alexandra Rieker besonders am Herzen");
         liste.add("Von 1999 bis 2004 habe ich in Magdeburg Informatik studiert und war dann ein Jahr am Fraunhofer Institut für Autonome Informationssysteme in Sankt Augustin.");
-        
-        
-        input.add("in");
+
         input.add("hallo");
         input.add("Beginn");
         input.add("Erfolg");
-        
-        databasetext=(LinkedList) liste.clone();
-        //System.out.println(databasetext);
-   //   String current; 
-    //    for(Iterator<String> i=databasetext.iterator();i.hasNext();){
-     //          current=i.next();
-       //       System.out.println(current);
-       // }
-        
-        
-        findTime();
+
+        databaseText = (LinkedList) liste.clone(); //
+
+        String textStr = "";
+        findInput(input);
         findPlace();
-        findinput(input); 
-        finddhbezug();
-      //  System.out.println(dhtext);
+        findDhRelation();
+        findTime();
+        selectSentences();
+
+        //shuffeling the final text
+        Collections.shuffle(finalText);
+
+        //avoiding of sentence which should not start the text
+        while (finalText.getFirst().toString().startsWith("(Sie)|(Er)|(Das)")) {
+            Collections.shuffle(finalText);
+        }
+
+        //adding all the sentences to a final string
+        for (Iterator<String> i = finalText.iterator(); i.hasNext();) {
+            textStr = textStr +i.next() +". ";
+        }
+
+        PrGenerator.mainDatabase.setFinalDocument(textStr);  // set final text in the database
         
-        createText();
-        System.out.println(finaltext);
         
+        System.out.println("Final text: " +textStr);
         
-    // System.out.println(timetext);
-        
-        
-       //findinput(liste,input);
-       //findplace(liste);
-       //findtime(liste); 
+        /*for (Iterator<String> i = finalText.iterator(); i.hasNext();) {
+            String s=i.next();
+            System.out.println(s);
+        }
+        */
+    }
        
-      //  String zeit = findTime(liste);
-      //  String ort = findPlace(liste);
-        // System.out.print("*+~'#!$%&%&/())?))??=}][{");
-       // System.out.println(zeit);
-        
-      //  System.out.println("hallo".contains("hallo"));
-    }  
+    /**
+     * method to return a list with founded sentences that match with user input
+     * @return preText
+     */
     
+    public LinkedList<String> getPreText() {
+        return preText;
+    }
     
+    /**
+     * method to return a list with founded sentences that have a relation to DHBW
+     * @return dhText
+     */
+    public LinkedList<String> getDhText() {
+        return dhText;
+    }
+    
+    /**
+     * method to return a list with founded sentences that contain a location/place 
+     * @return placeText
+     */
+
+    public LinkedList<String> getPlaceText() {
+        return placeText;
+    }
+    
+    /**
+     *  method to return a list with founded sentences that contain time
+     * @return timeText
+     */
+
+    public LinkedList<String> getTimeText() {
+        return timeText;
+    }
+
+    /**
+     * method to return a finalText (LinkedList)
+     * @return finalText
+     */
+    
+    public LinkedList<String> getfinalText() {
+        return finalText;
+    }
+      
+   
 }

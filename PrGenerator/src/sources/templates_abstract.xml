@@ -1,10 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-To change this template, choose Tools | Templates
-and open the template in the editor.
--->
-
-
-<root>
-    
-</root>
+<?xml version="1.0"?>
+     <template>
+     <templateOrt> Die DHBW Mannheim war in _location_ vor Ort.</templateOrt>
+     <templateOrt> Das große Event ereignete sich in _location_.</templateOrt>
+     <templateOrt> In _location_ präsentierte die DHBW-Mannheim ihr ganzes Können, die Teilnehmer konnten ihr Staunen nicht verbergen.</templateOrt>
+     <templateOrt> Das große Event ereignete sich in _location_.</templateOrt>
+     <templateOrt> Die DHBW Mannheim legte in _location_ einen großen Auftritt hin.</templateOrt>
+     <templateDate> Am _date_ war es so weit.</templateDate>
+     <templateDate> Am _date_ ging es endlich los.</templateDate>
+     <templateDate> Zum _date_ hatte das Warten endlich ein Ende.</templateDate>
+     <templateDate> Die DHBW Mannheim konnte am _date_ mal wieder glänzen.</templateDate>
+     <templateDate> Niemand konnte ahnen, dass es am _date_ schon soweit war.</templateDate>   
+     <templateKeyAspect> Sie zeigte bahnbrechende Erkenntnisse zum Thema _keyAspect_.</templateKeyAspect>
+     <templateKeyAspect> Die DHBW setzte neue Maßstäbe im Bereich _keyAspect_.</templateKeyAspect>
+     <templateKeyAspect> Sie zeigte neue Perspektiven in _keyAspect_ auf.</templateKeyAspect>
+     <templateKeyAspect> Große Erkenntnisse zum Thema _keyAspect_ wurden gewonnen.</templateKeyAspect>
+     <templateKeyAspect> Die DHBW präsentierte ihre neue Interpretation von _keyAspect_.</templateKeyAspect>
+     <templateKeyAspectandOrt> In _location_ konnte die DHBW-Mannheim neue Erkenntnisse im Bereich _keyAspect_ gewinnen</templateKeyAspectandOrt>
+     <templateKeyAspectandOrt> Bei den Vorträgen von Mitarbeitern der DHBW-Mannheim in _location_ konnten neue wertvolle Erkenntnisse bezüglich des Themas _keyAspect_ gewonnen werden. </templateKeyAspectandOrt>
+     <templateKeyAspectandOrt> Durch die einzigartige Kompetenz der Professoren der DHBW-Mannheimwurden neue Erkenntnisse im Bereich _keyAspect_ gewonnen, welche in _location_ vorgestellt wurden. </templateKeyAspectandOrt>
+     <templateOrtanddate> Am _date_ zeigte die DHBW-MAnnheim in _location_ mal wieder ihre einzigartige Kompetenz. </templateOrtanddate>
+     <templateOrtanddate> In _location_ zeigte die DHBW-MAnnheim am _date_ mal wieder zu welchen herausragenden Leistungen sie fähig ist. </templateOrtanddate>
+</template>

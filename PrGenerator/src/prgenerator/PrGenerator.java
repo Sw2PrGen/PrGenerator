@@ -33,10 +33,13 @@ public class PrGenerator {
         mainGui = new Gui();
         
         //mainDatabase.manageData();
+        // mainPictureChooser.choosePicture();
                 
-                
+        //   mainTextCreator.createMainText();  
         
 //        mainOutputGenerator.generateOutput();
-//        mainGui.showResult();        
+//        mainGui.showResult(); 
+        
+       // mainInputAnalyzer.modifyInputtoString();
     }
 }
