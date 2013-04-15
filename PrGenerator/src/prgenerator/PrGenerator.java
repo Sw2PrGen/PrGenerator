@@ -4,6 +4,9 @@
  */
 package prgenerator;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author rusinda
@@ -29,6 +32,7 @@ public class PrGenerator {
         mainInputAnalyzer = new InputAnalyzer();
         mainOutputGenerator = new OutputGenerator();
         mainPictureChooser = new PictureChooser();
+
         mainTextCreator = new TextCreator();
         mainGui = new Gui();
         
@@ -42,4 +46,5 @@ public class PrGenerator {
         
        // mainInputAnalyzer.modifyInputtoString();
     }
+
 }

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package prgenerator;
 
 import java.io.*;
@@ -13,7 +9,7 @@ import java.util.LinkedList;
 import java.util.regex.*;
 
 /**
- *
+ * Contains and manages all the data relevant during the runtime
  * @author rusinda
  */
 public class Database {
@@ -23,10 +19,11 @@ public class Database {
     private final String DHBW_MORE_TAG = "<span class=\"more\">";
     private final String DHBW_NEWURL_START = "details/id/";
     private final String DHBW_NEWURL_END = "/\" title";
-    private int latestUrlNo;
-    private int lastLatestUrlNo = 0;
+    private final String BACKUP_FILE_PATH = "src//sources//backup.dat";
+    private int latestUrlNo;            //url no of the latest news item on the dhbw-site
+    private int lastLatestUrlNo = 0;    //ur ni of the latest news item in the backup
     private LinkedList<String> currentData = new LinkedList<>();
-    private String userInput;
+    private String userInput = null;
     private String createdText;
     private String createdAbstract;
     private String createdHeading;
@@ -38,24 +35,29 @@ public class Database {
     private LinkedList<String> userInputFiltered = new LinkedList<>();
     private String[] templateFill = new String[3];
     private String chosenPicture;
-    
+
+    /**
+     * Analyses the input string and makes a LinkedList with sentences out of it
+     * @param input string to analyse
+     * @return list with sentences
+     */
     private LinkedList<String> makelist(String input) {
-        LinkedList<String> help = new LinkedList<>(Arrays.asList(input.split("[.]")));
-        LinkedList<Integer> del = new LinkedList<>();
+        LinkedList<String> help = new LinkedList<>(Arrays.asList(input.split("[.]")));  //split on "." to get sentences assuming all non-full stops have been masked as # before
+        LinkedList<Integer> del = new LinkedList<>();       //list with ids marked for deletion
         for (int i = 0; i < help.size(); i++) {
             help.set(i, help.get(i).trim());
             if (help.get(i).contains("(at)") | help.get(i).length() < 6 | help.get(i).contains("#i#") | help.get(i).contains("#/i#")) {
-                del.add(i);
+                del.add(i);     //if a sentence contains suspisious substrings that may render it unusable mark it for deletion
             } else {
-                help.set(i, help.get(i).replaceAll("#","\\.") + ".");
+                help.set(i, help.get(i).replaceAll("#", "\\.") + ".");  //replace # with . again
             }
         }
         for (int i = 0; i < del.size(); i++) {
-            help.remove(del.get(i) - i);
+            help.remove(del.get(i) - i);    //remove sentences marked for deletion
         }
         return help;
     }
-    
+
     /**
      * reads a file
      *
@@ -63,23 +65,14 @@ public class Database {
      * @return chained list of chained lists with the content of the rows
      * @throws Exception
      */
-    static public LinkedList<LinkedList> readFile(String filename) throws Exception {
+    public LinkedList<String> readFile(String filename) throws Exception {
 
-        LinkedList<LinkedList> list = new LinkedList<>();
+        LinkedList<String> list = new LinkedList<>();
         BufferedReader reader = new BufferedReader(new FileReader(filename));
-
-        String dataRow = reader.readLine();
-        while (dataRow != null) {           //runs until it gets to an empty row
-            LinkedList<String> strList = new LinkedList<>();
-            String[] dataArray = dataRow.split("\n");      //the row is split on the separator and put into an array
-            strList.addAll(Arrays.asList(dataArray));   //the array is loaded into a string list
-            list.add(strList);                  //the list with the strings is added to the main linked list
-
-            dataRow = reader.readLine(); // Read next line of data.
+        String s;
+        while ((s = reader.readLine()) != null) {
+            list.add(s);
         }
-        // Close the file once all data has been read.
-        reader.close();
-
         return list;
     }
 
@@ -111,7 +104,7 @@ public class Database {
      */
     private String getNextUrl(String url) {
         int i = Integer.parseInt(url.split("/")[url.split("/").length - 1]) - 1;    //get the last part of the url (is a 4-digit number), parse it to int and decrement
-        while (i >= lastLatestUrlNo) {    //I don't believe there should be negative numbers in the url
+        while (i >= lastLatestUrlNo) {    //stop if the news item is in the backup to crank up performance
             String nexturl = Integer.toString(i); //parse the new number to string
             if (!checkWebsite(DHBW_AKTUELLES_URL + nexturl)) {  //check if the site exists
                 i--;                //decrement if does not exist
@@ -176,6 +169,9 @@ public class Database {
             }
             s = s.substring(s.indexOf(DHBW_NEWURL_START) + DHBW_NEWURL_START.length(), s.indexOf(DHBW_NEWURL_END)); //get the last part of the url to the news item
             latestUrlNo = Integer.parseInt(s);
+            if ( latestUrlNo <= lastLatestUrlNo){   //if the latest news is in the backup return null to indicate that
+                return null;
+            }
             return DHBW_AKTUELLES_URL + s;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -183,13 +179,21 @@ public class Database {
         return null;    //return null if sth went wrong
     }
 
+    /**
+     * Sarches for a regular expression in a string and replaces a substring of the regular expression with a replacement string
+     * @param string input string to search for the regex
+     * @param regex the regular expression
+     * @param lookFor substring to be replaced, can be a regex
+     * @param replaceWith replacement
+     * @return the strin gwith replaced substrings
+     */
     private String replaceSpecPattern(String string, String regex, String lookFor, String replaceWith) {
-        Pattern pattern = Pattern.compile(regex);                   //user pattern to save "." from dates
+        Pattern pattern = Pattern.compile(regex);                  
         Matcher matcher = pattern.matcher(string);
         String help;
-        while (matcher.find()) {                                          //is it a date?
+        while (matcher.find()) {                                          
             help = matcher.group(matcher.groupCount());
-            string = string.replace(help, help.replaceAll(lookFor, replaceWith));            //replace . with #
+            string = string.replace(help, help.replaceAll(lookFor, replaceWith));           
         }
         return string;
     }
@@ -213,27 +217,25 @@ public class Database {
         }
         try {
             while ((s = reader.readLine()) != null && !s.contains("</div>")) {  //read all until the end of the text passage
-                if(s.contains("www") | s.contains("<a>") | s.contains("<i>") | s.contains("<td ")){
+                if (s.contains("www") | s.contains("<a>") | s.contains("<i>") | s.contains("<td ")) {
                     continue;
                 }
                 s = s.replaceAll("\t", "");                                     //delete all tabulators
                 s = s.replaceAll("<(\"[^\"]*\"|'[^']*'|[^'\">])*>", "");        //delete all html-tags
                 s = s.replaceAll("&nbsp;", "");                                 //delete "&nbsp;"
                 s = s.replaceAll(".+[^(. )]$", "");                             //delete every codeline that does not conclude with a full stop
-                s = s.replaceAll("„", "");
-                s = s.replaceAll("“", "");
-                s = s.replaceAll("&amp;", "&");
-                s = s.replaceAll("&quot;", "");
+                s = s.replaceAll("„", "");                                      //delete lower "
+                s = s.replaceAll("“", "");                                      //delete upper "
+                s = s.replaceAll("&amp;", "&");                                 //replace amp with &
+                s = s.replaceAll("&quot;", "");                                 //delete &quot;
 
                 s = replaceSpecPattern(s, "\\d+\\.", "\\.", "#");               //replace all . in dates
-                s = replaceSpecPattern(s, " [a-zA-Z]{1,3}\\.", "\\.", "#");     //replace all . in 
-                s = replaceSpecPattern(s, "#[a-zA-Z]{1,3}\\.", "\\.", "#");
-                s = replaceSpecPattern(s, "Prof\\.", "\\.", "#");
+                s = replaceSpecPattern(s, " [a-zA-Z]{1,3}\\.", "\\.", "#");     //replace all . in abreviations
+                s = replaceSpecPattern(s, "#[a-zA-Z]{1,3}\\.", "\\.", "#");     //replace all . in janky abbreviations
+                s = replaceSpecPattern(s, "Prof\\.", "\\.", "#");               //mark some abbreviations longer than 3 letters
                 s = replaceSpecPattern(s, "Dipl\\.", "\\.", "#");
                 s = replaceSpecPattern(s, "Angl\\.", "\\.", "#");
                 s = replaceSpecPattern(s, "bspw\\.", "\\.", "#");
-                
-                
 
                 s = s.trim();
                 sb.append(s);                                                   //append to the stringbuilder
@@ -247,61 +249,78 @@ public class Database {
     }
 
     /**
-     *
-     * @return
+     * tries to load new data from the dhbw-site
+     * @return true if new data was loaded, false otherwise
      */
     private boolean loadNewData() {
         LinkedList<String> backupFile = null;
-        try{
-            
-        }catch(Exception e){
+        try {
+            backupFile = readFile(BACKUP_FILE_PATH);    //open the backup file
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        lastLatestUrlNo = Integer.parseInt(backupFile.pop());   //get the no of the latest news item from the backup
         String latestUrl = getLatestNewsUrl();      //get the url to the latest news item
         if (latestUrl == null) {
-            return false;               //did not work if null, probably no connection
+            return false;               //no conncetion or latest item in backup
         }
-        currentData.addAll(makelist(getText(getWebsite(latestUrl))));
-        for(int i = 0; i< 100; i++){
-            latestUrl = getNextUrl(latestUrl);
+        currentData.addAll(makelist(getText(getWebsite(latestUrl))));   //write the data into the linked list
+        int i = 0;
+        while(i<100 & (latestUrl = getNextUrl(latestUrl)) != null){          //stop either on 100 news items or when the item id reaches the id in the backup
             currentData.addAll(makelist(getText(getWebsite(latestUrl))));
+            i++;
         }
-        try{
-            StringBuilder s = new StringBuilder();
-            for(int i = 0; i< currentData.size(); i++){
-                s.append(currentData.get(i));
-                s.append("\n");
+        if(currentData.size()<1100){                //fill with backup data
+            String s = backupFile.pop();
+            while(currentData.size() < 1100 && backupFile.size() > 0){
+                currentData.add(s);
+                s = backupFile.pop();
             }
-            writeFile(s.toString(), "testest.txt");
-        }catch (Exception e){
-            e.printStackTrace();
         }
-        System.out.println("fertig");
-
+        updateBackup();     //update the backup file with the currently loaded data
         return true;
     }
 
     /**
-     *
-     * @return
+     * Loads the backup file into currentData
+     * @return true if the file could be loaded, false otherwise
      */
     private boolean loadBackup() {
+        LinkedList<String> backupFile = null;
+        try {
+            backupFile = readFile(BACKUP_FILE_PATH);
+            backupFile.pop();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        String s = backupFile.pop();
+        while(backupFile.size() > 0){
+            currentData.add(s);
+            s = backupFile.pop();
+        }
         return true;
     }
 
     /**
-     *
+     * Updates the backup file with the currently loaded data
      * @return
      */
     private boolean updateBackup() {
-        return true;
-    }
-
-    /**
-     *
-     * @return
-     */
-    private boolean isLoaded() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(Integer.toString(latestUrlNo));
+        sb.append("\n");
+        LinkedList<String> help = new LinkedList<>(currentData);
+        while(help.size() > 0){
+            sb.append(help.pop());
+            sb.append("\n");
+        }
+        try{
+            writeFile(sb.toString(), BACKUP_FILE_PATH);
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
         return true;
     }
 
@@ -310,7 +329,11 @@ public class Database {
      * afterwards, loads the backup otherwise
      */
     public void manageData() {
-        loadNewData();      //try to get new data
+        boolean controlVar;
+        controlVar = loadNewData();      //try to get new data
+        if(!controlVar){
+            controlVar = loadBackup();      //load backup if no connection or no new items
+        }
     }
 
     /**
@@ -480,13 +503,12 @@ public class Database {
     public void setChosenPicture(String chosenPicture) {
         this.chosenPicture = chosenPicture;
     }
-    
+
     /**
-     * 
-     * @param pictureList  the picture List to set
+     *
+     * @param pictureList the picture List to set
      */
-    public void setPictureList(LinkedList<String> pictureList)
-    {
-        this.pictureList=pictureList;
+    public void setPictureList(LinkedList<String> pictureList) {
+        this.pictureList = pictureList;
     }
 }

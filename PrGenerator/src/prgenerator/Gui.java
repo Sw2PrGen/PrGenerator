@@ -21,7 +21,7 @@ import javax.swing.text.html.HTMLEditorKit;
 public class Gui extends JFrame {
 
     //set variables needed for the frame that will display the starting page 
-    private JLabel backgroundPicture = new JLabel(new ImageIcon("src\\prgenerator\\GUI_backgroundpicture.png"));
+    private JLabel backgroundPicture = new JLabel(new ImageIcon("src\\sources\\GUI_backgroundpicture.png"));
     private JTextField userInput = new JTextField();
     private JButton generateTextButton = new JButton();
     private String finalHtmlDocument = PrGenerator.mainDatabase.getFinalHtmlDocument();
@@ -54,9 +54,8 @@ public class Gui extends JFrame {
 
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                setInput(evt);
                 openBar(evt);
-
+                setInput(evt);
             }
         });
 
@@ -184,7 +183,7 @@ public class Gui extends JFrame {
 
             path = chooser.getSelectedFile().toString();
             file = new File(path);
-            if (markUpFilter.accept(file)) {
+
                 if (!(path.endsWith(".html") || path.endsWith(".htm"))) {
                     path = path + ".html";
                 }
@@ -193,9 +192,6 @@ public class Gui extends JFrame {
                 } catch (Exception ex) {
                     Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } else {
-                JOptionPane.showMessageDialog(null, "Datei kann unter diesem Dateityp nicht gespeichert werden! Bitte anderen Dateityp angeben.", "Fehler", JOptionPane.ERROR_MESSAGE);
-            }
 
             chooser.setVisible(false);
             return true;
