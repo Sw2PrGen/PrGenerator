@@ -56,7 +56,7 @@ public class Gui extends JFrame {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 openBar(evt);
                 setInput(evt);
-                showResult();
+
             }
         });
 
