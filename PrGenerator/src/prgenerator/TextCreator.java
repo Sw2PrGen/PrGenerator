@@ -14,7 +14,7 @@ import java.util.LinkedList;
 public class TextCreator {
              
     
-    private static LinkedList databaseText =new <String>LinkedList(); // PrGenerator.mainDatabase.get...
+    private static LinkedList databaseText =new <String>LinkedList(); // PrGenerator.mainDatabase.get...copy of the date from database
     private  LinkedList preText = new <String>LinkedList();     // list for founded sentences that match with user input
     private  LinkedList dhText = new <String>LinkedList();      // list for founded sentences that have a relation to DHBW
     private  LinkedList placeText =new <String>LinkedList();    // list for founded sentences that contain a location/place 
@@ -29,7 +29,7 @@ public class TextCreator {
         
         String current;      // temporary String for the current list element
         int count = 0;      //  counter for number of founded sentences    
-        
+        Collections.shuffle(databaseText);
         //itearation trough the whole database
         for (Iterator<String> i = databaseText.iterator(); i.hasNext();) {
             current = i.next();
@@ -54,8 +54,12 @@ public class TextCreator {
         String current;  //string for the current list element  
         int count = 0; //counter for number of founded sentences        
 
+        Collections.shuffle(databaseText);
+        
         //iteration through the list to find a place
         for (Iterator<String> i = databaseText.iterator(); i.hasNext();) {
+            
+     
             current = i.next();
             //check with regular expression if there are "in" in the sentence and after that a capital letter in order to indicate a place in a sentence
             if (current.matches(".*\\sin\\s[A-Z].*")) {
@@ -78,7 +82,7 @@ public class TextCreator {
         
         String current; //String for the current sentence
         int counter = 0;  //counter for number of founded sentences
-
+Collections.shuffle(databaseText);
         // Iteration through the list to find a sentece about the DH
         for (Iterator<String> i = databaseText.iterator(); i.hasNext();) {
             current = i.next();
@@ -117,8 +121,12 @@ public class TextCreator {
 
         String current; //current sentence        
         String currentinput; //current user input
+       Collections.shuffle(databaseText);
+        
         //iteration through the list to find all sentences with a relation to the user input
         while (!input.isEmpty()) {
+            
+            System.out.println("wir sind im inputsucher daskhka hhaksfk gk a ksg fkga skfgaskghf asgkgdgfgajhdsgfjd");
             currentinput = (String) input.getFirst().toString().toLowerCase(); 
            // System.out.println(currentinput);
             for (Iterator<String> i = databaseText.iterator(); i.hasNext();) {
@@ -145,8 +153,8 @@ public class TextCreator {
         finalText.addAll(placeText);
 
         //adding the sentence from the user input;  
-        for (int i = 0; i < 20 - finalText.size(); i++) {
-            if (i > preText.size()) {
+        for (int i = 1; i < 21 - finalText.size(); i++) {
+            if (i >= preText.size()) {
                 break;
             }
             finalText.add(preText.get(i));
@@ -218,7 +226,7 @@ public class TextCreator {
         databaseText = PrGenerator.mainDatabase.getCurrentData();
 
         String textStr = "";
-        findInput(input);
+        findInput(PrGenerator.mainDatabase.getUserInputFiltered());
         findPlace();
         findDhRelation();
         findTime();
