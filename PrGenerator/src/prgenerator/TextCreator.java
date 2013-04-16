@@ -234,7 +234,7 @@ public class TextCreator {
 
         //adding all the sentences to a final string
         for (Iterator<String> i = finalText.iterator(); i.hasNext();) {
-            textStr = textStr +i.next() +". ";
+            textStr = textStr +i.next();// +". ";
         }
 
         PrGenerator.mainDatabase.setCreatedText(textStr);  // set final text in the database

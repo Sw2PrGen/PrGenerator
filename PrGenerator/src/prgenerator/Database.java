@@ -236,6 +236,7 @@ public class Database {
                 s = replaceSpecPattern(s, "Dipl\\.", "\\.", "#");
                 s = replaceSpecPattern(s, "Angl\\.", "\\.", "#");
                 s = replaceSpecPattern(s, "bspw\\.", "\\.", "#");
+                s = replaceSpecPattern(s, "evtl\\.", "\\.", "#");
 
                 s = s.trim();
                 sb.append(s);                                                   //append to the stringbuilder
