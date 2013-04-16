@@ -56,6 +56,7 @@ public class Gui extends JFrame {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 openBar(evt);
                 setInput(evt);
+                showResult();
             }
         });
 
@@ -109,6 +110,10 @@ public class Gui extends JFrame {
         leftPanel.setEditorKit(eKit);
         leftPanel.setText(finalHtmlDocument);
 
+        leftScrollPane.setBounds(0,0,350,300);
+        leftScrollPane.setBackground(Color.white);
+        
+        
         rightPanel.setLayout(null);
         saveButton.setBounds(20, 50, 100, 26);
         saveButton.setForeground(Color.white);
