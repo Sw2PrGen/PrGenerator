@@ -24,7 +24,7 @@ public class Gui extends JFrame {
     private JLabel backgroundPicture = new JLabel(new ImageIcon("src\\sources\\GUI_backgroundpicture.png"));
     private JTextField userInput = new JTextField();
     private JButton generateTextButton = new JButton();
-    private String finalHtmlDocument = PrGenerator.mainDatabase.getFinalHtmlDocument();
+    private String finalHtmlDocument;// = PrGenerator.mainDatabase.getFinalHtmlDocument();
     private JProgressBar bar = new JProgressBar();
 
     /*
@@ -56,6 +56,7 @@ public class Gui extends JFrame {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 openBar(evt);
                 setInput(evt);
+                PrGenerator.doit();
 
             }
         });
@@ -79,7 +80,7 @@ public class Gui extends JFrame {
     private void setInput(ActionEvent evt) {
 
         PrGenerator.mainDatabase.setUserInput(userInput.getText());
-        PrGenerator.mainInputAnalyzer.modifyInputtoString();
+        //PrGenerator.mainInputAnalyzer.modifyInputtoString();
 
     }
 
@@ -89,6 +90,7 @@ public class Gui extends JFrame {
      */
     public void showResult() {
 
+        finalHtmlDocument = PrGenerator.mainDatabase.getFinalHtmlDocument();
         bar.setVisible(false);
         JFrame outputFrame = new JFrame();
         JPanel rightPanel = new JPanel();

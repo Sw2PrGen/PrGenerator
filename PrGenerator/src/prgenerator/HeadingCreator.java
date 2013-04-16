@@ -11,8 +11,8 @@ package prgenerator;
 public class HeadingCreator {
     
     public void createHeading(){
-        //String[] templateFill= PrGenerator.mainDatabase.getTemplateFill(); //gets filling for the template out of the database
-        String[] templateFill=new String[]{"Biergarten", "heute", "Wettkampf"}; //only for testing 
+        String[] templateFill= PrGenerator.mainDatabase.getTemplateFill(); //gets filling for the template out of the database
+        //String[] templateFill=new String[]{"Biergarten", "heute", "Wettkampf"}; //only for testing 
         String path="src/sources/templates_heading.xml";
         String heading = "";
         Template templateReader = new Template();
@@ -28,7 +28,7 @@ public class HeadingCreator {
             heading = heading.replace("_keyAspect_", templateFill[2]);
         }
         
-        //PrGenerator.mainDatabase.setCreatedHeading(heading); //puts heading into the database
+        PrGenerator.mainDatabase.setCreatedHeading(heading); //puts heading into the database
         System.out.println("Überschrift \""+heading+"\" in Database abgelegt.");
     }
     

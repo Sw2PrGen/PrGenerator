@@ -51,8 +51,8 @@ public class AbstractCreator {
     LinkedList<Integer> whatCL = new LinkedList<>();
     
     
-    //String maintext = PrGenerator.mainDatabase.getCreatedText();
-    String maintext = "Nach meiner In August Montag heute Montag 1. Februar 2012 12.März Dezember 2012 Promotion habe ich Mittwoch heute eine Professur 3 Wochen einer Woche eine Woche fünf Wochen in Mannheim für ABWL, Personal und Organisation an der Ostfalia HAW in Wolfsburg verwaltet, bevor ich am 1.März 2013 an die DHBW Mannheim berufen wurde. Dies hat z.B. dazu geführt, dass ich an der Universität Mannheim gemeinsam mit Kollegen ein Seminar zur Mitarbeiterführung entwickelt habe, das stark auf meinen Erfahrungen aus der beruflichen Praxis aufbaute.Für Studieninteressierte, die gerne Studium und Praxisausbildung verbinden möchten, bietet das duale Studium an der DHBW eine attraktive Möglichkeit mit hervorragenden Berufsaussichten und Karrierechancen. August. ";
+    String maintext;// = PrGenerator.mainDatabase.getCreatedText();
+    //String maintext = "Nach meiner In August Montag heute Montag 1. Februar 2012 12.März Dezember 2012 Promotion habe ich Mittwoch heute eine Professur 3 Wochen einer Woche eine Woche fünf Wochen in Mannheim für ABWL, Personal und Organisation an der Ostfalia HAW in Wolfsburg verwaltet, bevor ich am 1.März 2013 an die DHBW Mannheim berufen wurde. Dies hat z.B. dazu geführt, dass ich an der Universität Mannheim gemeinsam mit Kollegen ein Seminar zur Mitarbeiterführung entwickelt habe, das stark auf meinen Erfahrungen aus der beruflichen Praxis aufbaute.Für Studieninteressierte, die gerne Studium und Praxisausbildung verbinden möchten, bietet das duale Studium an der DHBW eine attraktive Möglichkeit mit hervorragenden Berufsaussichten und Karrierechancen. August. ";
 
     
     
@@ -106,8 +106,9 @@ public class AbstractCreator {
      * 
      * @author Tobias Mauritz
      */
-    //public void analyzeText(){    // when live!!!!!!!
-    public String[] analyzeText(){
+    public void analyzeText(){    // when live!!!!!!!
+    //public String[] analyzeText(){
+        maintext = PrGenerator.mainDatabase.getCreatedText();
         
         maintext = maintext.replaceAll("([0-9]{1,2})\\. ","$1.");   // alle "ZAHL. " in "ZAHL." umwandeln
         maintext = maintext.replaceAll("\\. "," ");                 // alle ". " in " " umwandeln
@@ -191,16 +192,17 @@ public class AbstractCreator {
         System.out.println(whenidx);
         System.out.println(whenWL.get(whenidx));
         String[] awords = {whereWL.get(whereidx), whenWL.get(whenidx), whatWL.get(whatidx)};
+        System.out.println(Arrays.toString(awords));
         
         // saves the three words Where, When, What into Database
-        //PrGenerator.mainDatabase.setTemplateFill(awords);     // when live!!!!!
+        PrGenerator.mainDatabase.setTemplateFill(awords);     // when live!!!!!
         
         System.out.println(maintext);
         System.out.println(whenWL +" "+whenCL);
         System.out.println(whereWL +" "+whereCL);
         System.out.println(whatWL +" "+whatCL);
         
-        return awords;
+        //return awords;
     }
     
    /**
@@ -210,7 +212,13 @@ public class AbstractCreator {
     * @param date
     * @param keyAspect 
     */
-   public void createAbstract(String path, String location, String date, String keyAspect){
+   //public void createAbstract(String path, String location, String date, String keyAspect){
+       public void createAbstract(){
+       analyzeText();
+       String path = "src\\sources\\templates_abstract.xml";
+       String location = PrGenerator.mainDatabase.getTemplateFill()[0];
+       String date = PrGenerator.mainDatabase.getTemplateFill()[1];
+       String keyAspect = PrGenerator.mainDatabase.getTemplateFill()[2];
        
         
        String [ ] sentences= new String[5]; 
@@ -287,18 +295,19 @@ public class AbstractCreator {
                     break;
                 
         }
+        PrGenerator.mainDatabase.setCreatedAbstract(abstractTemplateQuery);
         System.out.println(abstractTemplateQuery);
    }
    public static void main(String [] arg){
        AbstractCreator abstractCreator = new AbstractCreator();
        
        //abstractCreator.analyzeText();     // when live!!!!!
-       String[] templateFill = abstractCreator.analyzeText();
+       //String[] templateFill = abstractCreator.analyzeText();
 
        //String[] templateFill = PrGenerator.mainDatabase.getTemplateFill();    // when live!!!!!!!
        
-       abstractCreator.createAbstract("src/sources/templates_abstract.xml", (String)templateFill[0], (String)templateFill[1], (String)templateFill[2]);
-       
+       //abstractCreator.createAbstract("src/sources/templates_abstract.xml", (String)templateFill[0], (String)templateFill[1], (String)templateFill[2]);
+       abstractCreator.createAbstract();
    } 
 }
 

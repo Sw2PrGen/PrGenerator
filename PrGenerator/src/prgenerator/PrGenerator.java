@@ -32,7 +32,6 @@ public class PrGenerator {
         mainInputAnalyzer = new InputAnalyzer();
         mainOutputGenerator = new OutputGenerator();
         mainPictureChooser = new PictureChooser();
-
         mainTextCreator = new TextCreator();
         mainGui = new Gui();
         
@@ -45,6 +44,17 @@ public class PrGenerator {
 //        mainGui.showResult(); 
         
        // mainInputAnalyzer.modifyInputtoString();
+    }
+    
+    public static void doit(){
+        PrGenerator.mainInputAnalyzer.modifyInputtoString();
+        PrGenerator.mainDatabase.manageData();
+        PrGenerator.mainTextCreator.createMainText();
+        PrGenerator.mainAbstractCreator.createAbstract();
+        PrGenerator.mainHeadingCreator.createHeading();
+        PrGenerator.mainPictureChooser.choosePicture();
+        PrGenerator.mainOutputGenerator.generateOutput();
+        PrGenerator.mainGui.showResult();
     }
 
 }

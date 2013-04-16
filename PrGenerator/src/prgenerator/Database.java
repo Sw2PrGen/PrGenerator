@@ -329,6 +329,7 @@ public class Database {
      * afterwards, loads the backup otherwise
      */
     public void manageData() {
+        pictureList.add("http://www.dhbw-mannheim.de/typo3temp/pics/ae467bfeb3.jpg");
         boolean controlVar;
         controlVar = loadNewData();      //try to get new data
         if(!controlVar){

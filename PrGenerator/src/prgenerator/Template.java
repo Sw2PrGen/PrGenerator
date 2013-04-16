@@ -23,6 +23,8 @@ class Template{
     
     public String readXML(String path, String tagName){
         try {
+            
+            
  
 	File fXmlFile = new File(path);
 	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();

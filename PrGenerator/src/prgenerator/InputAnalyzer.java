@@ -21,7 +21,7 @@ public class InputAnalyzer {
        //Assign rareStirng the unfiltered userinput from the database to filter it 
         // String rarestring=PrGenerator.mainDatabase.getUserInput(); 
         //rareString=rareString.replace("und", rareString)
-        String rareString = "Bauch";
+        String rareString = PrGenerator.mainDatabase.getUserInput();
 
         if (rareString.equals("Mögliche Suchbegriffe hier eingeben...") || rareString.isEmpty()) {
         } else {
@@ -113,7 +113,8 @@ public class InputAnalyzer {
             finalInputList.addFirst(cleanStringArray[i]);
         }
         // System.out.println(finalInputList);
-        // PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
+        PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
+        //PrGenerator.mainDatabase.manageData();
 
     }
 

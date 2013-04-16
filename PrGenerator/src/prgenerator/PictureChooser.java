@@ -46,17 +46,17 @@ public class PictureChooser {
 
         //just for current testing
 
-        LinkedList<String> myList = new <String>LinkedList();
-        myList.add("alles banane");
-        myList.add("zwei");
-        myList.add("drei");
-        String[] myTemplate = new String[3];
-        myTemplate[0] = "hot dog";
-        myTemplate[1] = "mannheim";
-        myTemplate[2] = "heidelberg";
-        PrGenerator.mainDatabase.setTemplateFill(myTemplate);
-        PrGenerator.mainDatabase.setUserInputFiltered(myList);
-        PrGenerator.mainDatabase.setCreatedHeading("dhbw mannheim ist die beste uni");
+//        LinkedList<String> myList = new <String>LinkedList();
+//        myList.add("alles banane");
+//        myList.add("zwei");
+//        myList.add("drei");
+//        String[] myTemplate = new String[3];
+//        myTemplate[0] = "hot dog";
+//        myTemplate[1] = "mannheim";
+//        myTemplate[2] = "heidelberg";
+//        PrGenerator.mainDatabase.setTemplateFill(myTemplate);
+//        PrGenerator.mainDatabase.setUserInputFiltered(myList);
+//        PrGenerator.mainDatabase.setCreatedHeading("dhbw mannheim ist die beste uni");
 
         configureRequests();
 

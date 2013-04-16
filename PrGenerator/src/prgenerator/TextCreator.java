@@ -214,7 +214,8 @@ public class TextCreator {
         input.add("Beginn");
         input.add("Erfolg");
 
-        databaseText = (LinkedList) liste.clone(); //
+        //databaseText = (LinkedList) liste.clone(); //
+        databaseText = PrGenerator.mainDatabase.getCurrentData();
 
         String textStr = "";
         findInput(input);
@@ -236,7 +237,7 @@ public class TextCreator {
             textStr = textStr +i.next() +". ";
         }
 
-        PrGenerator.mainDatabase.setFinalDocument(textStr);  // set final text in the database
+        PrGenerator.mainDatabase.setCreatedText(textStr);  // set final text in the database
         
         
         System.out.println("Final text: " +textStr);
