@@ -4,16 +4,6 @@
  */
 package prgenerator;
 
-import java.util.Date;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -221,51 +211,52 @@ public class AbstractCreator {
        String keyAspect = PrGenerator.mainDatabase.getTemplateFill()[2];
        
         
+         /*
+       * in each array element of the array sentences there is one type of template loaded
+       * position 0: templateLocation
+       * position 1: templateDate
+       * position 2: templateKeyAspect
+       * position 3: templateKeyAspectandLocation
+       * position 4: templateLocationandDate
+       */
+     
+      
        String [ ] sentences= new String[5]; 
         
         Template templateReader = new Template();
         String abstractTemplateQuery = "";
-        sentences[0] = "";
-        sentences[1] = "";
-        sentences[2] = "";
+        //initialising array
+        for ( int i = 0; i <= 4; i++ ) {
+           sentences[i] = "";
+       }
         if(location != null){
-            sentences[0] = templateReader.readXML(path, "templateOrt");
+            sentences[0] = templateReader.readXML(path, "templateLocation");
             sentences[0] = sentences[0].replace("_location_", location);
-            //abstractTemplateQuery += templateReader.readXML(path, "templateOrt");
-            //abstractTemplateQuery = abstractTemplateQuery.replace("_location_", location);
         }
         
         if(date != null){
             sentences[1] = templateReader.readXML(path, "templateDate");
             sentences[1] = sentences[1].replace("_date_", date);
-            //abstractTemplateQuery += templateReader.readXML(path, "templateDate");
-            //abstractTemplateQuery = abstractTemplateQuery.replace("_date_", date);
         }
         if (keyAspect != null){
             sentences[2] = templateReader.readXML(path, "templateKeyAspect");
             sentences[2] = sentences[2].replace("_keyAspect_", keyAspect);
-            //abstractTemplateQuery += templateReader.readXML(path, "templateKeyAspect");
-            //abstractTemplateQuery = abstractTemplateQuery.replace("_keyAspect_", keyAspect);
         }
         
         if ((keyAspect != null) && (location != null)){
-            sentences[3] = templateReader.readXML(path, "templateKeyAspectandOrt");
+            sentences[3] = templateReader.readXML(path, "templateKeyAspectandLocation");
             sentences[3] = sentences[3].replace("_keyAspect_", keyAspect);
             sentences[3] = sentences[3].replace("_location_", location);
-            //abstractTemplateQuery += templateReader.readXML(path, "templateKeyAspect");
-            //abstractTemplateQuery = abstractTemplateQuery.replace("_keyAspect_", keyAspect);
         }
         
         if ((date != null) && (location != null)){
-            sentences[4] = templateReader.readXML(path, "templateOrtanddate");
+            sentences[4] = templateReader.readXML(path, "templateLocationandDate");
             sentences[4] = sentences[4].replace("_date_", date);
             sentences[4] = sentences[4].replace("_location_", location);
-            //abstractTemplateQuery += templateReader.readXML(path, "templateKeyAspect");
-            //abstractTemplateQuery = abstractTemplateQuery.replace("_keyAspect_", keyAspect);
         }
         
         
-        
+        //randomly a predefined combination how the template sentences are concatenated is chosen
         Random generator = new Random();
         int combinations = 11;
         int i = combinations - generator.nextInt(combinations);
