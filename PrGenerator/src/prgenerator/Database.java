@@ -174,9 +174,9 @@ public class Database {
             }
             return DHBW_AKTUELLES_URL + s;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
+            return null;
         }
-        return null;    //return null if sth went wrong
     }
 
     /**
@@ -267,10 +267,10 @@ public class Database {
         }
         currentData.addAll(makelist(getText(getWebsite(latestUrl))));   //write the data into the linked list
         int i = 0;
-        while(i<100 & (latestUrl = getNextUrl(latestUrl)) != null){          //stop either on 100 news items or when the item id reaches the id in the backup
+        do{          //stop either on 100 news items or when the item id reaches the id in the backup
             currentData.addAll(makelist(getText(getWebsite(latestUrl))));
             i++;
-        }
+        }while(i<101 & (latestUrl = getNextUrl(latestUrl)) != null);
         if(currentData.size()<1100){                //fill with backup data
             String s = backupFile.pop();
             while(currentData.size() < 1100 && backupFile.size() > 0){
