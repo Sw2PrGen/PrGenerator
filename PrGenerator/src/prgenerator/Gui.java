@@ -45,6 +45,8 @@ public class Gui extends JFrame {
         
         userInput.setBounds(206, 79, 144, 26);
         userInput.setText(SEARCH_DEFAULT);
+        userInput.setSelectionStart(0);
+        userInput.setSelectionEnd(userInput.getText().length());
 
         generateTextButton.setBounds(240, 135, 77, 26);
         generateTextButton.setBackground(new Color(181, 57, 24));
@@ -57,18 +59,18 @@ public class Gui extends JFrame {
 
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                openBar(evt);
-                setInput(evt);
-                PrGenerator.doit();
-
+                 setInput(evt);                
             }
         });
         
         userInput.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e){
-                userInput.setSelectionStart(0);
+                if (userInput.getText().equals(SEARCH_DEFAULT)) {
+                                    userInput.setSelectionStart(0);
                 userInput.setSelectionEnd(userInput.toString().length()-1);
+                }
+
             }
         });
 
@@ -90,7 +92,15 @@ public class Gui extends JFrame {
      */
     private void setInput(ActionEvent evt) {
 
-        PrGenerator.mainDatabase.setUserInput(userInput.getText());
+        if (userInput.getText().length() <= 50) {
+            PrGenerator.mainDatabase.setUserInput(userInput.getText());
+            openBar(evt);
+            PrGenerator.doit();
+        } else {
+            
+            JOptionPane.showMessageDialog(null, "Eingabe zu lang! (max. erlaubte Zeichen: 50) ");
+        }
+        
         //PrGenerator.mainInputAnalyzer.modifyInputtoString();
 
     }
@@ -103,44 +113,54 @@ public class Gui extends JFrame {
 
         finalHtmlDocument = PrGenerator.mainDatabase.getFinalHtmlDocument();
         bar.setVisible(false);
-        JFrame outputFrame = new JFrame();
-        JPanel rightPanel = new JPanel();
-        JEditorPane leftPanel = new JEditorPane();
-        JScrollPane leftScrollPane = new JScrollPane(leftPanel);
+        final JFrame outputFrame = new JFrame();
+        JPanel lowerPanel = new JPanel();
+        JEditorPane mainPanel = new JEditorPane();
+        JScrollPane leftScrollPane = new JScrollPane(mainPanel);
         JButton saveButton = new JButton();
         JButton closeButton = new JButton();
+        JButton backButton = new JButton();
 
 
         outputFrame.setLayout(null);
         outputFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        rightPanel.setBounds(350, 0, 150, 300);
-        rightPanel.setBackground(Color.white);
+        lowerPanel.setBounds(0, 570, 550, 30);
+        lowerPanel.setBackground(Color.white);
 
-        leftPanel.setEditable(false);
+        mainPanel.setEditable(false);
         HTMLEditorKit eKit = new HTMLEditorKit();
-        leftPanel.setEditorKit(eKit);
-        leftPanel.setText(finalHtmlDocument);
+        mainPanel.setEditorKit(eKit);
+        mainPanel.setText(finalHtmlDocument);
+        mainPanel.setCaretPosition(0);
 
-        leftScrollPane.setBounds(0, 0, 350, 300);
+
+        leftScrollPane.setBounds(0, 0, 550, 570);
         leftScrollPane.setBackground(Color.white);
+     
 
-
-        rightPanel.setLayout(null);
-        saveButton.setBounds(20, 50, 100, 26);
+        lowerPanel.setLayout(null);
+        
+        saveButton.setBounds(110, 3, 100, 26);
         saveButton.setForeground(Color.white);
-        saveButton.setBackground(Color.red);
+        saveButton.setBackground(new Color(181, 57, 24));
         saveButton.setText("speichern");
+        
+        backButton.setBounds(225,3,100,26);
+        backButton.setForeground(Color.white);
+        backButton.setBackground(new Color(181, 57, 24));
+        backButton.setText("zurück");
 
-        closeButton.setBounds(20, 100, 100, 26);
+        closeButton.setBounds(340, 3, 100, 26);
         closeButton.setForeground(Color.white);
-        closeButton.setBackground(Color.red);
+        closeButton.setBackground(new Color(181, 57, 24));
         closeButton.setText("beenden");
 
-        rightPanel.add(saveButton);
-        rightPanel.add(closeButton);
+        lowerPanel.add(saveButton);
+        lowerPanel.add(backButton);
+        lowerPanel.add(closeButton);
 
-        outputFrame.add(rightPanel);
+        outputFrame.add(lowerPanel);
         outputFrame.add(leftScrollPane);
 
         //action listener that reacts on the click of the close Button with the exit of the programm 
@@ -156,6 +176,11 @@ public class Gui extends JFrame {
             }
         });
 
+        backButton.addActionListener(new java.awt.event.ActionListener(){
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+               outputFrame.dispose();
+            }
+            });
 
         //save button action listener - calls method saveResult() if save Button was clicked
 
@@ -167,7 +192,7 @@ public class Gui extends JFrame {
         });
 
         outputFrame.setResizable(false);
-        outputFrame.setPreferredSize(new Dimension(500, 330));
+        outputFrame.setPreferredSize(new Dimension(555, 630));
         outputFrame.setLocation(25, 25);
         outputFrame.pack();
         outputFrame.setVisible(true);
@@ -221,6 +246,8 @@ public class Gui extends JFrame {
 
         bar.setIndeterminate(true);
         bar.setBounds(227, 170, 100, 20);
+        bar.setForeground(new Color(181, 57, 24));
+        bar.setBackground(new Color(202, 202, 205));
         add(bar);
 
 
