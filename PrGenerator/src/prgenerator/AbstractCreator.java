@@ -151,7 +151,7 @@ public class AbstractCreator {
                         System.out.println("3 "+nWord);
                     }
                 }
-            
+             
             // stores locations    
             } else if (nWord.matches("in|aus")){
                 if (i+1 < txtLength){
