@@ -199,7 +199,7 @@ public class Database {
             try{
                 reader.close();
             }catch (Exception e){
-                e.printStackTrace();
+                //e.printStackTrace();
             }
             return null;
         }
