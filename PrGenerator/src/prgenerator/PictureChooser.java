@@ -44,7 +44,7 @@ public class PictureChooser {
      */
     public void choosePicture() {
         helper = new <String>LinkedList(); 
-       System.out.println( "\n" + "UserInputFiltered is Empty: " +PrGenerator.mainDatabase.getUserInputFiltered().isEmpty());
+       System.out.println( "\n" + "hier: UserInputFiltered is Empty: " +PrGenerator.mainDatabase.getUserInputFiltered().isEmpty());
       //!!!! if(!PrGenerator.mainDatabase.getUserInputFiltered().isEmpty()){
          if(PrGenerator.mainDatabase.getUserInputFiltered().isEmpty()){
              System.out.println("configure requests");
