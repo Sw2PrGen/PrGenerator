@@ -164,7 +164,7 @@ public class AbstractCreator {
             // stores locations    
             } else if (nWord.matches("in|aus")){
                 if (i+1 < txtLength){
-                    if (words.get(i+1).matches("[A-Z]{1,}.*")){
+                    if (words.get(i+1).matches("[A-Z]{1,}.*")&& !nWord.matches("Versehen|Bearbeitung|Betrieb")){
                         nWord = words.get(i+1);       
                         //nWord = nWord +" "+ words.get(i+1); // if with additional words like "in, aus"
                         storeWord(nWord,whereWL, whereCL);
