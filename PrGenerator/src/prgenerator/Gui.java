@@ -125,7 +125,7 @@ public class Gui extends JFrame {
         outputFrame.setLayout(null);
         outputFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        lowerPanel.setBounds(0, 570, 550, 30);
+        lowerPanel.setBounds(0, 570, 550, 50);
         lowerPanel.setBackground(Color.white);
 
         mainPanel.setEditable(false);
@@ -141,17 +141,17 @@ public class Gui extends JFrame {
 
         lowerPanel.setLayout(null);
         
-        saveButton.setBounds(110, 3, 100, 26);
+        saveButton.setBounds(110, 13, 100, 26);
         saveButton.setForeground(Color.white);
         saveButton.setBackground(new Color(181, 57, 24));
         saveButton.setText("speichern");
         
-        backButton.setBounds(225,3,100,26);
+        backButton.setBounds(225,13,100,26);
         backButton.setForeground(Color.white);
         backButton.setBackground(new Color(181, 57, 24));
         backButton.setText("zurück");
 
-        closeButton.setBounds(340, 3, 100, 26);
+        closeButton.setBounds(340, 13, 100, 26);
         closeButton.setForeground(Color.white);
         closeButton.setBackground(new Color(181, 57, 24));
         closeButton.setText("beenden");
@@ -192,7 +192,7 @@ public class Gui extends JFrame {
         });
 
         outputFrame.setResizable(false);
-        outputFrame.setPreferredSize(new Dimension(555, 630));
+        outputFrame.setPreferredSize(new Dimension(555, 650));
         outputFrame.setLocation(25, 25);
         outputFrame.pack();
         outputFrame.setVisible(true);
