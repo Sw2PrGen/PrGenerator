@@ -7,6 +7,8 @@ package prgenerator;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,11 +23,10 @@ import javax.swing.text.html.HTMLEditorKit;
 public class Gui extends JFrame {
 
     //set variables needed for the frame that will display the starting page 
-    private JLabel backgroundPicture = new JLabel(new ImageIcon("src\\sources\\GUI_backgroundpicture.png"));
-    private JTextField userInput = new JTextField();
-    private JButton generateTextButton = new JButton();
     private String finalHtmlDocument;// = PrGenerator.mainDatabase.getFinalHtmlDocument();
     private JProgressBar bar = new JProgressBar();
+    private JTextField userInput = new JTextField();
+    public final String SEARCH_DEFAULT = "Suche...";
 
     /*
      * this constructor will display the main page
@@ -33,15 +34,17 @@ public class Gui extends JFrame {
      */
     public Gui() {
 
-
+        JLabel backgroundPicture = new JLabel(new ImageIcon("src\\sources\\GUI_backgroundpicture.png"));
+        JButton generateTextButton = new JButton();
 
         setLayout(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         backgroundPicture.setBounds(0, 0, 465, 350);
 
+        
         userInput.setBounds(206, 79, 144, 26);
-        userInput.setText("Mögliche Suchbegriffe hier eingeben...");
+        userInput.setText(SEARCH_DEFAULT);
 
         generateTextButton.setBounds(240, 135, 77, 26);
         generateTextButton.setBackground(new Color(181, 57, 24));
@@ -58,6 +61,14 @@ public class Gui extends JFrame {
                 setInput(evt);
                 PrGenerator.doit();
 
+            }
+        });
+        
+        userInput.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mouseClicked(MouseEvent e){
+                userInput.setSelectionStart(0);
+                userInput.setSelectionEnd(userInput.toString().length()-1);
             }
         });
 
@@ -98,7 +109,6 @@ public class Gui extends JFrame {
         JScrollPane leftScrollPane = new JScrollPane(leftPanel);
         JButton saveButton = new JButton();
         JButton closeButton = new JButton();
-        JButton showInBrowser = new JButton();
 
 
         outputFrame.setLayout(null);
@@ -112,10 +122,10 @@ public class Gui extends JFrame {
         leftPanel.setEditorKit(eKit);
         leftPanel.setText(finalHtmlDocument);
 
-        leftScrollPane.setBounds(0,0,350,300);
+        leftScrollPane.setBounds(0, 0, 350, 300);
         leftScrollPane.setBackground(Color.white);
-        
-        
+
+
         rightPanel.setLayout(null);
         saveButton.setBounds(20, 50, 100, 26);
         saveButton.setForeground(Color.white);
@@ -191,14 +201,14 @@ public class Gui extends JFrame {
             path = chooser.getSelectedFile().toString();
             file = new File(path);
 
-                if (!(path.endsWith(".html") || path.endsWith(".htm"))) {
-                    path = path + ".html";
-                }
-                try {
-                    PrGenerator.mainDatabase.writeFile(finalHtmlDocument, path);
-                } catch (Exception ex) {
-                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            if (!(path.endsWith(".html") || path.endsWith(".htm"))) {
+                path = path + ".html";
+            }
+            try {
+                PrGenerator.mainDatabase.writeFile(finalHtmlDocument, path);
+            } catch (Exception ex) {
+                Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
             chooser.setVisible(false);
             return true;
