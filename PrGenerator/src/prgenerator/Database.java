@@ -6,20 +6,33 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.*;
 
 /**
- * Contains and manages all the data relevant during the runtime
- * @author rusinda
+ * Contains and manages all the data relevant during runtime
+ *
+ * @author Dawid Rusin
  */
 public class Database {
 
+    /*
+     * ############################################################
+     * ######################## Constants #########################
+     * ############################################################
+     */
     private final String DHBW_URL = "http://www.dhbw-mannheim.de/";
     private final String DHBW_AKTUELLES_URL = "http://www.dhbw-mannheim.de/aktuelles/details/id/";
     private final String DHBW_MORE_TAG = "<span class=\"more\">";
     private final String DHBW_NEWURL_START = "details/id/";
     private final String DHBW_NEWURL_END = "/\" title";
     private final String BACKUP_FILE_PATH = "src//sources//backup.dat";
+    /*
+     * ############################################################
+     * ######################## Class Vars ########################
+     * ############################################################
+     */
     private int latestUrlNo;            //url no of the latest news item on the dhbw-site
     private int lastLatestUrlNo = 0;    //ur ni of the latest news item in the backup
     private LinkedList<String> currentData = new LinkedList<>();
@@ -36,8 +49,14 @@ public class Database {
     private String[] templateFill = new String[3];
     private String chosenPicture;
 
+    /*
+     * ############################################################
+     * ######################## Logic #############################
+     * ############################################################
+     */
     /**
      * Analyses the input string and makes a LinkedList with sentences out of it
+     *
      * @param input string to analyse
      * @return list with sentences
      */
@@ -73,6 +92,7 @@ public class Database {
         while ((s = reader.readLine()) != null) {
             list.add(s);
         }
+        reader.close();
         return list;
     }
 
@@ -169,18 +189,26 @@ public class Database {
             }
             s = s.substring(s.indexOf(DHBW_NEWURL_START) + DHBW_NEWURL_START.length(), s.indexOf(DHBW_NEWURL_END)); //get the last part of the url to the news item
             latestUrlNo = Integer.parseInt(s);
-            if ( latestUrlNo <= lastLatestUrlNo){   //if the latest news is in the backup return null to indicate that
+            if (latestUrlNo <= lastLatestUrlNo) {   //if the latest news is in the backup return null to indicate that
                 return null;
             }
+            reader.close();
             return DHBW_AKTUELLES_URL + s;
         } catch (Exception ex) {
             //ex.printStackTrace();
+            try{
+                reader.close();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             return null;
         }
     }
 
     /**
-     * Sarches for a regular expression in a string and replaces a substring of the regular expression with a replacement string
+     * Sarches for a regular expression in a string and replaces a substring of
+     * the regular expression with a replacement string
+     *
      * @param string input string to search for the regex
      * @param regex the regular expression
      * @param lookFor substring to be replaced, can be a regex
@@ -188,12 +216,12 @@ public class Database {
      * @return the strin gwith replaced substrings
      */
     private String replaceSpecPattern(String string, String regex, String lookFor, String replaceWith) {
-        Pattern pattern = Pattern.compile(regex);                  
+        Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(string);
         String help;
-        while (matcher.find()) {                                          
+        while (matcher.find()) {
             help = matcher.group(matcher.groupCount());
-            string = string.replace(help, help.replaceAll(lookFor, replaceWith));           
+            string = string.replace(help, help.replaceAll(lookFor, replaceWith));
         }
         return string;
     }
@@ -246,11 +274,17 @@ public class Database {
         }
 
         finishedText = sb.toString();                                           //make a string out of the stringbuilder
+        try {
+            reader.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
         return finishedText;
     }
 
     /**
      * tries to load new data from the dhbw-site
+     *
      * @return true if new data was loaded, false otherwise
      */
     private boolean loadNewData() {
@@ -267,16 +301,15 @@ public class Database {
         }
         currentData.addAll(makelist(getText(getWebsite(latestUrl))));   //write the data into the linked list
         int i = 0;
-        do{          //stop either on 100 news items or when the item id reaches the id in the backup
+        do {          //stop either on 100 news items or when the item id reaches the id in the backup
             currentData.addAll(makelist(getText(getWebsite(latestUrl))));
             i++;
-        }while(i<101 & (latestUrl = getNextUrl(latestUrl)) != null);
-        if(currentData.size()<1100){                //fill with backup data
-            String s = backupFile.pop();
-            while(currentData.size() < 1100 && backupFile.size() > 0){
-                currentData.add(s);
+        } while (i < 101 & (latestUrl = getNextUrl(latestUrl)) != null);
+
+            String s;// = backupFile.pop();
+            while (currentData.size() < 1100 && backupFile.size() > 0) {    //fill with backup data
                 s = backupFile.pop();
-            }
+                currentData.add(s);
         }
         updateBackup();     //update the backup file with the currently loaded data
         return true;
@@ -284,6 +317,7 @@ public class Database {
 
     /**
      * Loads the backup file into currentData
+     *
      * @return true if the file could be loaded, false otherwise
      */
     private boolean loadBackup() {
@@ -296,7 +330,7 @@ public class Database {
             return false;
         }
         String s = backupFile.pop();
-        while(backupFile.size() > 0){
+        while (backupFile.size() > 0) {
             currentData.add(s);
             s = backupFile.pop();
         }
@@ -305,6 +339,7 @@ public class Database {
 
     /**
      * Updates the backup file with the currently loaded data
+     *
      * @return
      */
     private boolean updateBackup() {
@@ -312,13 +347,13 @@ public class Database {
         sb.append(Integer.toString(latestUrlNo));
         sb.append("\n");
         LinkedList<String> help = new LinkedList<>(currentData);
-        while(help.size() > 0){
+        while (help.size() > 0) {
             sb.append(help.pop());
             sb.append("\n");
         }
-        try{
+        try {
             writeFile(sb.toString(), BACKUP_FILE_PATH);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -333,11 +368,16 @@ public class Database {
         pictureList.add("http://www.dhbw-mannheim.de/typo3temp/pics/ae467bfeb3.jpg");
         boolean controlVar;
         controlVar = loadNewData();      //try to get new data
-        if(!controlVar){
+        if (!controlVar) {
             controlVar = loadBackup();      //load backup if no connection or no new items
         }
     }
 
+    /*
+     * ############################################################
+     * ################## Getter and setter #######################
+     * ############################################################
+     */
     /**
      * @return the currentData
      */

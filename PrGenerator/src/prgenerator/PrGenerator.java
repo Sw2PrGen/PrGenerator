@@ -47,7 +47,7 @@ public class PrGenerator {
     }
     
     public static void doit(){
-        PrGenerator.mainInputAnalyzer.modifyInputtoString();
+        PrGenerator.mainInputAnalyzer.modifyInputToString();
         PrGenerator.mainDatabase.manageData();
         PrGenerator.mainTextCreator.createMainText();
         PrGenerator.mainAbstractCreator.createAbstract();

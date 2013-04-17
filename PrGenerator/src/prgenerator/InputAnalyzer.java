@@ -17,7 +17,7 @@ public class InputAnalyzer {
      * Method to filter the userinput to get the best result when searching for the input
      * 
      */
-    public static void modifyInputtoString() {
+    public static void modifyInputToString() {
        //Assign rareStirng the unfiltered userinput from the database to filter it 
         // String rarestring=PrGenerator.mainDatabase.getUserInput(); 
         //rareString=rareString.replace("und", rareString)
@@ -120,6 +120,6 @@ public class InputAnalyzer {
 
     public static void main(String[] args) {
 
-        modifyInputtoString();
+        modifyInputToString();
     }
 }

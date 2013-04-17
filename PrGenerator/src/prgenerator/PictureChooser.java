@@ -144,7 +144,9 @@ public class PictureChooser {
             while ((line = reader.readLine()) != null) {
                 builder.append(line);
             }
-
+            
+            reader.close(); //added by Dawid
+            
             JSONObject json = new JSONObject(builder.toString());  // construct a JSONObject from page content
             String imageUrl = json.getJSONObject("responseData").getJSONArray("results").getJSONObject(0).getString("url"); //get the url-property of a json object           
             helper.add(imageUrl);   // add  founded picture to helper list
