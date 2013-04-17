@@ -52,12 +52,14 @@ public class Gui extends JFrame implements Runnable {
         userInput.setText(PrGenerator.mainDatabase.getSEARCH_DEFAULT());
         userInput.setSelectionStart(0);
         userInput.setSelectionEnd(userInput.getText().length());
+        userInput.setToolTipText("max. 50 Zeichen erlaubt");
 
         generateTextButton.setBounds(240, 135, 77, 26);
         generateTextButton.setBackground(new Color(181, 57, 24));
         generateTextButton.setText("Start");
         generateTextButton.setForeground(Color.white);
-
+        generateTextButton.setToolTipText("erstellt Pressemitteilung");
+        
 
         // implementing of an action listener on the "Start"- Button to react on user input
         generateTextButton.addActionListener(new java.awt.event.ActionListener() {
@@ -78,6 +80,9 @@ public class Gui extends JFrame implements Runnable {
 
             }
         });
+        
+        
+                
 
         add(userInput);
         add(generateTextButton);
@@ -151,16 +156,19 @@ public class Gui extends JFrame implements Runnable {
         saveButton.setForeground(Color.white);
         saveButton.setBackground(new Color(181, 57, 24));
         saveButton.setText("speichern");
+        saveButton.setToolTipText("Text als .html speichern.");
         
         backButton.setBounds(225,13,100,26);
         backButton.setForeground(Color.white);
         backButton.setBackground(new Color(181, 57, 24));
         backButton.setText("zurück");
-
+        backButton.setToolTipText("zurück zum Startfenster");
+        
         closeButton.setBounds(340, 13, 100, 26);
         closeButton.setForeground(Color.white);
         closeButton.setBackground(new Color(181, 57, 24));
         closeButton.setText("beenden");
+        closeButton.setToolTipText("beenden des Programms");
 
         lowerPanel.add(saveButton);
         lowerPanel.add(backButton);
