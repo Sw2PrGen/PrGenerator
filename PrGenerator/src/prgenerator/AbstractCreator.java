@@ -109,7 +109,7 @@ public class AbstractCreator {
     public void analyzeText(){    // when live!!!!!!!
     //public String[] analyzeText(){
         maintext = PrGenerator.mainDatabase.getCreatedText();
-        String maintext = "Nach meiner in Ab- und An In August Montag heute Montag 1. Februar 2012 12.März Dezember 2012 Promotion habe ich Mittwoch heute eine Professur 3 Wochen einer Woche eine Woche fünf Wochen in Mannheim für ABWL, Personal und Organisation an der Ostfalia HAW in Wolfsburg verwaltet, bevor ich am 1.März 2013 an die DHBW Mannheim berufen wurde. Dies hat z.B. dazu geführt, dass ich an der Universität Mannheim gemeinsam mit Kollegen ein Seminar zur Mitarbeiterführung entwickelt habe, das stark auf meinen Erfahrungen aus der beruflichen Praxis aufbaute.Für Studieninteressierte, die gerne Studium und Praxisausbildung verbinden möchten, bietet das duale Studium an der DHBW eine attraktive Möglichkeit mit hervorragenden Berufsaussichten und Karrierechancen. August. ";
+        
         
         maintext = maintext.replaceAll("([0-9]{1,2})\\. ","$1.");   // alle "ZAHL. " in "ZAHL." umwandeln
         maintext = maintext.replaceAll("\\. "," ");                 // alle ". " in " " umwandeln
