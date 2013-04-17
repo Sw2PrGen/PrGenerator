@@ -28,6 +28,8 @@ public class Database {
     private final String DHBW_NEWURL_START = "details/id/";
     private final String DHBW_NEWURL_END = "/\" title";
     private final String BACKUP_FILE_PATH = "src//sources//backup.dat";
+    private final String SEARCH_DEFAULT = "Suche...";
+
     /*
      * ############################################################
      * ######################## Class Vars ########################
@@ -43,7 +45,7 @@ public class Database {
     private LinkedList<Template> templatesAbstract = new LinkedList<>();
     private LinkedList<Template> templatesHeading = new LinkedList<>();
     private String finalDocument;
-    private String finalHtmlDocument;
+    private String finalHtmlDocument = null;
     private LinkedList<String> pictureList = new LinkedList<>();
     private LinkedList<String> userInputFiltered = new LinkedList<>();
     private String[] templateFill = new String[3];
@@ -196,10 +198,10 @@ public class Database {
             return DHBW_AKTUELLES_URL + s;
         } catch (Exception ex) {
             //ex.printStackTrace();
-            try{
+            try {
                 reader.close();
-            }catch (Exception e){
-                e.printStackTrace();
+            } catch (Exception e) {
+                //e.printStackTrace();
             }
             return null;
         }
@@ -306,10 +308,10 @@ public class Database {
             i++;
         } while (i < 101 & (latestUrl = getNextUrl(latestUrl)) != null);
 
-            String s;// = backupFile.pop();
-            while (currentData.size() < 1100 && backupFile.size() > 0) {    //fill with backup data
-                s = backupFile.pop();
-                currentData.add(s);
+        String s;// = backupFile.pop();
+        while (currentData.size() < 1100 && backupFile.size() > 0) {    //fill with backup data
+            s = backupFile.pop();
+            currentData.add(s);
         }
         updateBackup();     //update the backup file with the currently loaded data
         return true;
@@ -552,5 +554,9 @@ public class Database {
      */
     public void setPictureList(LinkedList<String> pictureList) {
         this.pictureList = pictureList;
+    }
+
+    public String getSEARCH_DEFAULT() {
+        return SEARCH_DEFAULT;
     }
 }

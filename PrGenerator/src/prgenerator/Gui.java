@@ -6,6 +6,8 @@ package prgenerator;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -14,37 +16,40 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.ColorUIResource;
 import javax.swing.text.html.HTMLEditorKit;
 
 /**
  *
  * @author Katharina Sandrock
  */
-public class Gui extends JFrame {
+public class Gui extends JFrame implements Runnable {
 
     //set variables needed for the frame that will display the starting page 
     private String finalHtmlDocument;// = PrGenerator.mainDatabase.getFinalHtmlDocument();
     private JProgressBar bar = new JProgressBar();
     private JTextField userInput = new JTextField();
-    public final String SEARCH_DEFAULT = "Suche...";
+
 
     /*
      * this constructor will display the main page
      *
      */
-    public Gui() {
 
+    public void initializeGui(){
         JLabel backgroundPicture = new JLabel(new ImageIcon("src\\sources\\GUI_backgroundpicture.png"));
         JButton generateTextButton = new JButton();
 
         setLayout(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        openBar();
+        bar.setVisible(false);
+        
         backgroundPicture.setBounds(0, 0, 465, 350);
 
-        
         userInput.setBounds(206, 79, 144, 26);
-        userInput.setText(SEARCH_DEFAULT);
+        userInput.setText(PrGenerator.mainDatabase.getSEARCH_DEFAULT());
         userInput.setSelectionStart(0);
         userInput.setSelectionEnd(userInput.getText().length());
 
@@ -66,7 +71,7 @@ public class Gui extends JFrame {
         userInput.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e){
-                if (userInput.getText().equals(SEARCH_DEFAULT)) {
+                if (userInput.getText().equals(PrGenerator.mainDatabase.getSEARCH_DEFAULT())) {
                                     userInput.setSelectionStart(0);
                 userInput.setSelectionEnd(userInput.toString().length()-1);
                 }
@@ -80,7 +85,7 @@ public class Gui extends JFrame {
 
         setResizable(false);
         setPreferredSize(new Dimension(465, 380));
-        setLocation(50, 50);
+        setLocation(getCoords(465,380));
         pack();
         setVisible(true);
 
@@ -93,9 +98,9 @@ public class Gui extends JFrame {
     private void setInput(ActionEvent evt) {
 
         if (userInput.getText().length() <= 50) {
+            bar.setVisible(true);
             PrGenerator.mainDatabase.setUserInput(userInput.getText());
-            openBar(evt);
-            PrGenerator.doit();
+           // PrGenerator.doit();
         } else {
             
             JOptionPane.showMessageDialog(null, "Eingabe zu lang! (max. erlaubte Zeichen: 50) ");
@@ -137,8 +142,9 @@ public class Gui extends JFrame {
 
         leftScrollPane.setBounds(0, 0, 550, 570);
         leftScrollPane.setBackground(Color.white);
-     
-
+        leftScrollPane.getVerticalScrollBar().setBackground(new Color(202, 202, 205));
+       
+ 
         lowerPanel.setLayout(null);
         
         saveButton.setBounds(110, 13, 100, 26);
@@ -172,7 +178,7 @@ public class Gui extends JFrame {
             }
 
             private void closeFrame(ActionEvent evt) {
-                System.exit(42);
+                System.exit(0);
             }
         });
 
@@ -192,10 +198,12 @@ public class Gui extends JFrame {
         });
 
         outputFrame.setResizable(false);
-        outputFrame.setPreferredSize(new Dimension(555, 650));
-        outputFrame.setLocation(25, 25);
+        outputFrame.setPreferredSize(new Dimension(555, 650));     
+        outputFrame.setLocation(getCoords(555,650));
         outputFrame.pack();
         outputFrame.setVisible(true);
+        PrGenerator.mainDatabase.setFinalHtmlDocument(null);
+        PrGenerator.mainDatabase.setUserInput(null);
     }
 
     /**
@@ -241,8 +249,17 @@ public class Gui extends JFrame {
         chooser.setVisible(false);
         return false;
     }
+    
+    private Point getCoords (int x, int y){
+        
+        int xScreen = Toolkit.getDefaultToolkit().getScreenSize().width;
+        int yScreen = Toolkit.getDefaultToolkit().getScreenSize().height;
+        return new Point(((xScreen/2) - (x/2)),((yScreen/2)) - (y/2));
+        
+        
+    }
 
-    private void openBar(ActionEvent evt) {
+    private void openBar() {
 
         bar.setIndeterminate(true);
         bar.setBounds(227, 170, 100, 20);
@@ -252,4 +269,22 @@ public class Gui extends JFrame {
 
 
     }
+
+    @Override
+    public void run() {
+       
+        initializeGui();
+         while (true) {
+        while (PrGenerator.mainDatabase.getFinalHtmlDocument() == null) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                //Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+            }  
+        }
+        showResult();
+        
+        }
+    }
+    
 }
