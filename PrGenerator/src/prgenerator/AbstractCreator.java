@@ -4,16 +4,6 @@
  */
 package prgenerator;
 
-import java.util.Date;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -110,6 +100,7 @@ public class AbstractCreator {
     //public String[] analyzeText(){
         maintext = PrGenerator.mainDatabase.getCreatedText();
         
+        
         maintext = maintext.replaceAll("([0-9]{1,2})\\. ","$1.");   // alle "ZAHL. " in "ZAHL." umwandeln
         maintext = maintext.replaceAll("\\. "," ");                 // alle ". " in " " umwandeln
         maintext = maintext.replaceAll("([0-9]{1,2})\\.","$1. ");   // alle "ZAHL." in "ZAHL. " umwandeln
@@ -121,7 +112,7 @@ public class AbstractCreator {
         
         LinkedList<String> words = new LinkedList<>(Arrays.asList(maintext.split(" ")));
         int txtLength = words.size();
-       
+        
         for (int i =0; i<txtLength; i++){
             String nWord = words.get(i);
             
@@ -152,7 +143,7 @@ public class AbstractCreator {
                 storeWord(nWord, whenWL, whenCL); // store word with date word, WL, CL
                 System.out.println("2 "+nWord);
                 
-            } else if (nWord.matches(".*(Woche|Wochen).*")){
+            } else if (nWord.matches("(Woche|Wochen)")){
                 if (i-1 >=0){
                     if (words.get(i-1).matches("[0-9]{1,2}|einer|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn")){
                         nWord = words.get(i-1) +" "+nWord;
@@ -160,11 +151,11 @@ public class AbstractCreator {
                         System.out.println("3 "+nWord);
                     }
                 }
-            
+             
             // stores locations    
             } else if (nWord.matches("in|aus")){
                 if (i+1 < txtLength){
-                    if (words.get(i+1).matches("[A-Z]{1,}.*")&& !nWord.matches("Versehen|Bearbeitung|Betrieb")){
+                    if (words.get(i+1).matches("[A-Z]{1,}[a-z]{1,}")&& !nWord.matches("Versehen|Bearbeitung|Betrieb")){
                         nWord = words.get(i+1);       
                         //nWord = nWord +" "+ words.get(i+1); // if with additional words like "in, aus"
                         storeWord(nWord,whereWL, whereCL);
@@ -221,51 +212,52 @@ public class AbstractCreator {
        String keyAspect = PrGenerator.mainDatabase.getTemplateFill()[2];
        
         
+         /*
+       * in each array element of the array sentences there is one type of template loaded
+       * position 0: templateLocation
+       * position 1: templateDate
+       * position 2: templateKeyAspect
+       * position 3: templateKeyAspectandLocation
+       * position 4: templateLocationandDate
+       */
+     
+      
        String [ ] sentences= new String[5]; 
         
         Template templateReader = new Template();
         String abstractTemplateQuery = "";
-        sentences[0] = "";
-        sentences[1] = "";
-        sentences[2] = "";
+        //initialising array
+        for ( int i = 0; i <= 4; i++ ) {
+           sentences[i] = "";
+       }
         if(location != null){
-            sentences[0] = templateReader.readXML(path, "templateOrt");
+            sentences[0] = templateReader.readXML(path, "templateLocation");
             sentences[0] = sentences[0].replace("_location_", location);
-            //abstractTemplateQuery += templateReader.readXML(path, "templateOrt");
-            //abstractTemplateQuery = abstractTemplateQuery.replace("_location_", location);
         }
         
         if(date != null){
             sentences[1] = templateReader.readXML(path, "templateDate");
             sentences[1] = sentences[1].replace("_date_", date);
-            //abstractTemplateQuery += templateReader.readXML(path, "templateDate");
-            //abstractTemplateQuery = abstractTemplateQuery.replace("_date_", date);
         }
         if (keyAspect != null){
             sentences[2] = templateReader.readXML(path, "templateKeyAspect");
             sentences[2] = sentences[2].replace("_keyAspect_", keyAspect);
-            //abstractTemplateQuery += templateReader.readXML(path, "templateKeyAspect");
-            //abstractTemplateQuery = abstractTemplateQuery.replace("_keyAspect_", keyAspect);
         }
         
         if ((keyAspect != null) && (location != null)){
-            sentences[3] = templateReader.readXML(path, "templateKeyAspectandOrt");
+            sentences[3] = templateReader.readXML(path, "templateKeyAspectandLocation");
             sentences[3] = sentences[3].replace("_keyAspect_", keyAspect);
             sentences[3] = sentences[3].replace("_location_", location);
-            //abstractTemplateQuery += templateReader.readXML(path, "templateKeyAspect");
-            //abstractTemplateQuery = abstractTemplateQuery.replace("_keyAspect_", keyAspect);
         }
         
         if ((date != null) && (location != null)){
-            sentences[4] = templateReader.readXML(path, "templateOrtanddate");
+            sentences[4] = templateReader.readXML(path, "templateLocationandDate");
             sentences[4] = sentences[4].replace("_date_", date);
             sentences[4] = sentences[4].replace("_location_", location);
-            //abstractTemplateQuery += templateReader.readXML(path, "templateKeyAspect");
-            //abstractTemplateQuery = abstractTemplateQuery.replace("_keyAspect_", keyAspect);
         }
         
         
-        
+        //randomly a predefined combination how the template sentences are concatenated is chosen
         Random generator = new Random();
         int combinations = 11;
         int i = combinations - generator.nextInt(combinations);
