@@ -89,7 +89,9 @@ public class Database {
     public LinkedList<String> readFile(String filename) throws Exception {
 
         LinkedList<String> list = new LinkedList<>();
+        //InputStream is = this.getClass().getResourceAsStream("sources/backup.dat"); 
         BufferedReader reader = new BufferedReader(new FileReader(filename));
+        //BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         String s;
         while ((s = reader.readLine()) != null) {
             list.add(s);
