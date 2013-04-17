@@ -22,8 +22,9 @@ public class InputAnalyzer {
         // String rarestring=PrGenerator.mainDatabase.getUserInput(); 
         //rareString=rareString.replace("und", rareString)
         String rareString = PrGenerator.mainDatabase.getUserInput();
-
-        if (rareString.equals(PrGenerator.mainGui.SEARCH_DEFAULT) || rareString.isEmpty()) {
+   
+//PrGenerator.mainGui.SEARCH_DEFAULT
+        if (rareString.equals("hallo") || rareString.isEmpty()) {
         } else {
 
             //Deletion of abreviations
