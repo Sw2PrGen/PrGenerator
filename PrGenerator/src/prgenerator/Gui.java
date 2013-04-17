@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.ColorUIResource;
 import javax.swing.text.html.HTMLEditorKit;
 
 /**
@@ -141,8 +142,9 @@ public class Gui extends JFrame implements Runnable {
 
         leftScrollPane.setBounds(0, 0, 550, 570);
         leftScrollPane.setBackground(Color.white);
-     
-
+        leftScrollPane.getVerticalScrollBar().setBackground(new Color(202, 202, 205));
+       
+ 
         lowerPanel.setLayout(null);
         
         saveButton.setBounds(110, 13, 100, 26);
