@@ -6,6 +6,8 @@ package prgenerator;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -80,7 +82,7 @@ public class Gui extends JFrame {
 
         setResizable(false);
         setPreferredSize(new Dimension(465, 380));
-        setLocation(50, 50);
+        setLocation(getCoords(465,380));
         pack();
         setVisible(true);
 
@@ -172,7 +174,7 @@ public class Gui extends JFrame {
             }
 
             private void closeFrame(ActionEvent evt) {
-                System.exit(42);
+                System.exit(0);
             }
         });
 
@@ -192,8 +194,8 @@ public class Gui extends JFrame {
         });
 
         outputFrame.setResizable(false);
-        outputFrame.setPreferredSize(new Dimension(555, 650));
-        outputFrame.setLocation(25, 25);
+        outputFrame.setPreferredSize(new Dimension(555, 650));     
+        outputFrame.setLocation(getCoords(555,650));
         outputFrame.pack();
         outputFrame.setVisible(true);
     }
@@ -240,6 +242,15 @@ public class Gui extends JFrame {
         }
         chooser.setVisible(false);
         return false;
+    }
+    
+    private Point getCoords (int x, int y){
+        
+        int xScreen = Toolkit.getDefaultToolkit().getScreenSize().width;
+        int yScreen = Toolkit.getDefaultToolkit().getScreenSize().height;
+        return new Point(((xScreen/2) - (x/2)),((yScreen/2)) - (y/2));
+        
+        
     }
 
     private void openBar(ActionEvent evt) {
