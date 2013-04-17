@@ -22,7 +22,7 @@ import javax.swing.text.html.HTMLEditorKit;
  *
  * @author Katharina Sandrock
  */
-public class Gui extends JFrame {
+public class Gui extends JFrame implements Runnable {
 
     //set variables needed for the frame that will display the starting page 
     private String finalHtmlDocument;// = PrGenerator.mainDatabase.getFinalHtmlDocument();
@@ -36,12 +36,68 @@ public class Gui extends JFrame {
      */
     public Gui() {
 
+//        JLabel backgroundPicture = new JLabel(new ImageIcon("src\\sources\\GUI_backgroundpicture.png"));
+//        JButton generateTextButton = new JButton();
+//
+//        setLayout(null);
+//        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//
+//        backgroundPicture.setBounds(0, 0, 465, 350);
+//
+//        
+//        userInput.setBounds(206, 79, 144, 26);
+//        userInput.setText(SEARCH_DEFAULT);
+//        userInput.setSelectionStart(0);
+//        userInput.setSelectionEnd(userInput.getText().length());
+//
+//        generateTextButton.setBounds(240, 135, 77, 26);
+//        generateTextButton.setBackground(new Color(181, 57, 24));
+//        generateTextButton.setText("Start");
+//        generateTextButton.setForeground(Color.white);
+//
+//
+//        // implementing of an action listener on the "Start"- Button to react on user input
+//        generateTextButton.addActionListener(new java.awt.event.ActionListener() {
+//
+//            @Override
+//            public void actionPerformed(java.awt.event.ActionEvent evt) {
+//                 setInput(evt);                
+//            }
+//        });
+//        
+//        userInput.addMouseListener(new MouseAdapter(){
+//            @Override
+//            public void mouseClicked(MouseEvent e){
+//                if (userInput.getText().equals(SEARCH_DEFAULT)) {
+//                                    userInput.setSelectionStart(0);
+//                userInput.setSelectionEnd(userInput.toString().length()-1);
+//                }
+//
+//            }
+//        });
+//
+//        add(userInput);
+//        add(generateTextButton);
+//        add(backgroundPicture);
+//
+//        setResizable(false);
+//        setPreferredSize(new Dimension(465, 380));
+//        setLocation(getCoords(465,380));
+//        pack();
+//        setVisible(true);
+
+    }
+    
+    public void initializeGui(){
         JLabel backgroundPicture = new JLabel(new ImageIcon("src\\sources\\GUI_backgroundpicture.png"));
         JButton generateTextButton = new JButton();
 
         setLayout(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        openBar();
+        bar.setVisible(false);
+        
         backgroundPicture.setBounds(0, 0, 465, 350);
 
         
@@ -95,9 +151,9 @@ public class Gui extends JFrame {
     private void setInput(ActionEvent evt) {
 
         if (userInput.getText().length() <= 50) {
+            bar.setVisible(true);
             PrGenerator.mainDatabase.setUserInput(userInput.getText());
-            openBar(evt);
-            PrGenerator.doit();
+           // PrGenerator.doit();
         } else {
             
             JOptionPane.showMessageDialog(null, "Eingabe zu lang! (max. erlaubte Zeichen: 50) ");
@@ -198,6 +254,8 @@ public class Gui extends JFrame {
         outputFrame.setLocation(getCoords(555,650));
         outputFrame.pack();
         outputFrame.setVisible(true);
+        PrGenerator.mainDatabase.setFinalHtmlDocument(null);
+        PrGenerator.mainDatabase.setUserInput(null);
     }
 
     /**
@@ -253,7 +311,7 @@ public class Gui extends JFrame {
         
     }
 
-    private void openBar(ActionEvent evt) {
+    private void openBar() {
 
         bar.setIndeterminate(true);
         bar.setBounds(227, 170, 100, 20);
@@ -263,4 +321,22 @@ public class Gui extends JFrame {
 
 
     }
+
+    @Override
+    public void run() {
+       
+        initializeGui();
+         while (true) {
+        while (PrGenerator.mainDatabase.getFinalHtmlDocument() == null) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                //Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+            }  
+        }
+        showResult();
+        
+        }
+    }
+    
 }

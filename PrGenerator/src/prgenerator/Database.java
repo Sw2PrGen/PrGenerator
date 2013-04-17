@@ -43,7 +43,7 @@ public class Database {
     private LinkedList<Template> templatesAbstract = new LinkedList<>();
     private LinkedList<Template> templatesHeading = new LinkedList<>();
     private String finalDocument;
-    private String finalHtmlDocument;
+    private String finalHtmlDocument = null;
     private LinkedList<String> pictureList = new LinkedList<>();
     private LinkedList<String> userInputFiltered = new LinkedList<>();
     private String[] templateFill = new String[3];
