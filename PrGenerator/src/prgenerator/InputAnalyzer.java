@@ -83,7 +83,7 @@ public class InputAnalyzer {
 
             //Deletion of unecessary spaces
             rareString = rareString.replaceAll("\\s\\s+", " ");
-
+            System.out.println("Der eingabe String ......... :"+rareString+"xxx" );
             //calling the method to put the input in a list
             inputStrToList(rareString);
         }
@@ -99,15 +99,21 @@ public class InputAnalyzer {
         // String cleanString;
         // cleanString=PrGenerator.mainDatabase.getUserInput();
         
+        //temporary linked list with userInput
+        LinkedList finalInputList = new <String>LinkedList();
+        
         //Array for the splitted STring
+        if(cleanString.contains(" ")){
         String[] cleanStringArray;
         
         //splitting the input string into an array
         cleanStringArray = cleanString.split(" ");
         
         //temporary linked list with userInput
-        LinkedList finalInputList = new <String>LinkedList();
+       // LinkedList finalInputList = new <String>LinkedList();
 
+        
+        
         //filling the list with the arraycontent
         for (int i = 0; i < cleanStringArray.length; i++) {
             finalInputList.addFirst(cleanStringArray[i]);
@@ -115,7 +121,14 @@ public class InputAnalyzer {
         // System.out.println(finalInputList);
         PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
         //PrGenerator.mainDatabase.manageData();
-
+        }
+        else {
+            System.out.println("xxxxxxxxxin else xxxxxxx");
+            finalInputList.add(cleanString);
+            PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
+            System.out.println("inhalt von der finallist:  "+PrGenerator.mainDatabase.getUserInputFiltered().getFirst());
+            
+        }
     }
 
     public static void main(String[] args) {
