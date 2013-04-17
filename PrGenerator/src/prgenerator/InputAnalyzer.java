@@ -103,8 +103,10 @@ public class InputAnalyzer {
         //temporary linked list with userInput
         LinkedList finalInputList = new <String>LinkedList();
         
-        //Array for the splitted STring
+        //checking if there are more than one word
         if(cleanString.contains(" ")){
+            
+       //Array for the splitted STring
         String[] cleanStringArray;
         
         //splitting the input string into an array
@@ -119,18 +121,20 @@ public class InputAnalyzer {
         for (int i = 0; i < cleanStringArray.length; i++) {
             finalInputList.addFirst(cleanStringArray[i]);
         }
-        System.out.println("final list " +finalInputList);
+       // System.out.println("final list " +finalInputList);
         PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
            System.out.println("final list " +PrGenerator.mainDatabase.getUserInputFiltered());
-                  System.out.println( "\n" + "UserInputFiltered is Empty: " +PrGenerator.mainDatabase.getUserInputFiltered().isEmpty());
+         //         System.out.println( "\n" + "UserInputFiltered is Empty: " +PrGenerator.mainDatabase.getUserInputFiltered().isEmpty());
 
         //PrGenerator.mainDatabase.manageData();
         }
         else {
-            System.out.println("xxxxxxxxxin else xxxxxxx");
+            //adding the only word
+            
+          //  System.out.println("xxxxxxxxxin else xxxxxxx");
             finalInputList.add(cleanString);
             PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
-            System.out.println("inhalt von der finallist:  "+PrGenerator.mainDatabase.getUserInputFiltered().getFirst());
+           // System.out.println("inhalt von der finallist:  "+PrGenerator.mainDatabase.getUserInputFiltered().getFirst());
             
         }
     }
