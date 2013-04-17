@@ -112,8 +112,11 @@ public class InputAnalyzer {
         for (int i = 0; i < cleanStringArray.length; i++) {
             finalInputList.addFirst(cleanStringArray[i]);
         }
-        // System.out.println(finalInputList);
+        System.out.println("final list " +finalInputList);
         PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
+           System.out.println("final list " +PrGenerator.mainDatabase.getUserInputFiltered());
+                  System.out.println( "\n" + "UserInputFiltered is Empty: " +PrGenerator.mainDatabase.getUserInputFiltered().isEmpty());
+
         //PrGenerator.mainDatabase.manageData();
 
     }
