@@ -100,6 +100,7 @@ public class AbstractCreator {
     //public String[] analyzeText(){
         maintext = PrGenerator.mainDatabase.getCreatedText();
         
+        
         maintext = maintext.replaceAll("([0-9]{1,2})\\. ","$1.");   // alle "ZAHL. " in "ZAHL." umwandeln
         maintext = maintext.replaceAll("\\. "," ");                 // alle ". " in " " umwandeln
         maintext = maintext.replaceAll("([0-9]{1,2})\\.","$1. ");   // alle "ZAHL." in "ZAHL. " umwandeln
@@ -111,7 +112,7 @@ public class AbstractCreator {
         
         LinkedList<String> words = new LinkedList<>(Arrays.asList(maintext.split(" ")));
         int txtLength = words.size();
-       
+        
         for (int i =0; i<txtLength; i++){
             String nWord = words.get(i);
             
@@ -142,7 +143,7 @@ public class AbstractCreator {
                 storeWord(nWord, whenWL, whenCL); // store word with date word, WL, CL
                 System.out.println("2 "+nWord);
                 
-            } else if (nWord.matches(".*(Woche|Wochen).*")){
+            } else if (nWord.matches("(Woche|Wochen)")){
                 if (i-1 >=0){
                     if (words.get(i-1).matches("[0-9]{1,2}|einer|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn")){
                         nWord = words.get(i-1) +" "+nWord;
@@ -150,11 +151,11 @@ public class AbstractCreator {
                         System.out.println("3 "+nWord);
                     }
                 }
-            
+             
             // stores locations    
             } else if (nWord.matches("in|aus")){
                 if (i+1 < txtLength){
-                    if (words.get(i+1).matches("[A-Z]{1,}.*")&& !nWord.matches("Versehen|Bearbeitung|Betrieb")){
+                    if (words.get(i+1).matches("[A-Z]{1,}[a-z]{1,}")&& !nWord.matches("Versehen|Bearbeitung|Betrieb")){
                         nWord = words.get(i+1);       
                         //nWord = nWord +" "+ words.get(i+1); // if with additional words like "in, aus"
                         storeWord(nWord,whereWL, whereCL);

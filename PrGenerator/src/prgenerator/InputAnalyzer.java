@@ -23,8 +23,8 @@ public class InputAnalyzer {
         //rareString=rareString.replace("und", rareString)
         String rareString = PrGenerator.mainDatabase.getUserInput();
    
-//PrGenerator.mainGui.SEARCH_DEFAULT
-        if (rareString.equals("hallo") || rareString.isEmpty()) {
+
+        if (rareString.equals(PrGenerator.mainDatabase.getSEARCH_DEFAULT()) || rareString.isEmpty()) {
         } else {
 
             //Deletion of abreviations
@@ -113,8 +113,11 @@ public class InputAnalyzer {
         for (int i = 0; i < cleanStringArray.length; i++) {
             finalInputList.addFirst(cleanStringArray[i]);
         }
-        // System.out.println(finalInputList);
+        System.out.println("final list " +finalInputList);
         PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
+           System.out.println("final list " +PrGenerator.mainDatabase.getUserInputFiltered());
+                  System.out.println( "\n" + "UserInputFiltered is Empty: " +PrGenerator.mainDatabase.getUserInputFiltered().isEmpty());
+
         //PrGenerator.mainDatabase.manageData();
 
     }

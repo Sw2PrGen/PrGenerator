@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.ColorUIResource;
 import javax.swing.text.html.HTMLEditorKit;
 
 /**
@@ -28,66 +29,13 @@ public class Gui extends JFrame implements Runnable {
     private String finalHtmlDocument;// = PrGenerator.mainDatabase.getFinalHtmlDocument();
     private JProgressBar bar = new JProgressBar();
     private JTextField userInput = new JTextField();
-    public final String SEARCH_DEFAULT = "Suche...";
+
 
     /*
      * this constructor will display the main page
      *
      */
-    public Gui() {
 
-//        JLabel backgroundPicture = new JLabel(new ImageIcon("src\\sources\\GUI_backgroundpicture.png"));
-//        JButton generateTextButton = new JButton();
-//
-//        setLayout(null);
-//        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//
-//        backgroundPicture.setBounds(0, 0, 465, 350);
-//
-//        
-//        userInput.setBounds(206, 79, 144, 26);
-//        userInput.setText(SEARCH_DEFAULT);
-//        userInput.setSelectionStart(0);
-//        userInput.setSelectionEnd(userInput.getText().length());
-//
-//        generateTextButton.setBounds(240, 135, 77, 26);
-//        generateTextButton.setBackground(new Color(181, 57, 24));
-//        generateTextButton.setText("Start");
-//        generateTextButton.setForeground(Color.white);
-//
-//
-//        // implementing of an action listener on the "Start"- Button to react on user input
-//        generateTextButton.addActionListener(new java.awt.event.ActionListener() {
-//
-//            @Override
-//            public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                 setInput(evt);                
-//            }
-//        });
-//        
-//        userInput.addMouseListener(new MouseAdapter(){
-//            @Override
-//            public void mouseClicked(MouseEvent e){
-//                if (userInput.getText().equals(SEARCH_DEFAULT)) {
-//                                    userInput.setSelectionStart(0);
-//                userInput.setSelectionEnd(userInput.toString().length()-1);
-//                }
-//
-//            }
-//        });
-//
-//        add(userInput);
-//        add(generateTextButton);
-//        add(backgroundPicture);
-//
-//        setResizable(false);
-//        setPreferredSize(new Dimension(465, 380));
-//        setLocation(getCoords(465,380));
-//        pack();
-//        setVisible(true);
-
-    }
-    
     public void initializeGui(){
         JLabel backgroundPicture = new JLabel(new ImageIcon("src\\sources\\GUI_backgroundpicture.png"));
         JButton generateTextButton = new JButton();
@@ -100,17 +48,18 @@ public class Gui extends JFrame implements Runnable {
         
         backgroundPicture.setBounds(0, 0, 465, 350);
 
-        
         userInput.setBounds(206, 79, 144, 26);
-        userInput.setText(SEARCH_DEFAULT);
+        userInput.setText(PrGenerator.mainDatabase.getSEARCH_DEFAULT());
         userInput.setSelectionStart(0);
         userInput.setSelectionEnd(userInput.getText().length());
+        userInput.setToolTipText("max. 50 Zeichen erlaubt");
 
         generateTextButton.setBounds(240, 135, 77, 26);
         generateTextButton.setBackground(new Color(181, 57, 24));
         generateTextButton.setText("Start");
         generateTextButton.setForeground(Color.white);
-
+        generateTextButton.setToolTipText("erstellt Pressemitteilung");
+        
 
         // implementing of an action listener on the "Start"- Button to react on user input
         generateTextButton.addActionListener(new java.awt.event.ActionListener() {
@@ -124,13 +73,16 @@ public class Gui extends JFrame implements Runnable {
         userInput.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e){
-                if (userInput.getText().equals(SEARCH_DEFAULT)) {
+                if (userInput.getText().equals(PrGenerator.mainDatabase.getSEARCH_DEFAULT())) {
                                     userInput.setSelectionStart(0);
                 userInput.setSelectionEnd(userInput.toString().length()-1);
                 }
 
             }
         });
+        
+        
+                
 
         add(userInput);
         add(generateTextButton);
@@ -195,24 +147,28 @@ public class Gui extends JFrame implements Runnable {
 
         leftScrollPane.setBounds(0, 0, 550, 570);
         leftScrollPane.setBackground(Color.white);
-     
-
+        leftScrollPane.getVerticalScrollBar().setBackground(new Color(202, 202, 205));
+       
+ 
         lowerPanel.setLayout(null);
         
         saveButton.setBounds(110, 13, 100, 26);
         saveButton.setForeground(Color.white);
         saveButton.setBackground(new Color(181, 57, 24));
         saveButton.setText("speichern");
+        saveButton.setToolTipText("Text als .html speichern.");
         
         backButton.setBounds(225,13,100,26);
         backButton.setForeground(Color.white);
         backButton.setBackground(new Color(181, 57, 24));
         backButton.setText("zurück");
-
+        backButton.setToolTipText("zurück zum Startfenster");
+        
         closeButton.setBounds(340, 13, 100, 26);
         closeButton.setForeground(Color.white);
         closeButton.setBackground(new Color(181, 57, 24));
         closeButton.setText("beenden");
+        closeButton.setToolTipText("beenden des Programms");
 
         lowerPanel.add(saveButton);
         lowerPanel.add(backButton);
