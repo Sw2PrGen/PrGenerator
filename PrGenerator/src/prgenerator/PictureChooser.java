@@ -23,7 +23,7 @@ import org.json.JSONObject;
 public class PictureChooser {
                 
     private final String START_URL="https://ajax.googleapis.com/ajax/services/search/images?v=1.0";   //start of image search url
-    private LinkedList<String> helper;  //helper list for temporary pictures collection
+    private LinkedList<String> helper = new <String>LinkedList();  //helper list for temporary pictures collection
      
     /*
      * special parameters of  image search url:
@@ -43,11 +43,11 @@ public class PictureChooser {
      * 
      */
     public void choosePicture() {
-        helper = new <String>LinkedList(); 
-       System.out.println( "\n" + "hier: UserInputFiltered is Empty: " +PrGenerator.mainDatabase.getUserInputFiltered().isEmpty());
-      //!!!! if(!PrGenerator.mainDatabase.getUserInputFiltered().isEmpty()){
-         if(PrGenerator.mainDatabase.getUserInputFiltered().isEmpty()){
-             System.out.println("configure requests");
+       helper.clear(); 
+      // System.out.println( "\n" + "hier: UserInputFiltered is Empty: " +PrGenerator.mainDatabase.getUserInputFiltered().isEmpty());
+     if(!PrGenerator.mainDatabase.getUserInputFiltered().isEmpty()){
+         
+       System.out.println("configure requests");
        configureRequests();
        
        }         
@@ -79,19 +79,22 @@ public class PictureChooser {
     private void configureRequests() {
 
          
-        LinkedList<String> userInput = PrGenerator.mainDatabase.getUserInputFiltered(); //filtered user input
+        LinkedList<String> userInputFiltered = PrGenerator.mainDatabase.getUserInputFiltered(); //filtered user input
        // System.out.println("Filtered user input" +PrGenerator.mainDatabase.getUserInputFiltered());
+               
+        String url;
+        url=START_URL + PARAMETERS_URL +PrGenerator.mainDatabase.getUserInput().replace(" ", "+");
         
-        String url;            
-       
-             
-            //while (!userInput.isEmpty()) {
-               // url = START_URL + PARAMETERS_URL + userInput.getFirst().replace(" ", "+"); // replace blanks in the user input to get a proper url 
-                //System.out.println("current address " + url);
-              //  findPictures(url); 
-                findPictures("https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=1&imgsz=big&as_filetype=jpg&userip=192.168.0.1&hl=de&q=banane");
-             //   userInput.removeFirst();
-           // }
+        boolean foundFullInput=findPictures(url, true);
+        if(!foundFullInput) {
+            while (!userInputFiltered.isEmpty()) {
+               url = START_URL + PARAMETERS_URL + userInputFiltered.getFirst().replace(" ", "+"); // replace blanks in the user input to get a proper url 
+               System.out.println("current address " + url);
+                findPictures(url, false); 
+               // findPictures("https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=1&imgsz=big&as_filetype=jpg&userip=192.168.0.1&hl=de&q=banane");
+               userInputFiltered.removeFirst();
+           }
+        }
          
          if(!helper.isEmpty()){
         
@@ -108,7 +111,7 @@ public class PictureChooser {
      * @param adress - url for image search
      * @param heading - true if picture for the whole heading should be found
      */
-    private void findPictures(String address) {
+    private boolean findPictures(String address, boolean UserInput) {
         //open url, establish connection and read content
         try {
             URL url = new URL(address);
@@ -127,6 +130,7 @@ public class PictureChooser {
             JSONObject json = new JSONObject(builder.toString());  // construct a JSONObject from page content
             if (json.getJSONObject("responseData").getJSONArray("results").length()==0){
                 System.out.println("no pics found");
+                return false;
             }
             else{
             String imageUrl = json.getJSONObject("responseData").getJSONArray("results").getJSONObject(0).getString("unescapedUrl"); //get the url-property of a json object           
@@ -138,10 +142,14 @@ public class PictureChooser {
             System.out.println("imageUrl" +imageUrl);
             helper.add(imageUrl);   // add  founded picture to helper list
             System.out.println("helper" +helper);}
-            
+            if (UserInput == true) {
+                return true;
+            } else {
+                return false;
+            }
         } catch (Exception e) {
             //e.printStackTrace();
-           
+           return false;
         }
 
         /* other api 
