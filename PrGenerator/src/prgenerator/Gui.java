@@ -6,60 +6,83 @@ package prgenerator;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.ColorUIResource;
 import javax.swing.text.html.HTMLEditorKit;
 
 /**
  *
  * @author Katharina Sandrock
  */
-public class Gui extends JFrame {
+public class Gui extends JFrame implements Runnable {
 
     //set variables needed for the frame that will display the starting page 
-    private JLabel backgroundPicture = new JLabel(new ImageIcon("src\\sources\\GUI_backgroundpicture.png"));
-    private JTextField userInput = new JTextField();
-    private JButton generateTextButton = new JButton();
     private String finalHtmlDocument;// = PrGenerator.mainDatabase.getFinalHtmlDocument();
     private JProgressBar bar = new JProgressBar();
+    private JTextField userInput = new JTextField();
+
 
     /*
      * this constructor will display the main page
      *
      */
-    public Gui() {
 
-
+    public void initializeGui(){
+        JLabel backgroundPicture = new JLabel(new ImageIcon("src\\sources\\GUI_backgroundpicture.png"));
+        JButton generateTextButton = new JButton();
 
         setLayout(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        openBar();
+        bar.setVisible(false);
+        
         backgroundPicture.setBounds(0, 0, 465, 350);
 
         userInput.setBounds(206, 79, 144, 26);
-        userInput.setText("Mögliche Suchbegriffe hier eingeben...");
+        userInput.setText(PrGenerator.mainDatabase.getSEARCH_DEFAULT());
+        userInput.setSelectionStart(0);
+        userInput.setSelectionEnd(userInput.getText().length());
+        userInput.setToolTipText("max. 50 Zeichen erlaubt");
 
         generateTextButton.setBounds(240, 135, 77, 26);
         generateTextButton.setBackground(new Color(181, 57, 24));
         generateTextButton.setText("Start");
         generateTextButton.setForeground(Color.white);
-
+        generateTextButton.setToolTipText("erstellt Pressemitteilung");
+        
 
         // implementing of an action listener on the "Start"- Button to react on user input
         generateTextButton.addActionListener(new java.awt.event.ActionListener() {
 
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                openBar(evt);
-                setInput(evt);
-                PrGenerator.doit();
+                 setInput(evt);                
+            }
+        });
+        
+        userInput.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mouseClicked(MouseEvent e){
+                if (userInput.getText().equals(PrGenerator.mainDatabase.getSEARCH_DEFAULT())) {
+                                    userInput.setSelectionStart(0);
+                userInput.setSelectionEnd(userInput.toString().length()-1);
+                }
 
             }
         });
+        
+        
+                
 
         add(userInput);
         add(generateTextButton);
@@ -67,7 +90,7 @@ public class Gui extends JFrame {
 
         setResizable(false);
         setPreferredSize(new Dimension(465, 380));
-        setLocation(50, 50);
+        setLocation(getCoords(465,380));
         pack();
         setVisible(true);
 
@@ -79,7 +102,15 @@ public class Gui extends JFrame {
      */
     private void setInput(ActionEvent evt) {
 
-        PrGenerator.mainDatabase.setUserInput(userInput.getText());
+        if (userInput.getText().length() <= 50) {
+            bar.setVisible(true);
+            PrGenerator.mainDatabase.setUserInput(userInput.getText());
+           // PrGenerator.doit();
+        } else {
+            
+            JOptionPane.showMessageDialog(null, "Eingabe zu lang! (max. erlaubte Zeichen: 50) ");
+        }
+        
         //PrGenerator.mainInputAnalyzer.modifyInputtoString();
 
     }
@@ -92,45 +123,58 @@ public class Gui extends JFrame {
 
         finalHtmlDocument = PrGenerator.mainDatabase.getFinalHtmlDocument();
         bar.setVisible(false);
-        JFrame outputFrame = new JFrame();
-        JPanel rightPanel = new JPanel();
-        JEditorPane leftPanel = new JEditorPane();
-        JScrollPane leftScrollPane = new JScrollPane(leftPanel);
+        final JFrame outputFrame = new JFrame();
+        JPanel lowerPanel = new JPanel();
+        JEditorPane mainPanel = new JEditorPane();
+        JScrollPane leftScrollPane = new JScrollPane(mainPanel);
         JButton saveButton = new JButton();
         JButton closeButton = new JButton();
-        JButton showInBrowser = new JButton();
+        JButton backButton = new JButton();
 
 
         outputFrame.setLayout(null);
         outputFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        rightPanel.setBounds(350, 0, 150, 300);
-        rightPanel.setBackground(Color.white);
+        lowerPanel.setBounds(0, 570, 550, 50);
+        lowerPanel.setBackground(Color.white);
 
-        leftPanel.setEditable(false);
+        mainPanel.setEditable(false);
         HTMLEditorKit eKit = new HTMLEditorKit();
-        leftPanel.setEditorKit(eKit);
-        leftPanel.setText(finalHtmlDocument);
+        mainPanel.setEditorKit(eKit);
+        mainPanel.setText(finalHtmlDocument);
+        mainPanel.setCaretPosition(0);
 
-        leftScrollPane.setBounds(0,0,350,300);
+
+        leftScrollPane.setBounds(0, 0, 550, 570);
         leftScrollPane.setBackground(Color.white);
+        leftScrollPane.getVerticalScrollBar().setBackground(new Color(202, 202, 205));
+       
+ 
+        lowerPanel.setLayout(null);
         
-        
-        rightPanel.setLayout(null);
-        saveButton.setBounds(20, 50, 100, 26);
+        saveButton.setBounds(110, 13, 100, 26);
         saveButton.setForeground(Color.white);
-        saveButton.setBackground(Color.red);
+        saveButton.setBackground(new Color(181, 57, 24));
         saveButton.setText("speichern");
-
-        closeButton.setBounds(20, 100, 100, 26);
+        saveButton.setToolTipText("Text als .html speichern.");
+        
+        backButton.setBounds(225,13,100,26);
+        backButton.setForeground(Color.white);
+        backButton.setBackground(new Color(181, 57, 24));
+        backButton.setText("zurück");
+        backButton.setToolTipText("zurück zum Startfenster");
+        
+        closeButton.setBounds(340, 13, 100, 26);
         closeButton.setForeground(Color.white);
-        closeButton.setBackground(Color.red);
+        closeButton.setBackground(new Color(181, 57, 24));
         closeButton.setText("beenden");
+        closeButton.setToolTipText("beenden des Programms");
 
-        rightPanel.add(saveButton);
-        rightPanel.add(closeButton);
+        lowerPanel.add(saveButton);
+        lowerPanel.add(backButton);
+        lowerPanel.add(closeButton);
 
-        outputFrame.add(rightPanel);
+        outputFrame.add(lowerPanel);
         outputFrame.add(leftScrollPane);
 
         //action listener that reacts on the click of the close Button with the exit of the programm 
@@ -142,10 +186,15 @@ public class Gui extends JFrame {
             }
 
             private void closeFrame(ActionEvent evt) {
-                System.exit(42);
+                System.exit(0);
             }
         });
 
+        backButton.addActionListener(new java.awt.event.ActionListener(){
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+               outputFrame.dispose();
+            }
+            });
 
         //save button action listener - calls method saveResult() if save Button was clicked
 
@@ -157,10 +206,12 @@ public class Gui extends JFrame {
         });
 
         outputFrame.setResizable(false);
-        outputFrame.setPreferredSize(new Dimension(500, 330));
-        outputFrame.setLocation(25, 25);
+        outputFrame.setPreferredSize(new Dimension(555, 650));     
+        outputFrame.setLocation(getCoords(555,650));
         outputFrame.pack();
         outputFrame.setVisible(true);
+        PrGenerator.mainDatabase.setFinalHtmlDocument(null);
+        PrGenerator.mainDatabase.setUserInput(null);
     }
 
     /**
@@ -191,14 +242,14 @@ public class Gui extends JFrame {
             path = chooser.getSelectedFile().toString();
             file = new File(path);
 
-                if (!(path.endsWith(".html") || path.endsWith(".htm"))) {
-                    path = path + ".html";
-                }
-                try {
-                    PrGenerator.mainDatabase.writeFile(finalHtmlDocument, path);
-                } catch (Exception ex) {
-                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            if (!(path.endsWith(".html") || path.endsWith(".htm"))) {
+                path = path + ".html";
+            }
+            try {
+                PrGenerator.mainDatabase.writeFile(finalHtmlDocument, path);
+            } catch (Exception ex) {
+                Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
             chooser.setVisible(false);
             return true;
@@ -206,13 +257,42 @@ public class Gui extends JFrame {
         chooser.setVisible(false);
         return false;
     }
+    
+    private Point getCoords (int x, int y){
+        
+        int xScreen = Toolkit.getDefaultToolkit().getScreenSize().width;
+        int yScreen = Toolkit.getDefaultToolkit().getScreenSize().height;
+        return new Point(((xScreen/2) - (x/2)),((yScreen/2)) - (y/2));
+        
+        
+    }
 
-    private void openBar(ActionEvent evt) {
+    private void openBar() {
 
         bar.setIndeterminate(true);
         bar.setBounds(227, 170, 100, 20);
+        bar.setForeground(new Color(181, 57, 24));
+        bar.setBackground(new Color(202, 202, 205));
         add(bar);
 
 
     }
+
+    @Override
+    public void run() {
+       
+        initializeGui();
+         while (true) {
+        while (PrGenerator.mainDatabase.getFinalHtmlDocument() == null) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                //Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+            }  
+        }
+        showResult();
+        
+        }
+    }
+    
 }

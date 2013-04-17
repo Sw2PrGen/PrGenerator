@@ -17,13 +17,14 @@ public class InputAnalyzer {
      * Method to filter the userinput to get the best result when searching for the input
      * 
      */
-    public static void modifyInputtoString() {
+    public static void modifyInputToString() {
        //Assign rareStirng the unfiltered userinput from the database to filter it 
         // String rarestring=PrGenerator.mainDatabase.getUserInput(); 
         //rareString=rareString.replace("und", rareString)
         String rareString = PrGenerator.mainDatabase.getUserInput();
+   
 
-        if (rareString.equals("Mögliche Suchbegriffe hier eingeben...") || rareString.isEmpty()) {
+        if (rareString.equals(PrGenerator.mainDatabase.getSEARCH_DEFAULT()) || rareString.isEmpty()) {
         } else {
 
             //Deletion of abreviations
@@ -118,8 +119,11 @@ public class InputAnalyzer {
         for (int i = 0; i < cleanStringArray.length; i++) {
             finalInputList.addFirst(cleanStringArray[i]);
         }
-        // System.out.println(finalInputList);
+        System.out.println("final list " +finalInputList);
         PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
+           System.out.println("final list " +PrGenerator.mainDatabase.getUserInputFiltered());
+                  System.out.println( "\n" + "UserInputFiltered is Empty: " +PrGenerator.mainDatabase.getUserInputFiltered().isEmpty());
+
         //PrGenerator.mainDatabase.manageData();
         }
         else {
@@ -133,6 +137,6 @@ public class InputAnalyzer {
 
     public static void main(String[] args) {
 
-        modifyInputtoString();
+        modifyInputToString();
     }
 }

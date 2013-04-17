@@ -13,7 +13,8 @@ import java.util.logging.Logger;
  */
 public class PrGenerator {
     
-    public static Gui mainGui;
+//    public static Gui mainGui;
+    public static Thread mainGui = new Thread(new Gui());
     public static AbstractCreator mainAbstractCreator;
     public static Database mainDatabase;
     public static HeadingCreator mainHeadingCreator;
@@ -33,8 +34,10 @@ public class PrGenerator {
         mainOutputGenerator = new OutputGenerator();
         mainPictureChooser = new PictureChooser();
         mainTextCreator = new TextCreator();
-        mainGui = new Gui();
+//        mainGui = new Gui();
+//        
         
+        doit();
         //mainDatabase.manageData();
         // mainPictureChooser.choosePicture();
                 
@@ -47,14 +50,32 @@ public class PrGenerator {
     }
     
     public static void doit(){
-        PrGenerator.mainInputAnalyzer.modifyInputtoString();
+        mainGui.start();
+        do {
+        while (mainDatabase.getUserInput() == null) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                //Logger.getLogger(PrGenerator.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        PrGenerator.mainInputAnalyzer.modifyInputToString();
         PrGenerator.mainDatabase.manageData();
         PrGenerator.mainTextCreator.createMainText();
         PrGenerator.mainAbstractCreator.createAbstract();
         PrGenerator.mainHeadingCreator.createHeading();
         PrGenerator.mainPictureChooser.choosePicture();
         PrGenerator.mainOutputGenerator.generateOutput();
-        PrGenerator.mainGui.showResult();
+        while (mainDatabase.getUserInput() != null) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                //Logger.getLogger(PrGenerator.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        } while (true);
+       // mainGui.showResult();
+        
     }
 
 }

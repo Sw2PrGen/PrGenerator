@@ -32,7 +32,7 @@ public class TextCreator {
         Collections.shuffle(databaseText);
         //itearation trough the whole database
         for (Iterator<String> i = databaseText.iterator(); i.hasNext();) {
-            current = i.next();
+            current =  i.next();
             //checking if sentence says something about a relation to a special time
             if (current.matches(".*\\s(Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonnabend|Sonntag|heute|gestern|morgen|Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember|Weihnachten|Ostern|Silvester)\\s.*")) {
                 timeText.add(current);
@@ -43,6 +43,11 @@ public class TextCreator {
                 }                
             }
         }
+        System.out.println("timeText: ");
+         for (Iterator<String> i = timeText.iterator(); i.hasNext();) {
+                String s = i.next();
+                System.out.println(s);
+            }
     }
 
     /**
@@ -55,9 +60,9 @@ public class TextCreator {
         int count = 0; //counter for number of founded sentences        
 
         Collections.shuffle(databaseText);
-        
+        Iterator<String> i = databaseText.iterator();
         //iteration through the list to find a place
-        for (Iterator<String> i = databaseText.iterator(); i.hasNext();) {
+        while (i.hasNext()) {
             
      
             current = i.next();
@@ -65,12 +70,17 @@ public class TextCreator {
             if (current.matches(".*\\sin\\s[A-Z].*")) {
                 placeText.add(current);
                 count = count + 1;
-                databaseText.remove(i); //deletion of found sentence to avoid doubling
+                i.remove(); //deletion of found sentence to avoid doubling
                 if (count > 2) {
                     break; // condition to break the loop if more than 2 sentences are found 
                 }                
             }
         }
+        System.out.println("placeText: " );
+         for (Iterator<String> it = placeText.iterator(); it.hasNext();) {
+                String s = it.next();
+                System.out.println(s);
+            }
     }
 
     /**
@@ -84,33 +94,43 @@ public class TextCreator {
         int counter = 0;  //counter for number of founded sentences
 Collections.shuffle(databaseText);
         // Iteration through the list to find a sentece about the DH
-        for (Iterator<String> i = databaseText.iterator(); i.hasNext();) {
+
+           Iterator<String> i = databaseText.iterator();
+           
+
+
+       while( i.hasNext()) {
             current = i.next();
             if (current.contains("DHBW")) {
                 dhText.add(current);
-                databaseText.remove(i); //deletion of found sentence to avoid doubling
+                i.remove(); //deletion of found sentence to avoid doubling
                 counter++;
                 if (counter > 2) {
                     break; // condition to break the loop if more than 2 sentences are found
                 }
             }
-            if (current.contains("DH")) {
+           else if (current.contains("DH")) {
                 dhText.add(current);
-                databaseText.remove(i); //deletion of found sentence to avoid doubling
+                i.remove(); //deletion of found sentence to avoid doubling
                 counter++;
                 if (counter > 2) {
                     break; // condition to break the loop if more than 2 sentences are found
                 }
             }
-            if (current.contains("Duale Hochschule Baden")) {
+           else if (current.contains("Duale Hochschule Baden")) {
                 dhText.add(current);
-                databaseText.remove(i); //deletion of found sentence to avoid doubling
+                i.remove(); //deletion of found sentence to avoid doubling
                 counter++;
                 if (counter > 2) {
                     break; // condition to break the loop if more than 2 sentences are found
                 }
             }
         }
+       System.out.println("dhText: " ); 
+       for (Iterator<String> it = dhText.iterator(); it.hasNext();) {
+                String s = it.next();
+                System.out.println(s);
+            }
     }
     
     /**
@@ -118,7 +138,7 @@ Collections.shuffle(databaseText);
      * @param input filtered user input
      */
     private void findInput(LinkedList input) {
-
+System.out.println( "\n" + "davor: UserInputFiltered is Empty: " +PrGenerator.mainDatabase.getUserInputFiltered().isEmpty());
         String current; //current sentence        
         String currentinput; //current user input
        Collections.shuffle(databaseText);
@@ -129,16 +149,23 @@ Collections.shuffle(databaseText);
             System.out.println("wir sind im inputsucher daskhka hhaksfk gk a ksg fkga skfgaskghf asgkgdgfgajhdsgfjd");
             currentinput = (String) input.getFirst().toString().toLowerCase(); 
            // System.out.println(currentinput);
-            for (Iterator<String> i = databaseText.iterator(); i.hasNext();) {
+            
+            Iterator<String> i = databaseText.iterator();
+           while( i.hasNext()) {
                 current = i.next();
                 if (current.toString().toLowerCase().contains(currentinput)) {  // check for matches of user input with current sentence from the database (both uncapitalized)
                     preText.add(current);
-                    databaseText.remove(i); //deletion of found sentence to avoid doubling
+                    i.remove(); //deletion of found sentence to avoid doubling
                 }
             }
             input.removeFirst(); 
         }
-        // System.out.println("preText: " + preText);
+         System.out.println("preText: " );
+          for (Iterator<String> it = preText.iterator(); it.hasNext();) {
+                String s = it.next();
+                System.out.println(s);
+            }
+          System.out.println( "\n" + "danach: UserInputFiltered is Empty: " +PrGenerator.mainDatabase.getUserInputFiltered().isEmpty());
     }
     
     /** 
@@ -159,11 +186,13 @@ Collections.shuffle(databaseText);
             }
             finalText.add(preText.get(i));
         }
-
+        int randomsize=(int) (Math.random()*10);
         int randomNumber;
+        System.out.println("databaseText " +databaseText.size());
         //optional filling of the text with random sentences if there where not found enough sentences related to the user input
-        for (int i = 0; i < 20 - finalText.size(); i++) {
-            randomNumber = (int) Math.random() * databaseText.size() + 1;
+        for (int i = 0; i < 10+randomsize - finalText.size(); i++) {
+            randomNumber = (int) (Math.random() * (databaseText.size() + 1));
+            System.out.println("random " +randomNumber);
             finalText.add(databaseText.get(randomNumber));
         }
         //System.out.println(finaltext);
@@ -176,7 +205,11 @@ Collections.shuffle(databaseText);
      * 
      */
     public void createMainText() {
-
+        finalText.clear();
+        preText.clear();
+        dhText.clear();
+        timeText.clear();
+        placeText.clear();
         LinkedList liste = new <String>LinkedList();
         LinkedList text = new <String>LinkedList();
         LinkedList input = new <String>LinkedList();
@@ -226,7 +259,8 @@ Collections.shuffle(databaseText);
         databaseText = PrGenerator.mainDatabase.getCurrentData();
 
         String textStr = "";
-        findInput(PrGenerator.mainDatabase.getUserInputFiltered());
+        LinkedList <String> userInputFiltered = new <String> LinkedList(PrGenerator.mainDatabase.getUserInputFiltered());
+        findInput(userInputFiltered);
         findPlace();
         findDhRelation();
         findTime();
@@ -241,8 +275,15 @@ Collections.shuffle(databaseText);
         }
 
         //adding all the sentences to a final string
+        int counter=0;
         for (Iterator<String> i = finalText.iterator(); i.hasNext();) {
-            textStr = textStr +i.next();// +". ";
+            counter++;
+            textStr = textStr +i.next() +" ";
+            if (counter==4){
+                textStr=textStr+ "<br/> <br/>";
+                counter=0;
+            }
+            
         }
 
         PrGenerator.mainDatabase.setCreatedText(textStr);  // set final text in the database
