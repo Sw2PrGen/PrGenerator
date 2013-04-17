@@ -247,6 +247,8 @@ public class Gui extends JFrame implements Runnable {
             }
             try {
                 PrGenerator.mainDatabase.writeFile(finalHtmlDocument, path);
+                JOptionPane.showMessageDialog(null, "Datei wurde gespeichert in: \"" + path + "\"");
+                
             } catch (Exception ex) {
                 Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
             }
