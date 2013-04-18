@@ -43,14 +43,17 @@ public class PictureChooser {
      * 
      */
     public void choosePicture() {
-       helper.clear(); 
-      // System.out.println( "\n" + "hier: UserInputFiltered is Empty: " +PrGenerator.mainDatabase.getUserInputFiltered().isEmpty());
-     if(!PrGenerator.mainDatabase.getUserInputFiltered().isEmpty()){
+       System.out.println("Picture list before choose picture: " +PrGenerator.mainDatabase.getPictureList()); 
+       helper=new <String>LinkedList();
+       //helper.clear(); doesn't work
+        System.out.println("Picture list after helper.clear: " +PrGenerator.mainDatabase.getPictureList()); 
+      System.out.println( "\n" + "hier: UserInputFiltered is Empty: " +PrGenerator.mainDatabase.getUserInputFiltered().isEmpty());
+        if(!PrGenerator.mainDatabase.getUserInputFiltered().isEmpty()){
          
        System.out.println("configure requests");
        configureRequests();
-       
-       }         
+       System.out.println("Picture list after configure requests: " +PrGenerator.mainDatabase.getPictureList()); 
+        }         
       
         //select random picture from a pictureList
         int randomNumber = (int) (Math.random() * (PrGenerator.mainDatabase.getPictureList().size()));
@@ -80,12 +83,14 @@ public class PictureChooser {
 
          
         LinkedList<String> userInputFiltered = PrGenerator.mainDatabase.getUserInputFiltered(); //filtered user input
-       // System.out.println("Filtered user input" +PrGenerator.mainDatabase.getUserInputFiltered());
+        System.out.println("Filtered user input" +PrGenerator.mainDatabase.getUserInputFiltered());
                
         String url;
         url=START_URL + PARAMETERS_URL +PrGenerator.mainDatabase.getUserInput().replace(" ", "+");
-        
+        System.out.println("Picture list before found full input: " +PrGenerator.mainDatabase.getPictureList()); 
         boolean foundFullInput=findPictures(url, true);
+        System.out.println("foundFullInput? " +foundFullInput);
+        System.out.println("Picture list after foundFullinput: " +PrGenerator.mainDatabase.getPictureList()); 
         if(!foundFullInput) {
             while (!userInputFiltered.isEmpty()) {
                url = START_URL + PARAMETERS_URL + userInputFiltered.getFirst().replace(" ", "+"); // replace blanks in the user input to get a proper url 
@@ -95,11 +100,13 @@ public class PictureChooser {
                userInputFiltered.removeFirst();
            }
         }
-         
+         System.out.println("Helper empty?" +helper.isEmpty());
          if(!helper.isEmpty()){
-        
+        System.out.append("helper" + helper);
         PrGenerator.mainDatabase.setPictureList(helper); // set up the pictureList in the database with founded pictures
+        System.out.println("Picture list after choose picture: " +PrGenerator.mainDatabase.getPictureList()); 
          }
+         System.out.println("Picture list after choose picture: " +PrGenerator.mainDatabase.getPictureList());
     }
     
     /**
@@ -114,6 +121,7 @@ public class PictureChooser {
     private boolean findPictures(String address, boolean UserInput) {
         //open url, establish connection and read content
         try {
+            System.out.println("Picture list in findPictures at the beginning: " +PrGenerator.mainDatabase.getPictureList()); 
             URL url = new URL(address);
             System.out.println("Url: " +url);
             URLConnection connection = url.openConnection();
@@ -130,6 +138,7 @@ public class PictureChooser {
             JSONObject json = new JSONObject(builder.toString());  // construct a JSONObject from page content
             if (json.getJSONObject("responseData").getJSONArray("results").length()==0){
                 System.out.println("no pics found");
+                System.out.println("Picture List if no picture found" +PrGenerator.mainDatabase.getPictureList());
                 return false;
             }
             else{
