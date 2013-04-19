@@ -37,7 +37,7 @@ public class Gui extends JFrame implements Runnable {
      */
 
     public void initializeGui(){
-        JLabel backgroundPicture = new JLabel(new ImageIcon("src\\sources\\GUI_backgroundpicture.png"));
+        JLabel backgroundPicture = new JLabel(new ImageIcon(getClass().getResource("/sources/GUI_backgroundpicture.png"))); //changed by Dawid to ensure standalone *.jar functionality
         JButton generateTextButton = new JButton();
 
         setLayout(null);
