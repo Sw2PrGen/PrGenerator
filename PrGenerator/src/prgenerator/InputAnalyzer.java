@@ -100,25 +100,27 @@ public class InputAnalyzer {
         // String cleanString;
         // cleanString=PrGenerator.mainDatabase.getUserInput();
         
-        
+       
         //deletion of blanks at beginning or end of String
         if(cleanString.startsWith(" ")){
             cleanString=cleanString.substring(1);
         }
+        /* 
         if(cleanString.endsWith(" ")){
             cleanString=cleanString.substring(0, cleanString.length()-1);
         }
-        
+        */
         
         //temporary linked list with userInput
         LinkedList finalInputList = new <String>LinkedList();
        
-        if(cleanString.equalsIgnoreCase(" ")){
+        if(cleanString.equalsIgnoreCase(" ") || cleanString.isEmpty()){
             finalInputList.clear();
             PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
         }else{
         //checking if there are more than one word
         if(cleanString.contains(" ")){
+            
             
        //Array for the splitted String
         String[] cleanStringArray;
