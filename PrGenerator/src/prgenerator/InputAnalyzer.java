@@ -100,9 +100,23 @@ public class InputAnalyzer {
         // String cleanString;
         // cleanString=PrGenerator.mainDatabase.getUserInput();
         
+        
+        //deletion of blanks at beginning or end of String
+        if(cleanString.startsWith(" ")){
+            cleanString=cleanString.substring(1);
+        }
+        if(cleanString.endsWith(" ")){
+            cleanString=cleanString.substring(0, cleanString.length()-1);
+        }
+        
+        
         //temporary linked list with userInput
         LinkedList finalInputList = new <String>LinkedList();
-        
+       
+        if(cleanString.equalsIgnoreCase(" ")){
+            finalInputList.clear();
+            PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
+        }else{
         //checking if there are more than one word
         if(cleanString.contains(" ")){
             
@@ -116,7 +130,7 @@ public class InputAnalyzer {
         
         //filling the list with the array-content
         for (int i = 0; i < cleanStringArray.length; i++) {
-            finalInputList.addFirst(cleanStringArray[i]);
+            finalInputList.addFirst(cleanStringArray[i].replaceAll(" ",""));
         }
        // System.out.println("final list " +finalInputList);
         PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
@@ -135,6 +149,9 @@ public class InputAnalyzer {
             System.out.println("inhalt von der finallist:  "+PrGenerator.mainDatabase.getUserInputFiltered());
             
         }
+        
+        }
+        
     }
 
     public static void main(String[] args) {
