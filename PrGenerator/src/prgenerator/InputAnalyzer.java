@@ -106,18 +106,15 @@ public class InputAnalyzer {
         //checking if there are more than one word
         if(cleanString.contains(" ")){
             
-       //Array for the splitted STring
+       //Array for the splitted String
         String[] cleanStringArray;
         
         //splitting the input string into an array
         cleanStringArray = cleanString.split(" ");
-        
-        //temporary linked list with userInput
-       // LinkedList finalInputList = new <String>LinkedList();
-
+       
         
         
-        //filling the list with the arraycontent
+        //filling the list with the array-content
         for (int i = 0; i < cleanStringArray.length; i++) {
             finalInputList.addFirst(cleanStringArray[i]);
         }
@@ -133,8 +130,9 @@ public class InputAnalyzer {
             
           //  System.out.println("xxxxxxxxxin else xxxxxxx");
             finalInputList.add(cleanString);
+                    //set the userinput
             PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
-           // System.out.println("inhalt von der finallist:  "+PrGenerator.mainDatabase.getUserInputFiltered().getFirst());
+            System.out.println("inhalt von der finallist:  "+PrGenerator.mainDatabase.getUserInputFiltered());
             
         }
     }
