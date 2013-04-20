@@ -5,6 +5,8 @@
 package prgenerator;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URL;
 import java.util.Random;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,12 +27,20 @@ class Template{
         try {
             
             
- 
-	File fXmlFile = new File(path);
+        
+        URL uri = getClass().getResource(path);
+       
+        String filePath = uri.getPath().toString();
+
+        filePath = filePath.replace("/", "\\");
+        
+	
+        File fXmlFile = new File(filePath);
+        
 	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 	Document doc = dBuilder.parse(fXmlFile);
- 
+        
 
 	doc.getDocumentElement().normalize();
  
@@ -49,6 +59,13 @@ class Template{
     }
         return null;
   }
+    
+     public static void main(String [ ] args)
+{
+    Template test = new Template();
+    test.readXML("/sources/templates_abstract.xml", "templateLocation");
+     
+}   
 
 }
     
