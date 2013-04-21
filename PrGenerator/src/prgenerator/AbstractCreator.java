@@ -199,7 +199,9 @@ public class AbstractCreator {
         */
        public void createAbstract(){
        analyzeText();
-       String path = "src/sources/templates_abstract.xml";
+
+       //String path = "src\\sources\\templates_abstract.xml";
+       String path = "/sources/templates_abstract.xml";
        String location = PrGenerator.mainDatabase.getTemplateFill()[0];
        String date = PrGenerator.mainDatabase.getTemplateFill()[1];
        String keyAspect = PrGenerator.mainDatabase.getTemplateFill()[2];
@@ -336,8 +338,21 @@ public class AbstractCreator {
         PrGenerator.mainDatabase.setCreatedAbstract(abstractTemplateQuery);
         System.out.println(abstractTemplateQuery);
    }
-   public static void main(String [] arg){
-       AbstractCreator abstractCreator = new AbstractCreator();
+  //  private void fetchSentences(int i,String path, String tagName){
+    //    Template templateReader = new Template();
+      //  sentences[i] = templateReader.readXML(path, tagName);
+         public static void main(String [ ] args)
+{
+      AbstractCreator abstractCreator = new AbstractCreator();
+      abstractCreator.createAbstract();
+            // Deliver the robot to the origin (1,1),
+            // facing East, with no beepers.
+     
+}   
+        }   
+
+//   public static void main(String [] arg){
+    //   AbstractCreator abstractCreator = new AbstractCreator();
        
        //abstractCreator.analyzeText();     // when live!!!!!
        //String[] templateFill = abstractCreator.analyzeText();
@@ -345,9 +360,12 @@ public class AbstractCreator {
        //String[] templateFill = PrGenerator.mainDatabase.getTemplateFill();    // when live!!!!!!!
        
        //abstractCreator.createAbstract("src/sources/templates_abstract.xml", (String)templateFill[0], (String)templateFill[1], (String)templateFill[2]);
-       abstractCreator.createAbstract();
-   } 
-}
+  //     abstractCreator.createAbstract();
+//}
+
+
+
+//}
 
 
 
