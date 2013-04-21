@@ -18,7 +18,7 @@ public class HeadingCreator {
         Template templateReader = new Template();
         
         if(templateFill[0] != null){
-            heading += templateReader.readXML(path, "template");
+            heading += templateReader.readXML(path, "template", "templates");
             heading = heading.replace("_location_", templateFill[0]);
         }
         if(templateFill[1] != null){

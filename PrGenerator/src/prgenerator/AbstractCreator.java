@@ -11,19 +11,9 @@ import java.util.Random;
 
 
 /**
- *
- * 
- * 
- * 
- * 
  * @author Dominik Künne, Jörg Woditschka, Tobias Mauritz
- * 
  * Abstractgenerator: Methode createAbstract() funktioniert. Als Eingabe wurde folgende XML-DAtei verwendet:
- * 
- * 
  */
-
-
 public class AbstractCreator {
     
     String whenSL[] = new String[1];
@@ -116,10 +106,18 @@ public class AbstractCreator {
         for (int i =0; i<txtLength; i++){
             String nWord = words.get(i);
             
-            //store "when" words
-            if (nWord.matches("(Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonnabend|Sonntag|heute|gestern|morgen|Weihnachten|Ostern|Silvester)"))
+            //modified by Jörg: store dates needing an "am" 
+            if (nWord.matches("(Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonnabend|Sonntag)"))
+            { 
+                storeWord("am "+nWord, whenWL, whenCL);
+               
+                System.out.println("1 "+nWord);
+                
+            //modified by Jörg: store dates which can be inserted without an "am"
+            } else if (nWord.matches("(heute|gestern|morgen|Weihnachten|Ostern|Silvester)"))
             { 
                 storeWord(nWord, whenWL, whenCL);
+               
                 System.out.println("1 "+nWord);
                 
             } else if (nWord.matches("(Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember)")){
@@ -127,7 +125,7 @@ public class AbstractCreator {
                 // add number of day within the month 
                 if (i-1 >=0){ // if month is at the beginning of the text
                     if (words.get(i-1).matches("[0-9]{1,2}\\.")){
-                        nWord = words.get(i-1)+" "+nWord;
+                        nWord = "am "+words.get(i-1)+" "+nWord;
                     }
                 }
                 
@@ -169,7 +167,7 @@ public class AbstractCreator {
             // "what" words: stores words which stat with a capital letter
             // TO DO: Alle Wörter mit Großbuchstaben am Anfang + mindestens 3 Zeichen (Der, Die, Das fällt weg, aber Nach oder Außerdem nicht
                 // Liste erweitern!
-            } else if (nWord.matches("[A-Z]{1,}.{3,}") && !nWord.matches("Nach|Außerdem|Dies|DHBW|Prof")){ 
+            } else if (nWord.matches("[A-Z]{1,}.{3,}") && !nWord.matches("Nach|Außerdem|Dies|DHBW|Prof|Mannheim|Baden-Württemberg")){ 
                 storeWord(nWord, whatWL, whatCL);
                 System.out.println("5 "+nWord);
             }
@@ -196,23 +194,19 @@ public class AbstractCreator {
         //return awords;
     }
     
-   /**
-    * 
-    * @param path
-    * @param location
-    * @param date
-    * @param keyAspect 
-    */
-   //public void createAbstract(String path, String location, String date, String keyAspect){
+       /**
+        * 
+        */
        public void createAbstract(){
        analyzeText();
-       String path = "src\\sources\\templates_abstract.xml";
+       String path = "src/sources/templates_abstract.xml";
        String location = PrGenerator.mainDatabase.getTemplateFill()[0];
        String date = PrGenerator.mainDatabase.getTemplateFill()[1];
        String keyAspect = PrGenerator.mainDatabase.getTemplateFill()[2];
        
+       
         
-         /*
+      /*
        * in each array element of the array sentences there is one type of template loaded
        * position 0: templateLocation
        * position 1: templateDate
@@ -222,39 +216,91 @@ public class AbstractCreator {
        */
      
       
-       String [ ] sentences= new String[5]; 
+       //added by Jörg: dynamic approach for concatenating sentences 
+       String abstractTemplateQuery=""; //String to be returned as abstract
+       Template template = new Template();
+       Random generator = new Random(); // a random number generator helps picking sentences for the abstract   
+       
+       String nextType="DHBW"; //
+       int nonCounter = 0;
+       LinkedList<String> availableTagNames = new LinkedList(); //list of available TagNames. Get's reduced during the picking.
+       availableTagNames.add("templateLocation");
+       availableTagNames.add("templateDate");
+       availableTagNames.add("templateKeyAspect");
+       
+       //this loop adds templates to the abstractTemplateQuery to create an abstract
+       for(int i=0; i<3; i++){
+           
+           //picking a TagName
+           int pickedTagName=generator.nextInt(availableTagNames.size());
+           String tagName=availableTagNames.get(pickedTagName);
+           availableTagNames.remove(pickedTagName);
+           
+           //add another tag to the TagName 
+           if(availableTagNames.size()>1 && generator.nextBoolean()){
+               int pickedTagName2=generator.nextInt(availableTagNames.size());
+               String tagName2=availableTagNames.get(pickedTagName2); 
+               availableTagNames.remove(pickedTagName2);
+               tagName=(pickedTagName>pickedTagName2)?tagName2+tagName.substring(8):tagName+tagName2.substring(8); 
+               i++;
+           }
+           
+           //pick a Type and generate abstractTemplateQuery
+           if(generator.nextInt(2)==0 && nonCounter<2){
+               abstractTemplateQuery+=template.readXML(path, tagName, "None");
+               nonCounter++;
+               nextType="DHBW";
+           }else{
+               abstractTemplateQuery+=template.readXML(path, tagName, nextType);
+               nextType=(nextType.equals("DHBW"))?"Sie":"DHBW";
+           }
+       }
+       
+       //"am" -> "Am"
+       if((abstractTemplateQuery.indexOf("_date_")==1 && date.substring(0,2).equals("am"))||(abstractTemplateQuery.indexOf("_date_")>1 && abstractTemplateQuery.charAt(abstractTemplateQuery.indexOf("_date_")-2)=='.' && date.substring(0,2).equals("am"))){
+           date="Am"+date.substring(2);
+       }
+       
+       //replace place holders in abstractTemplateQuery
+       abstractTemplateQuery=abstractTemplateQuery.replace("_location_", location).replace("_date_", date).replace("_keyAspect_", keyAspect);
+       
+       
+       /*
+       String[] sentences= new String[5]; 
         
         Template templateReader = new Template();
         String abstractTemplateQuery = "";
         //initialising array
-        for ( int i = 0; i <= 4; i++ ) {
+        for ( int i = 0; i < sentences.length; i++ ) {
            sentences[i] = "";
        }
         if(location != null){
-            sentences[0] = templateReader.readXML(path, "templateLocation");
+            sentences[0] = templateReader.readXML(path, "templateLocation")[0];
             sentences[0] = sentences[0].replace("_location_", location);
         }
         
         if(date != null){
-            sentences[1] = templateReader.readXML(path, "templateDate");
+            sentences[1] = templateReader.readXML(path, "templateDate")[0];
             sentences[1] = sentences[1].replace("_date_", date);
         }
         if (keyAspect != null){
-            sentences[2] = templateReader.readXML(path, "templateKeyAspect");
+            sentences[2] = templateReader.readXML(path, "templateKeyAspect")[0];
             sentences[2] = sentences[2].replace("_keyAspect_", keyAspect);
         }
         
         if ((keyAspect != null) && (location != null)){
-            sentences[3] = templateReader.readXML(path, "templateKeyAspectandLocation");
+            sentences[3] = templateReader.readXML(path, "templateKeyAspectandLocation")[0];
             sentences[3] = sentences[3].replace("_keyAspect_", keyAspect);
             sentences[3] = sentences[3].replace("_location_", location);
         }
         
         if ((date != null) && (location != null)){
-            sentences[4] = templateReader.readXML(path, "templateLocationandDate");
+            sentences[4] = templateReader.readXML(path, "templateLocationandDate")[0];
             sentences[4] = sentences[4].replace("_date_", date);
             sentences[4] = sentences[4].replace("_location_", location);
         }
+        
+        
         
         
         //randomly a predefined combination how the template sentences are concatenated is chosen
@@ -285,8 +331,8 @@ public class AbstractCreator {
                     break;
             case 11 : abstractTemplateQuery = sentences [4] + sentences [2];
                     break;
-                
-        }
+        
+        }*/
         PrGenerator.mainDatabase.setCreatedAbstract(abstractTemplateQuery);
         System.out.println(abstractTemplateQuery);
    }

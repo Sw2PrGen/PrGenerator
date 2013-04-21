@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<root>
+<templates>
 <template>DHBW Mannheim aktiv in _location_</template>
 <template>Die DHBW ist führend im Bereich _keyAspect_</template>
-</root>
+<template>_keyAspect_ an der DHBW</template>
+<template>_keyAspect_ am _date_</template>
+</templates>
