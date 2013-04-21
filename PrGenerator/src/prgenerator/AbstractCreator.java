@@ -258,9 +258,9 @@ public class AbstractCreator {
            }
        }
        
-       //"am" -> "Am"
-       if((abstractTemplateQuery.indexOf("_date_")==1 && date.substring(0,2).equals("am"))||(abstractTemplateQuery.indexOf("_date_")>1 && abstractTemplateQuery.charAt(abstractTemplateQuery.indexOf("_date_")-2)=='.' && date.substring(0,2).equals("am"))){
-           date="Am"+date.substring(2);
+       //"am" -> "Am" & "heute" -> "Heute"
+       if(abstractTemplateQuery.indexOf("_date_")==1 ||(abstractTemplateQuery.indexOf("_date_")>1 && abstractTemplateQuery.charAt(abstractTemplateQuery.indexOf("_date_")-2)=='.')){
+           date=date.substring(0,1).toUpperCase()+date.substring(1);
        }
        
        //replace place holders in abstractTemplateQuery
