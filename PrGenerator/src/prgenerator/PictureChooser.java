@@ -43,12 +43,13 @@ public class PictureChooser {
      * 
      */
     public void choosePicture() {
-       System.out.println("Picture list before choose picture: " +PrGenerator.mainDatabase.getPictureList()); 
-       helper=new <String>LinkedList();
-       //helper.clear(); doesn't work
-        System.out.println("Picture list after helper.clear: " +PrGenerator.mainDatabase.getPictureList()); 
+      System.out.println("Picture list before choose picture: " +PrGenerator.mainDatabase.getPictureList()); 
+       
+      helper=new <String>LinkedList(); 
+          
       System.out.println( "\n" + "hier: UserInputFiltered is Empty: " +PrGenerator.mainDatabase.getUserInputFiltered().isEmpty());
-        if(!PrGenerator.mainDatabase.getUserInputFiltered().isEmpty()){
+      //if userinput exists
+      if(!PrGenerator.mainDatabase.getUserInputFiltered().isEmpty()){
          
        System.out.println("configure requests");
        configureRequests();
@@ -83,10 +84,19 @@ public class PictureChooser {
 
          
         LinkedList<String> userInputFiltered = PrGenerator.mainDatabase.getUserInputFiltered(); //filtered user input
-        System.out.println("Filtered user input" +PrGenerator.mainDatabase.getUserInputFiltered());
-               
+        System.out.println("Filtered user input " +PrGenerator.mainDatabase.getUserInputFiltered());
+        System.out.println("User input: " +PrGenerator.mainDatabase.getUserInput());
+        String inputAsString = ""  ;
         String url;
-        url=START_URL + PARAMETERS_URL +PrGenerator.mainDatabase.getUserInput().replace(" ", "+");
+        // build string from userinput
+        for (Iterator<String> i = userInputFiltered.iterator(); i.hasNext();) {
+            
+            inputAsString = inputAsString +" " +i.next() ;
+        }
+        System.out.println("inputAsStr:" +inputAsString);
+         
+        url=START_URL + PARAMETERS_URL +inputAsString.replace(" ", "+");
+        //url=START_URL + PARAMETERS_URL +PrGenerator.mainDatabase.getUserInput().replace(" ", "+"); //first searching for the url
         System.out.println("Picture list before found full input: " +PrGenerator.mainDatabase.getPictureList()); 
         boolean foundFullInput=findPictures(url, true);
         System.out.println("foundFullInput? " +foundFullInput);
@@ -116,7 +126,7 @@ public class PictureChooser {
      * Uses JSON to get the Web-Content
      * @return true if a picture for heading could be founded, false otherwise
      * @param adress - url for image search
-     * @param heading - true if picture for the whole heading should be found
+     * @param UserInput - true if picture for the entire user input should be found
      */
     private boolean findPictures(String address, boolean UserInput) {
         //open url, establish connection and read content
@@ -144,17 +154,15 @@ public class PictureChooser {
             else{
             String imageUrl = json.getJSONObject("responseData").getJSONArray("results").getJSONObject(0).getString("unescapedUrl"); //get the url-property of a json object           
             String tbImageUrl = json.getJSONObject("responseData").getJSONArray("results").getJSONObject(0).getString("tbUrl");
-            /*abfrage 
-             * der bildergröße
-             * wenn zu groß -> tbUrl nehmen
-             */
+            
             System.out.println("imageUrl" +imageUrl);
             helper.add(imageUrl);   // add  founded picture to helper list
-            System.out.println("helper" +helper);}
+            System.out.println("helper" +helper);
             if (UserInput == true) {
                 return true;
             } else {
                 return false;
+            }
             }
         } catch (Exception e) {
             //e.printStackTrace();
