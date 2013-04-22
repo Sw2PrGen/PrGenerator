@@ -26,17 +26,9 @@ class Template {
 
     public String readXML(String path, String tagName, String type) {
         try {
-            
-            
-        
-        URL uri = getClass().getResource(path);
-       
-        String filePath = uri.getPath().toString();
-
-        //filePath = filePath.replace("/", "\\");
-        
+      
 	
-        File fXmlFile = new File(filePath);
+        File fXmlFile = new File(path);
         
 	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
