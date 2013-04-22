@@ -88,16 +88,26 @@ public class Database {
      */
     public LinkedList<String> readFile(String filename) throws Exception {
 
-        LinkedList<String> list = new LinkedList<>();
-        //InputStream is = this.getClass().getResourceAsStream("sources/backup.dat"); 
-        BufferedReader reader = new BufferedReader(new FileReader(filename));
-        //BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        String s;
-        while ((s = reader.readLine()) != null) {
-            list.add(s);
+//        LinkedList<String> list = new LinkedList<>();
+//        //InputStream is = this.getClass().getResourceAsStream("sources/backup.dat"); 
+//        BufferedReader reader = new BufferedReader(new FileReader(filename));
+//        //BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+//        String s;
+//        while ((s = reader.readLine()) != null) {
+//            list.add(s);
+//        }
+//        reader.close();
+//        return list;
+        FileInputStream fis = new FileInputStream(filename);
+        InputStreamReader isr = new InputStreamReader(fis, "UTF8"); // oder  andere encodings, z.B. ISO-8859-1
+        StringBuilder buffer = new StringBuilder();
+        int c;
+        while ((c = isr.read()) != -1) {
+            buffer.append((char) c);
         }
-        reader.close();
-        return list;
+        String str = buffer.toString();
+        String[] zeilen = str.split("\n");  // oder \r\n je nach EOL Style
+        return new LinkedList<String>(Arrays.asList(zeilen));
     }
 
     /**
@@ -115,7 +125,7 @@ public class Database {
         }
         File file = new File(dirs);
         file.mkdirs();
-        BufferedWriter fileWriter = new BufferedWriter(new FileWriter(filename));
+        BufferedWriter fileWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"));
         fileWriter.write(text);
         fileWriter.close();
     }
@@ -295,10 +305,11 @@ public class Database {
         LinkedList<String> backupFile = null;
         try {
             backupFile = readFile(BACKUP_FILE_PATH);    //open the backup file
+            lastLatestUrlNo = Integer.parseInt(backupFile.pop());   //get the no of the latest news item from the backup
         } catch (Exception e) {
+            lastLatestUrlNo = 0;
             e.printStackTrace();
         }
-        lastLatestUrlNo = Integer.parseInt(backupFile.pop());   //get the no of the latest news item from the backup
         String latestUrl = getLatestNewsUrl();      //get the url to the latest news item
         if (latestUrl == null) {
             return false;               //no conncetion or latest item in backup
