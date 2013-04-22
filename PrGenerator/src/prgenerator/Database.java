@@ -63,7 +63,7 @@ public class Database {
     /**
      * Analyses the input string and makes a LinkedList with sentences out of it
      *
-     * @param input string to analyse
+     * @param input string to analyze
      * @return list with sentences
      */
     private LinkedList<String> makelist(String input) {
