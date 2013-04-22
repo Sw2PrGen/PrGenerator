@@ -21,17 +21,17 @@ public class AbstractCreator {
     String whereSL[] = new String[2];
     String notNounL[] = new String[5];
     
-    LinkedList<String> whenWL = new LinkedList<>(); // when word list
-    LinkedList<Integer> whenCL = new LinkedList<>(); // when couter list
+    private LinkedList<String> whenWL = new LinkedList<>(); // when word list
+    private LinkedList<Integer> whenCL = new LinkedList<>(); // when couter list
     
-    LinkedList<String> whereWL = new LinkedList<>(); 
-    LinkedList<Integer> whereCL = new LinkedList<>(); 
+    private LinkedList<String> whereWL = new LinkedList<>(); 
+    private LinkedList<Integer> whereCL = new LinkedList<>(); 
     
-    LinkedList<String> whatWL = new LinkedList<>(); 
-    LinkedList<Integer> whatCL = new LinkedList<>();
+    private LinkedList<String> whatWL = new LinkedList<>(); 
+    private LinkedList<Integer> whatCL = new LinkedList<>();
     
     
-    String maintext;// = PrGenerator.mainDatabase.getCreatedText();
+    private String maintext;// = PrGenerator.mainDatabase.getCreatedText();
     //String maintext = "Nach meiner In August Montag heute Montag 1. Februar 2012 12.März Dezember 2012 Promotion habe ich Mittwoch heute eine Professur 3 Wochen einer Woche eine Woche fünf Wochen in Mannheim für ABWL, Personal und Organisation an der Ostfalia HAW in Wolfsburg verwaltet, bevor ich am 1.März 2013 an die DHBW Mannheim berufen wurde. Dies hat z.B. dazu geführt, dass ich an der Universität Mannheim gemeinsam mit Kollegen ein Seminar zur Mitarbeiterführung entwickelt habe, das stark auf meinen Erfahrungen aus der beruflichen Praxis aufbaute.Für Studieninteressierte, die gerne Studium und Praxisausbildung verbinden möchten, bietet das duale Studium an der DHBW eine attraktive Möglichkeit mit hervorragenden Berufsaussichten und Karrierechancen. August. ";
 
     
