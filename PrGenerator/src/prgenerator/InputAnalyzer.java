@@ -25,6 +25,7 @@ public class InputAnalyzer {
    
 
         if (rareString.equals(PrGenerator.mainDatabase.getSEARCH_DEFAULT()) || rareString.isEmpty()) {
+            clearInput();
         } else {
 
             //Deletion of abreviations
@@ -90,6 +91,14 @@ public class InputAnalyzer {
         }
     }
 
+    private static void clearInput(){
+                 LinkedList finalInputList = new <String>LinkedList();
+
+        finalInputList.clear();
+            PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
+    }
+    
+    
     /**
      * Method to transform the filtered input from String to a linkedList
      *
@@ -115,8 +124,7 @@ public class InputAnalyzer {
         LinkedList finalInputList = new <String>LinkedList();
        
         if(cleanString.equalsIgnoreCase(" ") || cleanString.isEmpty()){
-            finalInputList.clear();
-            PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
+            clearInput();
         }else{
         //checking if there are more than one word
         if(cleanString.contains(" ")){
@@ -158,6 +166,6 @@ public class InputAnalyzer {
 
     public static void main(String[] args) {
 
-        modifyInputToString();
+      //  modifyInputToString();
     }
 }
