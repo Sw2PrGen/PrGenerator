@@ -1,23 +1,34 @@
 <?xml version="1.0"?>
-     <template>
-     <templateLocation> Die DHBW Mannheim war in _location_ vor Ort.</templateLocation>
-     <templateLocation> Das große Event ereignete sich in _location_.</templateLocation>
-     <templateLocation> In _location_ präsentierte die DHBW-Mannheim ihr ganzes Können, die Teilnehmer konnten ihr Staunen nicht verbergen.</templateLocation>
-     <templateLocation> Das große Event ereignete sich in _location_.</templateLocation>
-     <templateLocation> Die DHBW Mannheim legte in _location_ einen großen Auftritt hin.</templateLocation>
-     <templateDate> Am _date_ war es so weit.</templateDate>
-     <templateDate> Am _date_ ging es endlich los.</templateDate>
-     <templateDate> Zum _date_ hatte das Warten endlich ein Ende.</templateDate>
-     <templateDate> Die DHBW Mannheim konnte am _date_ mal wieder glänzen.</templateDate>
-     <templateDate> Niemand konnte ahnen, dass es am _date_ schon soweit war.</templateDate>   
-     <templateKeyAspect> Sie zeigte bahnbrechende Erkenntnisse zum Thema _keyAspect_.</templateKeyAspect>
-     <templateKeyAspect> Die DHBW setzte neue Maßstäbe im Bereich _keyAspect_.</templateKeyAspect>
-     <templateKeyAspect> Sie zeigte neue Perspektiven in _keyAspect_ auf.</templateKeyAspect>
-     <templateKeyAspect> Große Erkenntnisse zum Thema _keyAspect_ wurden gewonnen.</templateKeyAspect>
-     <templateKeyAspect> Die DHBW präsentierte ihre neue Interpretation von _keyAspect_.</templateKeyAspect>
-     <templateKeyAspectandLocation> In _location_ konnte die DHBW-Mannheim neue Erkenntnisse im Bereich _keyAspect_ gewinnen</templateKeyAspectandLocation>
-     <templateKeyAspectandLocation> Bei den Vorträgen von Mitarbeitern der DHBW-Mannheim in _location_ konnten neue wertvolle Erkenntnisse bezüglich des Themas _keyAspect_ gewonnen werden. </templateKeyAspectandLocation>
-     <templateKeyAspectandLocation> Durch die einzigartige Kompetenz der Professoren der DHBW-Mannheimwurden neue Erkenntnisse im Bereich _keyAspect_ gewonnen, welche in _location_ vorgestellt wurden. </templateKeyAspectandLocation>
-     <templateLocationandDate> Am _date_ zeigte die DHBW-MAnnheim in _location_ mal wieder ihre einzigartige Kompetenz. </templateLocationandDate>
-     <templateLocationandDate> In _location_ zeigte die DHBW-MAnnheim am _date_ mal wieder zu welchen herausragenden Leistungen sie fähig ist. </templateLocationandDate>
-</template>
+<templates>
+    <DHBW>
+        <templateLocation> Die DHBW Mannheim war in _location_ vor Ort.</templateLocation>
+        <templateLocation> In _location_ präsentierte die DHBW-Mannheim ihr ganzes Können, die Teilnehmer konnten ihr Staunen nicht verbergen.</templateLocation>
+        <templateLocation> Die DHBW Mannheim legte in _location_ einen großen Auftritt hin.</templateLocation>
+        <templateDate> Die DHBW Mannheim konnte _date_ mal wieder glänzen.</templateDate>
+        <templateKeyAspect> Die DHBW setzte neue Maßstäbe im Bereich _keyAspect_.</templateKeyAspect>
+        <templateKeyAspect> Die DHBW präsentierte ihre neue Interpretation von _keyAspect_.</templateKeyAspect>
+        <templateLocationDate> In _location_ zeigte die DHBW Mannheim _date_ mal wieder zu welchen herausragenden Leistungen sie fähig ist. </templateLocationDate>
+        <templateLocationKeyAspect> Bei den Vorträgen von Mitarbeitern der DHBW-Mannheim in _location_ konnten neue wertvolle Erkenntnisse bezüglich des Themas _keyAspect_ gewonnen werden. </templateLocationKeyAspect>
+        <templateDateKeyAspect> _date_ zeigte die DHBW Mannheim ihr können im Bereich _keyAspect_. </templateDateKeyAspect>
+    </DHBW>
+    <Sie>
+        <templateLocation> In _location_ konnte Sie durch ihre Kompetenz mal wieder übrzeugen.</templateLocation>
+        <templateDate> _date_ zeigte sie, was eine Hochschule leisten kann.</templateDate>
+        <templateKeyAspect> Sie zeigte bahnbrechende Erkenntnisse zum Thema _keyAspect_.</templateKeyAspect>
+        <templateKeyAspect> Sie zeigte neue Perspektiven in _keyAspect_ auf.</templateKeyAspect>
+        <templateLocationDate> _date_ zeigte sie in _location_ mal wieder ihre einzigartige Kompetenz. </templateLocationDate>
+        <templateLocationKeyAspect> In _location_ konnte die sie neue Erkenntnisse im Bereich _keyAspect_ gewinnen</templateLocationKeyAspect>
+        <templateDateKeyAspect> Sie glänzte _date_ mit neuen Errungenschaften zum Thema _keyAspect_. </templateDateKeyAspect>
+    </Sie>
+    <None>
+        <templateLocation> Das große Event ereignete sich in _location_.</templateLocation>
+        <templateDate> _date_ war es so weit.</templateDate>
+        <templateDate> _date_ ging es endlich los.</templateDate>
+        <templateDate> _date_ hatte das Warten endlich ein Ende.</templateDate>
+        <templateDate> Niemand konnte ahnen, dass es _date_ schon soweit war.</templateDate>
+        <templateKeyAspect> Große Erkenntnisse zum Thema _keyAspect_ wurden gewonnen.</templateKeyAspect>
+        <templateLocationKeyAspect> Durch die einzigartige Kompetenz der Professoren der DHBW-Mannheim wurden neue Erkenntnisse im Bereich _keyAspect_ gewonnen, welche in _location_ vorgestellt wurden. </templateLocationKeyAspect>
+        <templateLocationDate> _date_ in _location_ entstanden vollkommen neue Ansätze. </templateLocationDate>
+        <templateDateKeyAspect> _date_ wurden neue Erkenntnisse im Bereich _keyAspect_ präsentiert. </templateDateKeyAspect>
+    </None>     
+</templates>

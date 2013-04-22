@@ -84,7 +84,7 @@ public class InputAnalyzer {
 
             //Deletion of unecessary spaces
             rareString = rareString.replaceAll("\\s\\s+", " ");
-
+            System.out.println("Der eingabe String ......... :"+rareString+"xxx" );
             //calling the method to put the input in a list
             inputStrToList(rareString);
         }
@@ -100,26 +100,60 @@ public class InputAnalyzer {
         // String cleanString;
         // cleanString=PrGenerator.mainDatabase.getUserInput();
         
-        //Array for the splitted STring
+       
+        //deletion of blanks at beginning or end of String
+        if(cleanString.startsWith(" ")){
+            cleanString=cleanString.substring(1);
+        }
+        /* 
+        if(cleanString.endsWith(" ")){
+            cleanString=cleanString.substring(0, cleanString.length()-1);
+        }
+        */
+        
+        //temporary linked list with userInput
+        LinkedList finalInputList = new <String>LinkedList();
+       
+        if(cleanString.equalsIgnoreCase(" ") || cleanString.isEmpty()){
+            finalInputList.clear();
+            PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
+        }else{
+        //checking if there are more than one word
+        if(cleanString.contains(" ")){
+            
+            
+       //Array for the splitted String
         String[] cleanStringArray;
         
         //splitting the input string into an array
         cleanStringArray = cleanString.split(" ");
+       
         
-        //temporary linked list with userInput
-        LinkedList finalInputList = new <String>LinkedList();
-
-        //filling the list with the arraycontent
+        
+        //filling the list with the array-content
         for (int i = 0; i < cleanStringArray.length; i++) {
-            finalInputList.addFirst(cleanStringArray[i]);
+            finalInputList.addFirst(cleanStringArray[i].replaceAll(" ",""));
         }
-        System.out.println("final list " +finalInputList);
+       // System.out.println("final list " +finalInputList);
         PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
            System.out.println("final list " +PrGenerator.mainDatabase.getUserInputFiltered());
-                  System.out.println( "\n" + "UserInputFiltered is Empty: " +PrGenerator.mainDatabase.getUserInputFiltered().isEmpty());
+         //         System.out.println( "\n" + "UserInputFiltered is Empty: " +PrGenerator.mainDatabase.getUserInputFiltered().isEmpty());
 
         //PrGenerator.mainDatabase.manageData();
-
+        }
+        else {
+            //adding the only word
+            
+          //  System.out.println("xxxxxxxxxin else xxxxxxx");
+            finalInputList.add(cleanString);
+                    //set the userinput
+            PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
+            System.out.println("inhalt von der finallist:  "+PrGenerator.mainDatabase.getUserInputFiltered());
+            
+        }
+        
+        }
+        
     }
 
     public static void main(String[] args) {

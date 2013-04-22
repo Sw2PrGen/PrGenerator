@@ -138,7 +138,7 @@ Collections.shuffle(databaseText);
      * @param input filtered user input
      */
     private void findInput(LinkedList input) {
-
+System.out.println( "\n" + "davor: UserInputFiltered is Empty: " +PrGenerator.mainDatabase.getUserInputFiltered().isEmpty());
         String current; //current sentence        
         String currentinput; //current user input
        Collections.shuffle(databaseText);
@@ -165,6 +165,7 @@ Collections.shuffle(databaseText);
                 String s = it.next();
                 System.out.println(s);
             }
+          System.out.println( "\n" + "danach: UserInputFiltered is Empty: " +PrGenerator.mainDatabase.getUserInputFiltered().isEmpty());
     }
     
     /** 
@@ -258,7 +259,8 @@ Collections.shuffle(databaseText);
         databaseText = PrGenerator.mainDatabase.getCurrentData();
 
         String textStr = "";
-        findInput(PrGenerator.mainDatabase.getUserInputFiltered());
+        LinkedList <String> userInputFiltered = new <String> LinkedList(PrGenerator.mainDatabase.getUserInputFiltered());
+        findInput(userInputFiltered);
         findPlace();
         findDhRelation();
         findTime();
