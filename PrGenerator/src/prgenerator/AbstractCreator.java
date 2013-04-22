@@ -86,7 +86,7 @@ public class AbstractCreator {
      * 
      * @author Tobias Mauritz
      */
-    public void analyzeText(){    // when live!!!!!!!
+    public void analyzeText(){    
     //public String[] analyzeText(){
         maintext = PrGenerator.mainDatabase.getCreatedText();
         
@@ -111,14 +111,14 @@ public class AbstractCreator {
             { 
                 storeWord("am "+nWord, whenWL, whenCL);
                
-                System.out.println("1 "+nWord);
+                //System.out.println("1 "+nWord);
                 
             //modified by Jörg: store dates which can be inserted without an "am"
             } else if (nWord.matches("(heute|gestern|morgen|Weihnachten|Ostern|Silvester)"))
             { 
                 storeWord(nWord, whenWL, whenCL);
                
-                System.out.println("1 "+nWord);
+                //System.out.println("1 "+nWord);
                 
             } else if (nWord.matches("(Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember)")){
                 
@@ -135,18 +135,16 @@ public class AbstractCreator {
                         nWord = nWord +" "+words.get(i+1);
                     }
                 }
-                // -->  DO TO: Es kann einmal 1. Januar 2012 genau stehen und dann aber weiter mit "im Januar" gehen.
-                //      Dann vielleicht nochmal zusätzlich einfach den Monat alleine Zählen
                 
                 storeWord(nWord, whenWL, whenCL); // store word with date word, WL, CL
-                System.out.println("2 "+nWord);
+                //System.out.println("2 "+nWord);
                 
             } else if (nWord.matches("(Woche|Wochen)")){
                 if (i-1 >=0){
                     if (words.get(i-1).matches("[0-9]{1,2}|einer|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn")){
                         nWord = words.get(i-1) +" "+nWord;
                         storeWord(nWord,whenWL, whenCL);
-                        System.out.println("3 "+nWord);
+                        //System.out.println("3 "+nWord);
                     }
                 }
              
@@ -162,14 +160,14 @@ public class AbstractCreator {
                     }
                 }
 
-                System.out.println("4 "+nWord);
+                //System.out.println("4 "+nWord);
                 
             // "what" words: stores words which stat with a capital letter
             // TO DO: Alle Wörter mit Großbuchstaben am Anfang + mindestens 3 Zeichen (Der, Die, Das fällt weg, aber Nach oder Außerdem nicht
                 // Liste erweitern!
-            } else if (nWord.matches("[A-Z]{1,}.{3,}") && !nWord.matches("Nach|Außerdem|Dies|DHBW|Prof|Mannheim|Baden-Württemberg")){ 
+            } else if (nWord.matches("[A-Z]{1,}.{3,}") && !nWord.matches("Ein|Nach|Außerdem|Dies|DHBW|Prof|Mannheim|Baden-Württemberg")){ 
                 storeWord(nWord, whatWL, whatCL);
-                System.out.println("5 "+nWord);
+                //System.out.println("5 "+nWord);
             }
             
         }
@@ -177,21 +175,19 @@ public class AbstractCreator {
         int whereidx = getWordIndex(whereCL);
         int whenidx = getWordIndex(whenCL);
         int whatidx = getWordIndex(whatCL);
-        
-        System.out.println(whenidx);
-        System.out.println(whenWL.get(whenidx));
+
+
         String[] awords = {whereWL.get(whereidx), whenWL.get(whenidx), whatWL.get(whatidx)};
         System.out.println(Arrays.toString(awords));
         
         // saves the three words Where, When, What into Database
-        PrGenerator.mainDatabase.setTemplateFill(awords);     // when live!!!!!
+        PrGenerator.mainDatabase.setTemplateFill(awords);     
         
-        System.out.println(maintext);
-        System.out.println(whenWL +" "+whenCL);
-        System.out.println(whereWL +" "+whereCL);
-        System.out.println(whatWL +" "+whatCL);
+        //System.out.println(maintext);
+        //System.out.println(whenWL +" "+whenCL);
+        //System.out.println(whereWL +" "+whereCL);
+        //System.out.println(whatWL +" "+whatCL);
         
-        //return awords;
     }
     
        /**
