@@ -28,7 +28,10 @@ public class Database {
     private final String DHBW_NEWURL_START = "details/id/";
     private final String DHBW_NEWURL_END = "/\" title";
     private final String BACKUP_FILE_PATH = "data//backup.dat";
+    private final String PICTURE_BACKUP_FILE_PATH = "data//picbackup.dat";
     private final String SEARCH_DEFAULT = "Suche...";
+    private final String DHBW_PICTURE_TAG = "<div class=\"news-single-img\"><img src=\"";
+    private final String DHBW_PICTURE_SUBADRESS = "/uploads/pics/";
 
     /*
      * ############################################################
@@ -50,6 +53,7 @@ public class Database {
     private LinkedList<String> userInputFiltered = new LinkedList<>();
     private String[] templateFill = new String[3];
     private String chosenPicture;
+    private String latestUrl;
 
     /*
      * ############################################################
@@ -88,26 +92,18 @@ public class Database {
      */
     public LinkedList<String> readFile(String filename) throws Exception {
 
-//        LinkedList<String> list = new LinkedList<>();
-//        //InputStream is = this.getClass().getResourceAsStream("sources/backup.dat"); 
-//        BufferedReader reader = new BufferedReader(new FileReader(filename));
-//        //BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-//        String s;
-//        while ((s = reader.readLine()) != null) {
-//            list.add(s);
-//        }
-//        reader.close();
-//        return list;
         FileInputStream fis = new FileInputStream(filename);
-        InputStreamReader isr = new InputStreamReader(fis, "UTF8"); // oder  andere encodings, z.B. ISO-8859-1
+        InputStreamReader isr = new InputStreamReader(fis, "UTF8"); 
         StringBuilder buffer = new StringBuilder();
         int c;
         while ((c = isr.read()) != -1) {
             buffer.append((char) c);
         }
         String str = buffer.toString();
-        String[] zeilen = str.split("\n");  // oder \r\n je nach EOL Style
-        return new LinkedList<String>(Arrays.asList(zeilen));
+        String[] lines = str.split("\n");  
+        fis.close();
+        isr.close();
+        return new LinkedList<String>(Arrays.asList(lines));
     }
 
     /**
@@ -240,6 +236,41 @@ public class Database {
         return string;
     }
 
+    private String getPicture(BufferedReader reader) {
+        String s = null;
+        do {  //go to the text passage in the html-code
+            try {
+                s = reader.readLine();
+            } catch (Exception e) {
+                //e.printStackTrace();
+            }
+        } while (s != null && !s.contains(DHBW_PICTURE_TAG));
+        if (s == null || !s.contains(".jpg")) {
+            return null;
+        }
+        try {
+            s = DHBW_URL + s.substring(s.indexOf(DHBW_PICTURE_TAG) + DHBW_PICTURE_TAG.length() + 1, s.indexOf(".jpg")) + ".jpg";
+        } catch (Exception e) {
+        }
+        return s;
+    }
+
+    private boolean updatePictureBackup() {
+        StringBuilder sb = new StringBuilder();
+        LinkedList<String> help = new LinkedList<>(pictureList);
+        while (help.size() > 0) {
+            sb.append(help.pop());
+            sb.append("\n");
+        }
+        try {
+            writeFile(sb.toString(), PICTURE_BACKUP_FILE_PATH);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Reads a text from a buffered reader and strips it out of HTML-tags
      *
@@ -310,23 +341,43 @@ public class Database {
             lastLatestUrlNo = 0;
             e.printStackTrace();
         }
-        String latestUrl = getLatestNewsUrl();      //get the url to the latest news item
+        //String latestUrl = getLatestNewsUrl();      //get the url to the latest news item
+        latestUrl = getLatestNewsUrl();
         if (latestUrl == null) {
             return false;               //no conncetion or latest item in backup
         }
-        currentData.addAll(makelist(getText(getWebsite(latestUrl))));   //write the data into the linked list
+
         int i = 0;
         do {          //stop either on 100 news items or when the item id reaches the id in the backup
-            currentData.addAll(makelist(getText(getWebsite(latestUrl))));
+            BufferedReader r = getWebsite(latestUrl);
+            String s = getPicture(r);
+            if (s != null) {
+                pictureList.add(s);
+            }
+            currentData.addAll(makelist(getText(r)));   //write the data into the linked list
             i++;
         } while (i < 101 & (latestUrl = getNextUrl(latestUrl)) != null);
 
-        String s;// = backupFile.pop();
-        while (currentData.size() < 1100 && backupFile.size() > 0) {    //fill with backup data
-            s = backupFile.pop();
-            currentData.add(s);
+        if (backupFile != null) {
+            LinkedList<String> picBackupFile = null;
+            try{
+                picBackupFile = readFile(PICTURE_BACKUP_FILE_PATH);
+            }catch (Exception e){
+                
+            }
+            String s;// = backupFile.pop();
+            String p;
+            while (currentData.size() < 1100 && backupFile.size() > 0) {    //fill with backup data
+                s = backupFile.pop();
+                p = picBackupFile.pop();
+                if(p != null){
+                    pictureList.add(p);
+                }
+                currentData.add(s);
+            }
         }
         updateBackup();     //update the backup file with the currently loaded data
+        updatePictureBackup();
         return true;
     }
 
@@ -345,10 +396,21 @@ public class Database {
             return false;
         }
         String s = backupFile.pop();
-        while (backupFile.size() > 0) {
-            currentData.add(s);
+        do {
             s = backupFile.pop();
+            currentData.add(s);
+        } while (backupFile.size() > 0);
+        backupFile = null;
+        try{
+            backupFile = readFile(PICTURE_BACKUP_FILE_PATH);
+        } catch(Exception e){
+            e.printStackTrace();
+            return false;
         }
+        do {
+            s = backupFile.pop();
+            pictureList.add(s);
+        } while (backupFile.size() > 0);
         return true;
     }
 
@@ -380,7 +442,7 @@ public class Database {
      * afterwards, loads the backup otherwise
      */
     public void manageData() {
-        pictureList.add("http://www.dhbw-mannheim.de/typo3temp/pics/ae467bfeb3.jpg");
+        //pictureList.add("http://www.dhbw-mannheim.de/typo3temp/pics/ae467bfeb3.jpg");
         boolean controlVar;
         controlVar = loadNewData();      //try to get new data
         if (!controlVar) {
@@ -566,7 +628,7 @@ public class Database {
      * @param pictureList the picture List to set
      */
     public void setPictureList(LinkedList<String> pictureList) {
-        this.pictureList = pictureList;
+        this.pictureList = new LinkedList<>(pictureList);
     }
 
     public String getSEARCH_DEFAULT() {
