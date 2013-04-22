@@ -43,27 +43,30 @@ public class PictureChooser {
      * 
      */
     public void choosePicture() {
-      System.out.println("Picture list before choose picture: " +PrGenerator.mainDatabase.getPictureList()); 
+    
+     //System.out.println("Picture list before choose picture: " +PrGenerator.mainDatabase.getPictureList()); 
        
       helper=new <String>LinkedList(); 
           
       System.out.println( "\n" + "hier: UserInputFiltered is Empty: " +PrGenerator.mainDatabase.getUserInputFiltered().isEmpty());
-      //if userinput exists
+      
+      //google search only if user input exists
+      
       if(!PrGenerator.mainDatabase.getUserInputFiltered().isEmpty()){
          
-       System.out.println("configure requests");
+      // System.out.println("configure requests");
        configureRequests();
-       System.out.println("Picture list after configure requests: " +PrGenerator.mainDatabase.getPictureList()); 
+       //System.out.println("Picture list after configure requests: " +PrGenerator.mainDatabase.getPictureList()); 
         }         
       
-        //select random picture from a pictureList
-        int randomNumber = (int) (Math.random() * (PrGenerator.mainDatabase.getPictureList().size()));
-            String choosenPicture = PrGenerator.mainDatabase.getPictureList().get(randomNumber);
-            PrGenerator.mainDatabase.setChosenPicture(choosenPicture);
+       //select random picture from a pictureList
+       int randomNumber = (int) (Math.random() * (PrGenerator.mainDatabase.getPictureList().size()));
+       String choosenPicture = PrGenerator.mainDatabase.getPictureList().get(randomNumber);
+       PrGenerator.mainDatabase.setChosenPicture(choosenPicture);
             
-            //show choosen picture just for current testing         
+                    
            
-            System.out.println("pictureList: ");
+       System.out.println("pictureList after choosePicture():  ");
              for (Iterator<String> i = PrGenerator.mainDatabase.getPictureList().iterator(); i.hasNext();) {
                 String s = i.next();
                 System.out.println(s);
@@ -84,38 +87,45 @@ public class PictureChooser {
 
          
         LinkedList<String> userInputFiltered = PrGenerator.mainDatabase.getUserInputFiltered(); //filtered user input
+        String inputAsString = "";
+        String url;
         System.out.println("Filtered user input " +PrGenerator.mainDatabase.getUserInputFiltered());
         System.out.println("User input: " +PrGenerator.mainDatabase.getUserInput());
-        String inputAsString = ""  ;
-        String url;
-        // build string from userinput
+                       
+        // build string of the entire userinput
         for (Iterator<String> i = userInputFiltered.iterator(); i.hasNext();) {
             
-            inputAsString = inputAsString +" " +i.next() ;
+            inputAsString = i.next() +" " +inputAsString ;
         }
         System.out.println("inputAsStr:" +inputAsString);
          
         url=START_URL + PARAMETERS_URL +inputAsString.replace(" ", "+");
-        //url=START_URL + PARAMETERS_URL +PrGenerator.mainDatabase.getUserInput().replace(" ", "+"); //first searching for the url
-        System.out.println("Picture list before found full input: " +PrGenerator.mainDatabase.getPictureList()); 
-        boolean foundFullInput=findPictures(url, true);
+       // url=START_URL + PARAMETERS_URL +PrGenerator.mainDatabase.getUserInput().replace(" ", "+"); //first searching for the url
+        
+        boolean foundFullInput=findPictures(url, true); //first searches for the entire url
+        
         System.out.println("foundFullInput? " +foundFullInput);
-        System.out.println("Picture list after foundFullinput: " +PrGenerator.mainDatabase.getPictureList()); 
+         
         if(!foundFullInput) {
+            //if no image for the entire intput is found search for the particular part of the unput
             while (!userInputFiltered.isEmpty()) {
                url = START_URL + PARAMETERS_URL + userInputFiltered.getFirst().replace(" ", "+"); // replace blanks in the user input to get a proper url 
-               System.out.println("current address " + url);
+               System.out.println("current address if not found full input " + url);
                 findPictures(url, false); 
                // findPictures("https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=1&imgsz=big&as_filetype=jpg&userip=192.168.0.1&hl=de&q=banane");
                userInputFiltered.removeFirst();
            }
         }
-         System.out.println("Helper empty?" +helper.isEmpty());
+        
+         //System.out.println("Helper empty?" +helper.isEmpty());
+        
+         //update picture list if picture is found
          if(!helper.isEmpty()){
-        System.out.append("helper" + helper);
+        System.out.println("helper" + helper);
         PrGenerator.mainDatabase.setPictureList(helper); // set up the pictureList in the database with founded pictures
         System.out.println("Picture list after choose picture: " +PrGenerator.mainDatabase.getPictureList()); 
          }
+         
          System.out.println("Picture list after choose picture: " +PrGenerator.mainDatabase.getPictureList());
     }
     
@@ -128,34 +138,37 @@ public class PictureChooser {
      * @param adress - url for image search
      * @param UserInput - true if picture for the entire user input should be found
      */
+    
     private boolean findPictures(String address, boolean UserInput) {
         //open url, establish connection and read content
         try {
-            System.out.println("Picture list in findPictures at the beginning: " +PrGenerator.mainDatabase.getPictureList()); 
+           // System.out.println("Picture list in findPictures at the beginning: " +PrGenerator.mainDatabase.getPictureList()); 
             URL url = new URL(address);
-            System.out.println("Url: " +url);
+            System.out.println("Url to search: " +url);
             URLConnection connection = url.openConnection();
-
             String line;
             StringBuilder builder = new StringBuilder();
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             while ((line = reader.readLine()) != null) {
                 builder.append(line);
             }
-            
             reader.close(); //added by Dawid
             
+            //System.out.println("after reader.close()");
             JSONObject json = new JSONObject(builder.toString());  // construct a JSONObject from page content
+            System.out.println("after json is constructed");
             if (json.getJSONObject("responseData").getJSONArray("results").length()==0){
+                System.out.println("if teil");
                 System.out.println("no pics found");
                 System.out.println("Picture List if no picture found" +PrGenerator.mainDatabase.getPictureList());
                 return false;
             }
             else{
+                System.out.println("found smth");
             String imageUrl = json.getJSONObject("responseData").getJSONArray("results").getJSONObject(0).getString("unescapedUrl"); //get the url-property of a json object           
-            String tbImageUrl = json.getJSONObject("responseData").getJSONArray("results").getJSONObject(0).getString("tbUrl");
+            //String tbImageUrl = json.getJSONObject("responseData").getJSONArray("results").getJSONObject(0).getString("tbUrl");
             
-            System.out.println("imageUrl" +imageUrl);
+            System.out.println("founded imageUrl" +imageUrl);
             helper.add(imageUrl);   // add  founded picture to helper list
             System.out.println("helper" +helper);
             if (UserInput == true) {
@@ -165,7 +178,8 @@ public class PictureChooser {
             }
             }
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
+            System.out.println("exception, false is returned");
            return false;
         }
 
