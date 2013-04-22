@@ -165,7 +165,7 @@ public class AbstractCreator {
             // "what" words: stores words which stat with a capital letter
             // TO DO: Alle Wörter mit Großbuchstaben am Anfang + mindestens 3 Zeichen (Der, Die, Das fällt weg, aber Nach oder Außerdem nicht
                 // Liste erweitern!
-            } else if (nWord.matches("[A-Z]{1,}.{3,}") && !nWord.matches("Ein|Nach|Außerdem|Dies|DHBW|Prof|Mannheim|Baden-Württemberg")){ 
+            } else if (nWord.matches("[A-Z]{1,}.{3,}") && !nWord.matches("Duale|Hochschule|DHBW|Mannheim|Baden-Württemberg|Prof|Ein|Nach|Außerdem|Dies")){ 
                 storeWord(nWord, whatWL, whatCL);
                 //System.out.println("5 "+nWord);
             }
