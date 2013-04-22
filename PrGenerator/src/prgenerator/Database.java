@@ -27,7 +27,7 @@ public class Database {
     private final String DHBW_MORE_TAG = "<span class=\"more\">";
     private final String DHBW_NEWURL_START = "details/id/";
     private final String DHBW_NEWURL_END = "/\" title";
-    private final String BACKUP_FILE_PATH = "src//sources//backup.dat";
+    private final String BACKUP_FILE_PATH = "data//backup.dat";
     private final String SEARCH_DEFAULT = "Suche...";
 
     /*
