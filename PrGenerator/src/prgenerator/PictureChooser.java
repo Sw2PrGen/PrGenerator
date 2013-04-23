@@ -166,7 +166,7 @@ public class PictureChooser {
             else{
                 System.out.println("found smth");
                 int randNumb=(int)(Math.random() * 6);
-            String imageUrl = json.getJSONObject("responseData").getJSONArray("results").getJSONObject(0).getString("unescapedUrl"); //get the url-property of a json object           
+            String imageUrl = json.getJSONObject("responseData").getJSONArray("results").getJSONObject(randNumb).getString("unescapedUrl"); //get the url-property of a json object           
             //String tbImageUrl = json.getJSONObject("responseData").getJSONArray("results").getJSONObject(0).getString("tbUrl");
             
             System.out.println("founded imageUrl" +imageUrl);
