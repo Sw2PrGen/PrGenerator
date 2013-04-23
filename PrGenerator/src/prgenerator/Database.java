@@ -32,6 +32,7 @@ public class Database {
     private final String SEARCH_DEFAULT = "Suche...";
     private final String DHBW_PICTURE_TAG = "<div class=\"news-single-img\"><img src=\"";
     private final String DHBW_PICTURE_SUBADRESS = "/uploads/pics/";
+    private final String BACKUP_PICTURE = "/data/backuppic";
 
     /*
      * ############################################################
@@ -61,7 +62,7 @@ public class Database {
      * ############################################################
      */
     /**
-     * Analyses the input string and makes a LinkedList with sentences out of it
+     * Analyzes the input string and makes a LinkedList with sentences out of it
      *
      * @param input string to analyze
      * @return list with sentences
@@ -93,14 +94,14 @@ public class Database {
     public LinkedList<String> readFile(String filename) throws Exception {
 
         FileInputStream fis = new FileInputStream(filename);
-        InputStreamReader isr = new InputStreamReader(fis, "UTF8"); 
+        InputStreamReader isr = new InputStreamReader(fis, "UTF8");
         StringBuilder buffer = new StringBuilder();
         int c;
         while ((c = isr.read()) != -1) {
             buffer.append((char) c);
         }
         String str = buffer.toString();
-        String[] lines = str.split("\n");  
+        String[] lines = str.split("\n");
         fis.close();
         isr.close();
         return new LinkedList<String>(Arrays.asList(lines));
@@ -157,9 +158,8 @@ public class Database {
             con.setRequestMethod("HEAD");                                       //only need header to check if site exists
             return (con.getResponseCode() == HttpURLConnection.HTTP_OK);        //true if site exists, false otherwise
         } catch (Exception e) {
-            e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     /**
@@ -255,9 +255,39 @@ public class Database {
         return s;
     }
 
+    private boolean downloadPicture(String link, int num) {
+        try {
+            URL url = new URL(link);
+            InputStream in = new BufferedInputStream(url.openStream());
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            byte[] buf = new byte[1024];
+            int n = 0;
+            while (-1 != (n = in.read(buf))) {
+                out.write(buf, 0, n);
+            }
+            out.close();
+            in.close();
+            byte[] response = out.toByteArray();
+            FileOutputStream fos = new FileOutputStream(BACKUP_PICTURE + Integer.toString(num) + ".jpg");
+            fos.write(response);
+            fos.close();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
     private boolean updatePictureBackup() {
         StringBuilder sb = new StringBuilder();
         LinkedList<String> help = new LinkedList<>(pictureList);
+        int i = 0;
+        int j = 0;
+        do {
+            if (downloadPicture(pictureList.get(i), j) != false) {
+                j++;
+            }
+            i++;
+        } while (j < 5 && pictureList.size() > i);
         while (help.size() > 0) {
             sb.append(help.pop());
             sb.append("\n");
@@ -360,17 +390,16 @@ public class Database {
 
         if (backupFile != null) {
             LinkedList<String> picBackupFile = null;
-            try{
+            try {
                 picBackupFile = readFile(PICTURE_BACKUP_FILE_PATH);
-            }catch (Exception e){
-                
+            } catch (Exception e) {
             }
             String s;// = backupFile.pop();
             String p;
             while (currentData.size() < 1100 && backupFile.size() > 0) {    //fill with backup data
                 s = backupFile.pop();
                 p = picBackupFile.pop();
-                if(p != null){
+                if (p != null) {
                     pictureList.add(p);
                 }
                 currentData.add(s);
@@ -400,18 +429,26 @@ public class Database {
             s = backupFile.pop();
             currentData.add(s);
         } while (backupFile.size() > 0);
-        backupFile = null;
-        try{
-            backupFile = readFile(PICTURE_BACKUP_FILE_PATH);
-        } catch(Exception e){
-            e.printStackTrace();
-            return false;
+        if (checkWebsite("google.com")) {
+
+            backupFile = null;
+            try {
+                backupFile = readFile(PICTURE_BACKUP_FILE_PATH);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+            do {
+                s = backupFile.pop();
+                pictureList.add(s);
+            } while (backupFile.size() > 0);
+            return true;
+        } else {
+            for (int i = 0; i < 5; i++) {
+                pictureList.add(BACKUP_PICTURE + Integer.toString(i) + ".jpg");
+            }
+            return true;
         }
-        do {
-            s = backupFile.pop();
-            pictureList.add(s);
-        } while (backupFile.size() > 0);
-        return true;
     }
 
     /**
