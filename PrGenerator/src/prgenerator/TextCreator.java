@@ -180,7 +180,7 @@ System.out.println( "\n" + "davor: UserInputFiltered is Empty: " +PrGenerator.ma
         finalText.addAll(placeText);
 
         //adding the sentence from the user input;  
-        for (int i = 1; i < 21 - finalText.size(); i++) {
+        for (int i = 2; i < 21 - finalText.size(); i++) {
             if (i >= preText.size()) {
                 break;
             }
@@ -195,7 +195,9 @@ System.out.println( "\n" + "davor: UserInputFiltered is Empty: " +PrGenerator.ma
             System.out.println("random " +randomNumber);
             finalText.add(databaseText.get(randomNumber));
         }
-        //System.out.println(finaltext);
+        
+      
+        
     }
     /**
      * 
@@ -267,13 +269,17 @@ System.out.println( "\n" + "davor: UserInputFiltered is Empty: " +PrGenerator.ma
         selectSentences();
 
         //shuffeling the final text
-        Collections.shuffle(finalText);
+        //Collections.shuffle(finalText);
 
         //avoiding of sentence which should not start the text
         while (finalText.getFirst().toString().startsWith("(Sie)|(Er)|(Das)")) {
             Collections.shuffle(finalText);
         }
 
+        if (!preText.isEmpty()){
+        finalText.addFirst(preText.getFirst());
+        //System.out.println(finaltext);
+        }
         //adding all the sentences to a final string
         int counter=0;
         for (Iterator<String> i = finalText.iterator(); i.hasNext();) {

@@ -34,7 +34,7 @@ public class PictureChooser {
      *  in order to indetify the user and avoid a violation of the Terms of Service of the Google Image Search API.
      * &hl -  host language of the application making the request
      */
-    private final String PARAMETERS_URL="&rsz=1&imgsz=medium&as_filetype=jpg&userip=192.168.0.1&hl=de&q=";
+    private final String PARAMETERS_URL="&rsz=8&imgsz=medium&as_filetype=jpg&userip=192.168.0.1&hl=de&q=";
     
     /**
      * Method for choosing a picture for the application,
@@ -165,7 +165,8 @@ public class PictureChooser {
             }
             else{
                 System.out.println("found smth");
-            String imageUrl = json.getJSONObject("responseData").getJSONArray("results").getJSONObject(0).getString("unescapedUrl"); //get the url-property of a json object           
+                int randNumb=(int)(Math.random() * 6);
+            String imageUrl = json.getJSONObject("responseData").getJSONArray("results").getJSONObject(randNumb).getString("unescapedUrl"); //get the url-property of a json object           
             //String tbImageUrl = json.getJSONObject("responseData").getJSONArray("results").getJSONObject(0).getString("tbUrl");
             
             System.out.println("founded imageUrl" +imageUrl);
