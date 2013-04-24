@@ -85,18 +85,18 @@ public class AbstractCreator {
      * @return the id within the list with the highest counter
      */
     public int getWord(List WL){
-        int idx = 0;
+        int idx = -1;
         String inputwords = PrGenerator.mainDatabase.getUserInput();
         String currentword;
         
-        // looks from last element of the list if the counter_new >= counter_old
-        // so the word which was first found and is mostly used will be applied
+        // search
         for (int i= WL.size()-1;i>=0;i--){
             currentword = (String)WL.get(i);
             if (inputwords.contains(currentword)){
                 idx =i;
             }
         }
+        if (idx == -1){  idx = getWordIndex(whatCL);}
         return idx;
     }
     
