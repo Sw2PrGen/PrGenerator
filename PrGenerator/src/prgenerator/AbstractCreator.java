@@ -173,7 +173,7 @@ public class AbstractCreator {
        analyzeText();
 
        //String path = "src\\sources\\templates_abstract.xml";
-       String path = "data\\templates_abstract.xml";
+       String path = "data/templates_abstract.xml";
        String location = PrGenerator.mainDatabase.getTemplateFill()[0];
        String date = PrGenerator.mainDatabase.getTemplateFill()[1];
        String keyAspect = PrGenerator.mainDatabase.getTemplateFill()[2];
