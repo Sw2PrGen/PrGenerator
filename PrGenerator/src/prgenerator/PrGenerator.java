@@ -6,6 +6,8 @@ package prgenerator;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.text.html.Option;
 
 /**
  *
@@ -34,19 +36,8 @@ public class PrGenerator {
         mainOutputGenerator = new OutputGenerator();
         mainPictureChooser = new PictureChooser();
         mainTextCreator = new TextCreator();
-//        mainGui = new Gui();
-//        
-        
+  
         doit();
-        //mainDatabase.manageData();
-        // mainPictureChooser.choosePicture();
-                
-        //   mainTextCreator.createMainText();  
-        
-//        mainOutputGenerator.generateOutput();
-//        mainGui.showResult(); 
-        
-       // mainInputAnalyzer.modifyInputtoString();
     }
     
     public static void doit(){
@@ -56,7 +47,7 @@ public class PrGenerator {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException ex) {
-                //Logger.getLogger(PrGenerator.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showConfirmDialog(null, "Kritischer Fehler! Bitte Programm neustarten.", "Kritischer Fehler", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
             }
         }
         PrGenerator.mainInputAnalyzer.modifyInputToString();
@@ -70,7 +61,7 @@ public class PrGenerator {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException ex) {
-                //Logger.getLogger(PrGenerator.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showConfirmDialog(null, "Kritischer Fehler! Bitte Programm neustarten.", "Kritischer Fehler", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
             }
         }
         } while (true);

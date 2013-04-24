@@ -30,7 +30,7 @@ public class Database {
     private final String DHBW_NEWURL_START = "details/id/";
     private final String DHBW_NEWURL_END = "/\" title";
     private final String BACKUP_FILE_PATH = "data//backup.dat";
-    private final String PICTURE_BACKUP_FILE_PATH = "data//picbackup.dat";
+    private final String BACKUP_PICTURE_FILE_PATH = "data//picbackup.dat";
     private final String SEARCH_DEFAULT = "Suche...";
     private final String DHBW_PICTURE_TAG = "<div class=\"news-single-img\"><img src=\"";
     private final String DHBW_PICTURE_SUBADRESS = "/uploads/pics/";
@@ -178,7 +178,6 @@ public class Database {
             InputStream is = connection.getInputStream();       //get an input stream to read html
             reader = new BufferedReader(new InputStreamReader(is));
         } catch (Exception ex) {
-            //ex.printStackTrace();
             return null;
         }
         return reader;
@@ -207,11 +206,9 @@ public class Database {
             reader.close();
             return DHBW_AKTUELLES_URL + s;
         } catch (Exception ex) {
-            //ex.printStackTrace();
             try {
                 reader.close();
             } catch (Exception e) {
-                //e.printStackTrace();
             }
             return null;
         }
@@ -244,7 +241,6 @@ public class Database {
             try {
                 s = reader.readLine();
             } catch (Exception e) {
-                //e.printStackTrace();
             }
         } while (s != null && !s.contains(DHBW_PICTURE_TAG));
         if (s == null || !s.contains(".jpg")) {
@@ -279,30 +275,6 @@ public class Database {
         return true;
     }
 
-    private boolean updatePictureBackup() {
-        StringBuilder sb = new StringBuilder();
-        LinkedList<String> help = new LinkedList<>(pictureList);
-        int i = 0;
-        int j = 0;
-        do {
-            if (downloadPicture(pictureList.get(i), j) != false) {
-                j++;
-            }
-            i++;
-        } while (j < 5 && pictureList.size() > i);
-        while (help.size() > 0) {
-            sb.append(help.pop());
-            sb.append("\n");
-        }
-        try {
-            writeFile(sb.toString(), PICTURE_BACKUP_FILE_PATH);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
     /**
      * Reads a text from a buffered reader and strips it out of HTML-tags
      *
@@ -317,7 +289,7 @@ public class Database {
             try {
                 s = reader.readLine();
             } catch (Exception e) {
-                //e.printStackTrace();
+                return null;
             }
         }
         try {
@@ -347,14 +319,13 @@ public class Database {
                 sb.append(s);                                                   //append to the stringbuilder
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            return null;
         }
 
         finishedText = sb.toString();                                           //make a string out of the stringbuilder
         try {
             reader.close();
         } catch (IOException ex) {
-            ex.printStackTrace();
         }
         return finishedText;
     }
@@ -371,7 +342,6 @@ public class Database {
             lastLatestUrlNo = Integer.parseInt(backupFile.pop());   //get the no of the latest news item from the backup
         } catch (Exception e) {
             lastLatestUrlNo = 0;
-            e.printStackTrace();
         }
         //String latestUrl = getLatestNewsUrl();      //get the url to the latest news item
         latestUrl = getLatestNewsUrl();
@@ -386,14 +356,17 @@ public class Database {
             if (s != null) {
                 pictureList.add(s);
             }
-            currentData.addAll(makelist(getText(r)));   //write the data into the linked list
+            if ((s = getText(r)) == null) {
+                continue;
+            }
+            currentData.addAll(makelist(s));   //write the data into the linked list
             i++;
         } while (i < 101 & (latestUrl = getNextUrl(latestUrl)) != null);
 
         if (backupFile != null) {
             LinkedList<String> picBackupFile = null;
             try {
-                picBackupFile = readFile(PICTURE_BACKUP_FILE_PATH);
+                picBackupFile = readFile(BACKUP_PICTURE_FILE_PATH);
             } catch (Exception e) {
             }
             String s;// = backupFile.pop();
@@ -407,8 +380,9 @@ public class Database {
                 currentData.add(s);
             }
         }
-        updateBackup();     //update the backup file with the currently loaded data
-        updatePictureBackup();
+        updateBackup(currentData, BACKUP_FILE_PATH, false);     //update the backup file with the currently loaded data
+        updateBackup(pictureList, BACKUP_PICTURE_FILE_PATH, true);
+        //updatePictureBackup();
         return true;
     }
 
@@ -423,10 +397,9 @@ public class Database {
             backupFile = readFile(BACKUP_FILE_PATH);
             backupFile.pop();
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
-        String s = backupFile.pop();
+        String s;
         do {
             s = backupFile.pop();
             currentData.add(s);
@@ -435,9 +408,8 @@ public class Database {
 
             backupFile = null;
             try {
-                backupFile = readFile(PICTURE_BACKUP_FILE_PATH);
+                backupFile = readFile(BACKUP_PICTURE_FILE_PATH);
             } catch (Exception e) {
-                e.printStackTrace();
                 return false;
             }
             do {
@@ -450,7 +422,7 @@ public class Database {
             try {
                 path = URLDecoder.decode(path, "UTF-8");
             } catch (UnsupportedEncodingException ex) {
-                Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showConfirmDialog(null, path + " kann nicht un UTF-8 kodiert werden, es ist nicht möglich Backupbilder zu laden.", "Encoding Fehler", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
             }
             for (int i = 0; i < 5; i++) {
                 pictureList.add(path + BACKUP_PICTURE + Integer.toString(i) + ".jpg");
@@ -459,24 +431,36 @@ public class Database {
         }
     }
 
+
     /**
      * Updates the backup file with the currently loaded data
      *
      * @return
      */
-    private boolean updateBackup() {
+    private boolean updateBackup(LinkedList<String> toBackUp, String filepath, boolean pic) {
         StringBuilder sb = new StringBuilder();
-        sb.append(Integer.toString(latestUrlNo));
-        sb.append("\n");
-        LinkedList<String> help = new LinkedList<>(currentData);
+        if (!pic) {
+            sb.append(Integer.toString(latestUrlNo));
+            sb.append("\n");
+        } else {
+            int i = 0;
+            int j = 0;
+            do {
+                if (downloadPicture(toBackUp.get(i), j) != false) {
+                    j++;
+                }
+                i++;
+            } while (j < 5 && toBackUp.size() > i);
+        }
+        LinkedList<String> help = new LinkedList<>(toBackUp);
         while (help.size() > 0) {
             sb.append(help.pop());
             sb.append("\n");
         }
         try {
-            writeFile(sb.toString(), BACKUP_FILE_PATH);
+            writeFile(sb.toString(), filepath);
         } catch (Exception e) {
-            e.printStackTrace();
+            JOptionPane.showConfirmDialog(null, "Backupdatei " + filepath + " kann nicht geupdated werden", "Dateifehler", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
             return false;
         }
         return true;
@@ -487,11 +471,13 @@ public class Database {
      * afterwards, loads the backup otherwise
      */
     public void manageData() {
-        //pictureList.add("http://www.dhbw-mannheim.de/typo3temp/pics/ae467bfeb3.jpg");
         boolean controlVar;
         controlVar = loadNewData();      //try to get new data
         if (!controlVar) {
             controlVar = loadBackup();      //load backup if no connection or no new items
+        }
+        if (!controlVar){
+            JOptionPane.showConfirmDialog(null, "Kritischer Fehler! \nEs können keine Pressemitteilungen \naus dem Internet geladen werden \nund die Backup-Datei kann nicht geöffnet werden. \nGenerierung der Pressemitteilung ist nicht möglich.\nDas Programm wird beendet.", "Kritischer Fehler", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
         }
     }
 
