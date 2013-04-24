@@ -148,7 +148,7 @@ public class AbstractCreator {
                 }
               
             // "what" words: stores words which stat with a capital letter
-            } else if (nWord.matches("[A-Z]{1,}.{3,}") && !nWord.matches("Duale|Hochschule|DHBW|Mannheim|Baden-Württemberg|Prof|Ein|Nach|Außerdem|Dies")){ 
+            } else if (nWord.matches("[A-Z]{1,}.{3,}") && !nWord.matches("Duale|Dualen|Hochschule|DHBW|Mannheim|Baden-Württemberg|Prof|Ein|Nach|Außerdem|Dies")){ 
                 storeWord(nWord, whatWL, whatCL);
             }
             
