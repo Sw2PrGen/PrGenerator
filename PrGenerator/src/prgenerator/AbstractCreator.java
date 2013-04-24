@@ -15,12 +15,7 @@ import java.util.Random;
  * Abstractgenerator: Methode createAbstract() funktioniert. Als Eingabe wurde folgende XML-DAtei verwendet:
  */
 public class AbstractCreator {
-    
-//    String whenSL[] = new String[1];
-//    String whenL[] = new String[19];
-//    String whereSL[] = new String[2];
-//    String notNounL[] = new String[5];
-    
+       
     private LinkedList<String> whenWL = new LinkedList<>(); // when word list
     private LinkedList<Integer> whenCL = new LinkedList<>(); // when couter list
     
@@ -37,11 +32,12 @@ public class AbstractCreator {
     
     
     /**
-     * 
+     * stores the words into WL and increases its counter in CL
      * @author Tobias Mauritz
-     * @param sWord
-     * @param WL
-     * @param CL 
+     * @param sWord word which should be stored into the word list WL
+     * @param WL one of the three word lists (whereWL, whenWL, whatWL)
+     * @param CL one of the three counter list, how often a word is occured (whereCL, whenCL, whatCL)
+     * 
      */
     public void storeWord(String sWord, List WL, List CL){
         if (WL.contains(sWord)){
@@ -62,10 +58,10 @@ public class AbstractCreator {
     
     
     /**
-     * 
+     * determines the index of the most used word within the list
      * @author Tobias Mauritz
-     * @param CL
-     * @return 
+     * @param CL the counter list
+     * @return the id within the list with the highest counter
      */
     public int getWordIndex(List CL){
         int min = 0;
@@ -83,7 +79,7 @@ public class AbstractCreator {
     }
     
     /**
-     * 
+     * analyzes the text for the three questions where, when, what with the word and counter lists
      * @author Tobias Mauritz
      */
     public void analyzeText(){    
@@ -129,8 +125,7 @@ public class AbstractCreator {
                     if (words.get(i+1).matches("[0-9]{1,4}")){
                         nWord = nWord +" "+words.get(i+1);
                     }
-                }
-                
+                }               
                 storeWord(nWord, whenWL, whenCL); // store word with date word, WL, CL
                
             } else if (nWord.matches("(Woche|Wochen)")){
@@ -151,12 +146,10 @@ public class AbstractCreator {
                                 // this will not saved into the list with words with capital letter
                     }
                 }
-
-                
+              
             // "what" words: stores words which stat with a capital letter
             } else if (nWord.matches("[A-Z]{1,}.{3,}") && !nWord.matches("Duale|Hochschule|DHBW|Mannheim|Baden-Württemberg|Prof|Ein|Nach|Außerdem|Dies")){ 
                 storeWord(nWord, whatWL, whatCL);
-                //System.out.println("5 "+nWord);
             }
             
         }
@@ -164,7 +157,6 @@ public class AbstractCreator {
         int whereidx = getWordIndex(whereCL);
         int whenidx = getWordIndex(whenCL);
         int whatidx = getWordIndex(whatCL);
-
 
         String[] awords = {whereWL.get(whereidx), whenWL.get(whenidx), whatWL.get(whatidx)};
         
