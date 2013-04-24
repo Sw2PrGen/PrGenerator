@@ -79,6 +79,29 @@ public class AbstractCreator {
     }
     
     /**
+     * determines the index of the most used word within the list
+     * @author Tobias Mauritz
+     * @param WL the word list
+     * @return the id within the list with the highest counter
+     */
+    public int getWord(List WL){
+        int idx = 0;
+        String inputwords = PrGenerator.mainDatabase.getUserInput();
+        String currentword;
+        
+        // looks from last element of the list if the counter_new >= counter_old
+        // so the word which was first found and is mostly used will be applied
+        for (int i= WL.size()-1;i>=0;i--){
+            currentword = (String)WL.get(i);
+            if (inputwords.contains(currentword)){
+                idx =i;
+            }
+        }
+        return idx;
+    }
+    
+    
+    /**
      * analyzes the text for the three questions where, when, what with the word and counter lists
      * @author Tobias Mauritz
      */
@@ -156,12 +179,13 @@ public class AbstractCreator {
         
         int whereidx = getWordIndex(whereCL);
         int whenidx = getWordIndex(whenCL);
-        int whatidx = getWordIndex(whatCL);
+        int whatidx = getWord(whatWL);
 
         String[] awords = {whereWL.get(whereidx), whenWL.get(whenidx), whatWL.get(whatidx)};
         
         // saves the three words Where, When, What into Database
         PrGenerator.mainDatabase.setTemplateFill(awords);     
+        System.out.println(awords);
 
         
     }
