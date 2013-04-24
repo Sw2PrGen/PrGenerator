@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
@@ -192,6 +193,7 @@ public class Gui extends JFrame implements Runnable {
 
         backButton.addActionListener(new java.awt.event.ActionListener(){
             public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PrGenerator.mainDatabase.setPictureList(new LinkedList<String>());
                outputFrame.dispose();
             }
             });

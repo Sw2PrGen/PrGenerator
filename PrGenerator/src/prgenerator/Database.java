@@ -4,11 +4,13 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.*;
+import javax.swing.JOptionPane;
 
 /**
  * Contains and manages all the data relevant during runtime
@@ -32,7 +34,7 @@ public class Database {
     private final String SEARCH_DEFAULT = "Suche...";
     private final String DHBW_PICTURE_TAG = "<div class=\"news-single-img\"><img src=\"";
     private final String DHBW_PICTURE_SUBADRESS = "/uploads/pics/";
-    private final String BACKUP_PICTURE = "/data/backuppic";
+    private final String BACKUP_PICTURE = "data/backuppic";
 
     /*
      * ############################################################
@@ -429,7 +431,7 @@ public class Database {
             s = backupFile.pop();
             currentData.add(s);
         } while (backupFile.size() > 0);
-        if (checkWebsite("google.com")) {
+        if (checkWebsite("http://google.com")) {
 
             backupFile = null;
             try {
@@ -444,8 +446,14 @@ public class Database {
             } while (backupFile.size() > 0);
             return true;
         } else {
+            String path = "file://" + PrGenerator.class.getProtectionDomain().getCodeSource().getLocation().getPath().replaceAll("PrGenerator.jar", "");
+            try {
+                path = URLDecoder.decode(path, "UTF-8");
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+            }
             for (int i = 0; i < 5; i++) {
-                pictureList.add(BACKUP_PICTURE + Integer.toString(i) + ".jpg");
+                pictureList.add(path + BACKUP_PICTURE + Integer.toString(i) + ".jpg");
             }
             return true;
         }
