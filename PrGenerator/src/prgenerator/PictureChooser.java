@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import javax.imageio.ImageIO;
@@ -178,9 +179,15 @@ public class PictureChooser {
                 return false;
             }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("exception, false is returned");
+        } catch (UnknownHostException e) {
+                
+               // e.printStackTrace();
+            System.out.println("no internet connection");
+                return false;
+            } 
+        catch (Exception e) {
+           // e.printStackTrace();
+            System.out.println("something went wrong in the google search api");
            return false;
         }
 

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package prgenerator;
 
 import java.awt.Color;
@@ -13,44 +9,41 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.plaf.ColorUIResource;
 import javax.swing.text.html.HTMLEditorKit;
 
 /**
+ * displays the GUI
  *
  * @author Katharina Sandrock
  */
 public class Gui extends JFrame implements Runnable {
 
     //set variables needed for the frame that will display the starting page 
-    private String finalHtmlDocument;// = PrGenerator.mainDatabase.getFinalHtmlDocument();
+    private String finalHtmlDocument;
     private JProgressBar bar = new JProgressBar();
     private JTextField userInput = new JTextField();
+    private JButton generateTextButton = new JButton();
 
-
-    /*
-     * this constructor will display the main page
-     *
+    /**
+     * this method will display the main page
      */
+    public void initializeGui() {
 
-    public void initializeGui(){
         JLabel backgroundPicture = new JLabel(new ImageIcon(getClass().getResource("/sources/GUI_backgroundpicture.png"))); //changed by Dawid to ensure standalone *.jar functionality
-        JButton generateTextButton = new JButton();
+
 
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         openBar();
         bar.setVisible(false);
-        
+
         backgroundPicture.setBounds(0, 0, 465, 350);
 
         userInput.setBounds(206, 79, 144, 26);
-        userInput.setText(PrGenerator.mainDatabase.getSEARCH_DEFAULT());
+        userInput.setText(PrGenerator.mainDatabase.SEARCH_DEFAULT);
         userInput.setSelectionStart(0);
         userInput.setSelectionEnd(userInput.getText().length());
         userInput.setToolTipText("max. 50 Zeichen erlaubt");
@@ -60,30 +53,33 @@ public class Gui extends JFrame implements Runnable {
         generateTextButton.setText("Start");
         generateTextButton.setForeground(Color.white);
         generateTextButton.setToolTipText("erstellt Pressemitteilung");
-        
+
 
         // implementing of an action listener on the "Start"- Button to react on user input
         generateTextButton.addActionListener(new java.awt.event.ActionListener() {
 
             @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                 setInput(evt);                
+            public void actionPerformed(ActionEvent evt) {
+                setInput(evt);
+                userInput.setEnabled(false);
+                generateTextButton.setEnabled(false);
             }
         });
-        
-        userInput.addMouseListener(new MouseAdapter(){
+        // set the generateTextButton as default button to start the generation of the press release also if the user presses enter
+        getRootPane().setDefaultButton(generateTextButton);
+
+        //marks the input text field so the user can easily and fast remove the default input
+        userInput.addMouseListener(new MouseAdapter() {
+
             @Override
-            public void mouseClicked(MouseEvent e){
-                if (userInput.getText().equals(PrGenerator.mainDatabase.getSEARCH_DEFAULT())) {
-                                    userInput.setSelectionStart(0);
-                userInput.setSelectionEnd(userInput.toString().length()-1);
+            public void mouseClicked(MouseEvent e) {
+                if (userInput.getText().equals(PrGenerator.mainDatabase.SEARCH_DEFAULT)) {
+                    userInput.setSelectionStart(0);
+                    userInput.setSelectionEnd(userInput.toString().length() - 1);
                 }
 
             }
         });
-        
-        
-                
 
         add(userInput);
         add(generateTextButton);
@@ -91,34 +87,33 @@ public class Gui extends JFrame implements Runnable {
 
         setResizable(false);
         setPreferredSize(new Dimension(465, 380));
-        setLocation(getCoords(465,380));
+        setLocation(getCoords(465, 380));
         pack();
         setVisible(true);
 
     }
 
-    /*
+    /**
      * method reacts on the click of the button with filling in the user input
-     * into the database and start the modfying method of the input
+     * into the database and start the modifying method of the input
      */
     private void setInput(ActionEvent evt) {
 
         if (userInput.getText().length() <= 50) {
+
             bar.setVisible(true);
             PrGenerator.mainDatabase.setUserInput(userInput.getText());
-           // PrGenerator.doit();
+
         } else {
-            
+
             JOptionPane.showMessageDialog(null, "Eingabe zu lang! (max. erlaubte Zeichen: 50) ");
         }
-        
-        //PrGenerator.mainInputAnalyzer.modifyInputtoString();
 
     }
 
-    /*
+    /**
      * this method creates the output frame with the preview of the press
-     * release and the possibility to save it as .html document
+     * release and the possibility to save it as HTML document
      */
     public void showResult() {
 
@@ -149,22 +144,22 @@ public class Gui extends JFrame implements Runnable {
         leftScrollPane.setBounds(0, 0, 550, 570);
         leftScrollPane.setBackground(Color.white);
         leftScrollPane.getVerticalScrollBar().setBackground(new Color(202, 202, 205));
-       
- 
+
+
         lowerPanel.setLayout(null);
-        
+
         saveButton.setBounds(110, 13, 100, 26);
         saveButton.setForeground(Color.white);
         saveButton.setBackground(new Color(181, 57, 24));
         saveButton.setText("speichern");
         saveButton.setToolTipText("Text als .html speichern.");
-        
-        backButton.setBounds(225,13,100,26);
+
+        backButton.setBounds(225, 13, 100, 26);
         backButton.setForeground(Color.white);
         backButton.setBackground(new Color(181, 57, 24));
         backButton.setText("zurück");
         backButton.setToolTipText("zurück zum Startfenster");
-        
+
         closeButton.setBounds(340, 13, 100, 26);
         closeButton.setForeground(Color.white);
         closeButton.setBackground(new Color(181, 57, 24));
@@ -182,6 +177,7 @@ public class Gui extends JFrame implements Runnable {
 
         closeButton.addActionListener(new java.awt.event.ActionListener() {
 
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 closeFrame(evt);
             }
@@ -191,25 +187,30 @@ public class Gui extends JFrame implements Runnable {
             }
         });
 
-        backButton.addActionListener(new java.awt.event.ActionListener(){
+        backButton.addActionListener(new java.awt.event.ActionListener() {
+
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 PrGenerator.mainDatabase.setPictureList(new LinkedList<String>());
-               outputFrame.dispose();
+                outputFrame.dispose();
+                userInput.setEnabled(true);
+                generateTextButton.setEnabled(true);
             }
-            });
+        });
 
         //save button action listener - calls method saveResult() if save Button was clicked
 
         saveButton.addActionListener(new java.awt.event.ActionListener() {
 
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveResult(null);
+                saveResult();
             }
         });
 
         outputFrame.setResizable(false);
-        outputFrame.setPreferredSize(new Dimension(555, 650));     
-        outputFrame.setLocation(getCoords(555,650));
+        outputFrame.setPreferredSize(new Dimension(555, 650));
+        outputFrame.setLocation(getCoords(555, 650));
         outputFrame.pack();
         outputFrame.setVisible(true);
         PrGenerator.mainDatabase.setFinalHtmlDocument(null);
@@ -220,13 +221,12 @@ public class Gui extends JFrame implements Runnable {
      * method opens a browser dialog window and implements the possibility to
      * save the file
      *
+     * @return
      */
-    public boolean saveResult(String path) {
+    public boolean saveResult() {
 
+        String path = System.getProperty("user.home");
         JFileChooser chooser;
-        if (path == null) {
-            path = System.getProperty("user.home");
-        }
         File file = new File(path.trim());
         chooser = new JFileChooser(path);
         chooser.setDialogType(JFileChooser.SAVE_DIALOG);
@@ -250,9 +250,13 @@ public class Gui extends JFrame implements Runnable {
             try {
                 PrGenerator.mainDatabase.writeFile(finalHtmlDocument, path);
                 JOptionPane.showMessageDialog(null, "Datei wurde gespeichert in: \"" + path + "\"");
-                
+
             } catch (Exception ex) {
-                Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                if (path.contains("\\")) {
+                    JOptionPane.showMessageDialog(null, "Bitte ungültige Sonderzeichen vermeiden!");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Datei konnte nicht gespeichert werden.");
+                }
             }
 
             chooser.setVisible(false);
@@ -261,16 +265,24 @@ public class Gui extends JFrame implements Runnable {
         chooser.setVisible(false);
         return false;
     }
-    
-    private Point getCoords (int x, int y){
-        
+
+    /**
+     * calculates the coordinates to display the GUI in the center of the screen
+     *
+     * @return coordinates of the upper left corner
+     */
+    private Point getCoords(int x, int y) {
+
         int xScreen = Toolkit.getDefaultToolkit().getScreenSize().width;
         int yScreen = Toolkit.getDefaultToolkit().getScreenSize().height;
-        return new Point(((xScreen/2) - (x/2)),((yScreen/2)) - (y/2));
-        
-        
+        return new Point(((xScreen / 2) - (x / 2)), ((yScreen / 2)) - (y / 2));
+
+
     }
 
+    /**
+     * draws a progress bar onto the GUI
+     */
     private void openBar() {
 
         bar.setIndeterminate(true);
@@ -282,21 +294,23 @@ public class Gui extends JFrame implements Runnable {
 
     }
 
+    /**
+     * run method for the GUI Thread
+     */
     @Override
     public void run() {
-       
+
         initializeGui();
-         while (true) {
-        while (PrGenerator.mainDatabase.getFinalHtmlDocument() == null) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                //Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-            }  
-        }
-        showResult();
-        
+        while (true) { //loop enables main function of the GUI
+            while (PrGenerator.mainDatabase.getFinalHtmlDocument() == null) { // Gui waits until output press release is generated 
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                    //Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            showResult(); //after the showing of the result the program can be exited or started again (finalHtmlDocument and userinput are set to null)
+
         }
     }
-    
 }
