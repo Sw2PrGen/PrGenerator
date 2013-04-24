@@ -79,23 +79,24 @@ public class AbstractCreator {
     }
     
     /**
-     * determines the index of the most used word within the list
+     * determines the index of the what word
      * @author Tobias Mauritz
      * @param WL the word list
-     * @return the id within the list with the highest counter
+     * @return the id within the list 
      */
     public int getWord(List WL){
         int idx = -1;
         String inputwords = PrGenerator.mainDatabase.getUserInput();
         String currentword;
         
-        // search
+        // if a word from users input is within the what word list this is taken
         for (int i= WL.size()-1;i>=0;i--){
             currentword = (String)WL.get(i);
             if (inputwords.contains(currentword)){
                 idx =i;
             }
         }
+        // if not the mostly used word with capital letter is taken
         if (idx == -1){  idx = getWordIndex(whatCL);}
         return idx;
     }
@@ -184,10 +185,7 @@ public class AbstractCreator {
         String[] awords = {whereWL.get(whereidx), whenWL.get(whenidx), whatWL.get(whatidx)};
         
         // saves the three words Where, When, What into Database
-        PrGenerator.mainDatabase.setTemplateFill(awords);     
-        System.out.println(awords);
-
-        
+        PrGenerator.mainDatabase.setTemplateFill(awords);             
     }
     
        /**
