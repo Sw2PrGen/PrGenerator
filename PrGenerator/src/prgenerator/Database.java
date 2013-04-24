@@ -7,9 +7,8 @@ import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
 /**
@@ -31,9 +30,8 @@ public class Database {
     private final String DHBW_NEWURL_END = "/\" title";
     private final String BACKUP_FILE_PATH = "data//backup.dat";
     private final String BACKUP_PICTURE_FILE_PATH = "data//picbackup.dat";
-    private final String SEARCH_DEFAULT = "Suche...";
+    public final String SEARCH_DEFAULT = "Suche...";
     private final String DHBW_PICTURE_TAG = "<div class=\"news-single-img\"><img src=\"";
-    private final String DHBW_PICTURE_SUBADRESS = "/uploads/pics/";
     private final String BACKUP_PICTURE = "data/backuppic";
 
     /*
@@ -235,6 +233,11 @@ public class Database {
         return string;
     }
 
+    /**
+     * Searches an online press release for the picture
+     * @param reader the reader with the web site, will not be closed!
+     * @return the URL to the picture
+     */
     private String getPicture(BufferedReader reader) {
         String s = null;
         do {  //go to the text passage in the html-code
@@ -253,6 +256,12 @@ public class Database {
         return s;
     }
 
+    /**
+     * Downloads the picture specified and saves it as BACKUP_PICTURE + num + .jpg
+     * @param link URL to the picture
+     * @param num index for the picture name
+     * @return true if successful, false otherwise
+     */
     private boolean downloadPicture(String link, int num) {
         try {
             URL url = new URL(link);
@@ -380,9 +389,8 @@ public class Database {
                 currentData.add(s);
             }
         }
-        updateBackup(currentData, BACKUP_FILE_PATH, false);     //update the backup file with the currently loaded data
-        updateBackup(pictureList, BACKUP_PICTURE_FILE_PATH, true);
-        //updatePictureBackup();
+        updateBackup(false);     //update the backup file with the currently loaded data
+        updateBackup(true);
         return true;
     }
 
@@ -431,14 +439,19 @@ public class Database {
         }
     }
 
-
     /**
-     * Updates the backup file with the currently loaded data
-     *
-     * @return
+     * save currentData or pictureList as a backup
+     * @param pic determines if you want to save the pictureList
+     * @return true if successful, false otherwise
      */
-    private boolean updateBackup(LinkedList<String> toBackUp, String filepath, boolean pic) {
+    private boolean updateBackup(boolean pic) {
         StringBuilder sb = new StringBuilder();
+        LinkedList<String> help = null;
+        if(pic){
+            help = new LinkedList<>(pictureList);
+        } else{
+            help = new LinkedList<>(currentData);
+        }
         if (!pic) {
             sb.append(Integer.toString(latestUrlNo));
             sb.append("\n");
@@ -446,17 +459,23 @@ public class Database {
             int i = 0;
             int j = 0;
             do {
-                if (downloadPicture(toBackUp.get(i), j) != false) {
+                if (downloadPicture(help.get(i), j) != false) {
                     j++;
                 }
                 i++;
-            } while (j < 5 && toBackUp.size() > i);
+            } while (j < 5 && help.size() > i);
         }
-        LinkedList<String> help = new LinkedList<>(toBackUp);
+        
         while (help.size() > 0) {
             sb.append(help.pop());
             sb.append("\n");
         }
+        String filepath;
+            if(pic){
+                filepath = BACKUP_PICTURE_FILE_PATH;
+            }else {
+                filepath = BACKUP_FILE_PATH;
+            }
         try {
             writeFile(sb.toString(), filepath);
         } catch (Exception e) {
@@ -662,7 +681,11 @@ public class Database {
         this.pictureList = new LinkedList<>(pictureList);
     }
 
-    public String getSEARCH_DEFAULT() {
+    /**
+     * 
+     * @return the constant SEARCH_DEFAULT
+     */
+    @Deprecated public String getSEARCH_DEFAULT() {
         return SEARCH_DEFAULT;
     }
 }
