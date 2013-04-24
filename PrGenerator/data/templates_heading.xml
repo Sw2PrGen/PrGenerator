@@ -3,5 +3,11 @@
 <template>DHBW Mannheim aktiv in _location_</template>
 <template>Die DHBW ist führend im Bereich _keyAspect_</template>
 <template>_keyAspect_ an der DHBW</template>
-<template>_keyAspect_ am _date_</template>
+<template>_keyAspect_ _date_</template>
+<template>DHBW übernimmt Vorreiterrolle im Bereich _keyAspect_</template>
+<template>_keyAspect_ in _location_</template>
+<template>Großer Auftritt der DHBW Mannheim in _location_</template>
+<template>DHBW Mannheim eröffnet neue Wege im Bereich _keyAspect_</template>
+<template>Neue Erkenntnisse zum Thema _keyAspect_</template>
+<template>DHBW zeigte bereits _date_ maximale Kompetenz</template>
 </templates>
