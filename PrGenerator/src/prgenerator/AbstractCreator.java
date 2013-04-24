@@ -15,12 +15,7 @@ import java.util.Random;
  * Abstractgenerator: Methode createAbstract() funktioniert. Als Eingabe wurde folgende XML-DAtei verwendet:
  */
 public class AbstractCreator {
-    
-    String whenSL[] = new String[1];
-    String whenL[] = new String[19];
-    String whereSL[] = new String[2];
-    String notNounL[] = new String[5];
-    
+       
     private LinkedList<String> whenWL = new LinkedList<>(); // when word list
     private LinkedList<Integer> whenCL = new LinkedList<>(); // when couter list
     
@@ -37,11 +32,12 @@ public class AbstractCreator {
     
     
     /**
-     * 
+     * stores the words into WL and increases its counter in CL
      * @author Tobias Mauritz
-     * @param sWord
-     * @param WL
-     * @param CL 
+     * @param sWord word which should be stored into the word list WL
+     * @param WL one of the three word lists (whereWL, whenWL, whatWL)
+     * @param CL one of the three counter list, how often a word is occured (whereCL, whenCL, whatCL)
+     * 
      */
     public void storeWord(String sWord, List WL, List CL){
         if (WL.contains(sWord)){
@@ -62,10 +58,10 @@ public class AbstractCreator {
     
     
     /**
-     * 
+     * determines the index of the most used word within the list
      * @author Tobias Mauritz
-     * @param CL
-     * @return 
+     * @param CL the counter list
+     * @return the id within the list with the highest counter
      */
     public int getWordIndex(List CL){
         int min = 0;
@@ -83,11 +79,10 @@ public class AbstractCreator {
     }
     
     /**
-     * 
+     * analyzes the text for the three questions where, when, what with the word and counter lists
      * @author Tobias Mauritz
      */
     public void analyzeText(){    
-    //public String[] analyzeText(){
         maintext = PrGenerator.mainDatabase.getCreatedText();
         
         
@@ -110,15 +105,11 @@ public class AbstractCreator {
             if (nWord.matches("(Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonnabend|Sonntag)"))
             { 
                 storeWord("am "+nWord, whenWL, whenCL);
-               
-                //System.out.println("1 "+nWord);
                 
             //modified by Jörg: store dates which can be inserted without an "am"
             } else if (nWord.matches("(heute|gestern|morgen|Weihnachten|Ostern|Silvester)"))
             { 
                 storeWord(nWord, whenWL, whenCL);
-               
-                //System.out.println("1 "+nWord);
                 
             } else if (nWord.matches("(Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember)")){
                 
@@ -134,17 +125,14 @@ public class AbstractCreator {
                     if (words.get(i+1).matches("[0-9]{1,4}")){
                         nWord = nWord +" "+words.get(i+1);
                     }
-                }
-                
+                }               
                 storeWord(nWord, whenWL, whenCL); // store word with date word, WL, CL
-                //System.out.println("2 "+nWord);
-                
+               
             } else if (nWord.matches("(Woche|Wochen)")){
                 if (i-1 >=0){
                     if (words.get(i-1).matches("[0-9]{1,2}|einer|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn")){
                         nWord = words.get(i-1) +" "+nWord;
                         storeWord(nWord,whenWL, whenCL);
-                        //System.out.println("3 "+nWord);
                     }
                 }
              
@@ -153,21 +141,15 @@ public class AbstractCreator {
                 if (i+1 < txtLength){
                     if (words.get(i+1).matches("[A-Z]{1,}[a-z]{1,}")&& !nWord.matches("Versehen|Bearbeitung|Betrieb")){
                         nWord = words.get(i+1);       
-                        //nWord = nWord +" "+ words.get(i+1); // if with additional words like "in, aus"
                         storeWord(nWord,whereWL, whereCL);
                         i++;    // if there was a Noun after "in,aus" (maybe a location) 
                                 // this will not saved into the list with words with capital letter
                     }
                 }
-
-                //System.out.println("4 "+nWord);
-                
+              
             // "what" words: stores words which stat with a capital letter
-            // TO DO: Alle Wörter mit Großbuchstaben am Anfang + mindestens 3 Zeichen (Der, Die, Das fällt weg, aber Nach oder Außerdem nicht
-                // Liste erweitern!
             } else if (nWord.matches("[A-Z]{1,}.{3,}") && !nWord.matches("Duale|Hochschule|DHBW|Mannheim|Baden-Württemberg|Prof|Ein|Nach|Außerdem|Dies")){ 
                 storeWord(nWord, whatWL, whatCL);
-                //System.out.println("5 "+nWord);
             }
             
         }
@@ -176,17 +158,11 @@ public class AbstractCreator {
         int whenidx = getWordIndex(whenCL);
         int whatidx = getWordIndex(whatCL);
 
-
         String[] awords = {whereWL.get(whereidx), whenWL.get(whenidx), whatWL.get(whatidx)};
-        System.out.println(Arrays.toString(awords));
         
         // saves the three words Where, When, What into Database
         PrGenerator.mainDatabase.setTemplateFill(awords);     
-        
-        //System.out.println(maintext);
-        //System.out.println(whenWL +" "+whenCL);
-        //System.out.println(whereWL +" "+whereCL);
-        //System.out.println(whatWL +" "+whatCL);
+
         
     }
     
@@ -347,21 +323,6 @@ public class AbstractCreator {
 }   
         }   
 
-//   public static void main(String [] arg){
-    //   AbstractCreator abstractCreator = new AbstractCreator();
-       
-       //abstractCreator.analyzeText();     // when live!!!!!
-       //String[] templateFill = abstractCreator.analyzeText();
-
-       //String[] templateFill = PrGenerator.mainDatabase.getTemplateFill();    // when live!!!!!!!
-       
-       //abstractCreator.createAbstract("src/sources/templates_abstract.xml", (String)templateFill[0], (String)templateFill[1], (String)templateFill[2]);
-  //     abstractCreator.createAbstract();
-//}
-
-
-
-//}
 
 
 
