@@ -13,7 +13,7 @@ public class HeadingCreator {
     public void createHeading(){
         String[] templateFill= PrGenerator.mainDatabase.getTemplateFill(); //gets filling for the template out of the database
         //String[] templateFill=new String[]{"Biergarten", "heute", "Wettkampf"}; //only for testing 
-        String path="data\\templates_heading.xml"; 
+        String path="data/templates_heading.xml"; 
         String heading = "";
         Template templateReader = new Template();
         
