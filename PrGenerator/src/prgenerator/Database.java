@@ -426,7 +426,11 @@ public class Database {
             } while (backupFile.size() > 0);
             return true;
         } else {
-            String path = "file://" + PrGenerator.class.getProtectionDomain().getCodeSource().getLocation().getPath().replaceAll("PrGenerator.jar", "");
+            String path = "file://" + PrGenerator.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+            String end;
+            if(path.contains((end = "PrGenerator.jar")) || path.contains((end = "PrGenerator.exe")) || path.contains((end = "build/classes/"))){
+                path = path.replace(end, "");
+            }
             try {
                 path = URLDecoder.decode(path, "UTF-8");
             } catch (UnsupportedEncodingException ex) {

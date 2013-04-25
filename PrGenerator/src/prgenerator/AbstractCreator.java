@@ -79,6 +79,30 @@ public class AbstractCreator {
     }
     
     /**
+     * determines the index of the what word
+     * @author Tobias Mauritz
+     * @param WL the word list
+     * @return the id within the list 
+     */
+    public int getWord(List WL){
+        int idx = -1;
+        String inputwords = PrGenerator.mainDatabase.getUserInput();
+        String currentword;
+        
+        // if a word from users input is within the what word list this is taken
+        for (int i= WL.size()-1;i>=0;i--){
+            currentword = (String)WL.get(i);
+            if (inputwords.contains(currentword)){
+                idx =i;
+            }
+        }
+        // if not the mostly used word with capital letter is taken
+        if (idx == -1){  idx = getWordIndex(whatCL);}
+        return idx;
+    }
+    
+    
+    /**
      * analyzes the text for the three questions where, when, what with the word and counter lists
      * @author Tobias Mauritz
      */
@@ -148,7 +172,7 @@ public class AbstractCreator {
                 }
               
             // "what" words: stores words which stat with a capital letter
-            } else if (nWord.matches("[A-Z]{1,}.{3,}") && !nWord.matches("Duale|Hochschule|DHBW|Mannheim|Baden-Württemberg|Prof|Ein|Nach|Außerdem|Dies")){ 
+            } else if (nWord.matches("[A-Z]{1,}.{3,}") && !nWord.matches("Duale|Dualen|Hochschule|DHBW|Mannheim|Baden-Württemberg|Prof|Ein|Nach|Außerdem|Dies|Jahr|Jahre|Auswirkungen|Fragen")){ 
                 storeWord(nWord, whatWL, whatCL);
             }
             
@@ -156,14 +180,12 @@ public class AbstractCreator {
         
         int whereidx = getWordIndex(whereCL);
         int whenidx = getWordIndex(whenCL);
-        int whatidx = getWordIndex(whatCL);
+        int whatidx = getWord(whatWL);
 
         String[] awords = {whereWL.get(whereidx), whenWL.get(whenidx), whatWL.get(whatidx)};
         
         // saves the three words Where, When, What into Database
-        PrGenerator.mainDatabase.setTemplateFill(awords);     
-
-        
+        PrGenerator.mainDatabase.setTemplateFill(awords);             
     }
     
        /**
@@ -173,7 +195,7 @@ public class AbstractCreator {
        analyzeText();
 
        //String path = "src\\sources\\templates_abstract.xml";
-       String path = "data\\templates_abstract.xml";
+       String path = "data/templates_abstract.xml";
        String location = PrGenerator.mainDatabase.getTemplateFill()[0];
        String date = PrGenerator.mainDatabase.getTemplateFill()[1];
        String keyAspect = PrGenerator.mainDatabase.getTemplateFill()[2];

@@ -18,7 +18,8 @@ import javax.swing.JOptionPane;
 import org.json.JSONObject;
 
 /**
- *
+ * PictureChooser is responsible for picture search for the application.
+ * Google Image Search API is used
  * @author Yuliya Kuznetsova
  */
 public class PictureChooser {
@@ -44,108 +45,83 @@ public class PictureChooser {
      * 
      */
     public void choosePicture() {
-    
-     //System.out.println("Picture list before choose picture: " +PrGenerator.mainDatabase.getPictureList()); 
-       
-      helper=new <String>LinkedList(); 
-          
-      System.out.println( "\n" + "hier: UserInputFiltered is Empty: " +PrGenerator.mainDatabase.getUserInputFiltered().isEmpty());
-      
-      //google search only if user input exists
-      
-      if(!PrGenerator.mainDatabase.getUserInputFiltered().isEmpty()){
-         
-      // System.out.println("configure requests");
-       configureRequests();
-       //System.out.println("Picture list after configure requests: " +PrGenerator.mainDatabase.getPictureList()); 
-        }         
-      
-       //select random picture from a pictureList
-       int randomNumber = (int) (Math.random() * (PrGenerator.mainDatabase.getPictureList().size()));
-       String choosenPicture = PrGenerator.mainDatabase.getPictureList().get(randomNumber);
-       PrGenerator.mainDatabase.setChosenPicture(choosenPicture);
+
+        helper = new <String>LinkedList(); 
+
+        //google search only if user input exists      
+        if (!PrGenerator.mainDatabase.getUserInputFiltered().isEmpty()) {
+            configureRequests();
+        }
+
+        //select random picture from a pictureList
+        int randomNumber = (int) (Math.random() * (PrGenerator.mainDatabase.getPictureList().size()));
+        String choosenPicture = PrGenerator.mainDatabase.getPictureList().get(randomNumber);
+        PrGenerator.mainDatabase.setChosenPicture(choosenPicture); //write choosen picture in the database         
+
+        /*    
+         System.out.println("pictureList after choosePicture():  ");
+         for (Iterator<String> i = PrGenerator.mainDatabase.getPictureList().iterator(); i.hasNext();) {
+         String s = i.next();
+         System.out.println(s);
+         }
             
-                    
-           
-       System.out.println("pictureList after choosePicture():  ");
-             for (Iterator<String> i = PrGenerator.mainDatabase.getPictureList().iterator(); i.hasNext();) {
-                String s = i.next();
-                System.out.println(s);
-            }
-            
-            System.out.println("\n" + "Choosen Picture is " + PrGenerator.mainDatabase.getChosenPicture());
-        
+         System.out.println("\n" + "Choosen Picture is " + PrGenerator.mainDatabase.getChosenPicture());
+         */
     }
     
     /**
-     * method which configures search parameter for google image search api,
-     * key search parameters are: either the whole heading or user input and main words from heading of a document.
-     * If no image for the whole heading is found, try to find images for user input and|or main word from a heading.
+     * method which configures search parameters for google image search api,
+     * key search parameters are: either the entire  user input 
+     * or (if nothing found) separated parts of user input - if there is more than one word.
      * invokes findPictures (String adress) 
      * 
      */
     private void configureRequests() {
 
-         
+
         LinkedList<String> userInputFiltered = PrGenerator.mainDatabase.getUserInputFiltered(); //filtered user input
-        String inputAsString = "";
-        String url;
-        System.out.println("Filtered user input " +PrGenerator.mainDatabase.getUserInputFiltered());
-        System.out.println("User input: " +PrGenerator.mainDatabase.getUserInput());
-                       
+        String inputAsString = ""; //helper to build the entire user input as string
+        String url; //url to search
+
         // build string of the entire userinput
         for (Iterator<String> i = userInputFiltered.iterator(); i.hasNext();) {
-            
-            inputAsString = i.next() +" " +inputAsString ;
+
+            inputAsString = i.next() + " " + inputAsString;
         }
-        System.out.println("inputAsStr:" +inputAsString);
-         
-        url=START_URL + PARAMETERS_URL +inputAsString.replace(" ", "+");
-       // url=START_URL + PARAMETERS_URL +PrGenerator.mainDatabase.getUserInput().replace(" ", "+"); //first searching for the url
-        
-        boolean foundFullInput=findPictures(url, true); //first searches for the entire url
-        
-        System.out.println("foundFullInput? " +foundFullInput);
-         
-        if(!foundFullInput) {
-            //if no image for the entire intput is found search for the particular part of the unput
+
+        url = START_URL + PARAMETERS_URL + inputAsString.replace(" ", "+");
+
+        boolean foundFullInput = findPictures(url, true); //first searches for the entire user input; 
+
+        if (!foundFullInput) {
+            //if no image for the entire user intput is found search for the particular words of the unput
             while (!userInputFiltered.isEmpty()) {
-               url = START_URL + PARAMETERS_URL + userInputFiltered.getFirst().replace(" ", "+"); // replace blanks in the user input to get a proper url 
-               System.out.println("current address if not found full input " + url);
-                findPictures(url, false); 
-               // findPictures("https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=1&imgsz=big&as_filetype=jpg&userip=192.168.0.1&hl=de&q=banane");
-               userInputFiltered.removeFirst();
-           }
+                url = START_URL + PARAMETERS_URL + userInputFiltered.getFirst().replace(" ", "+"); // replace blanks in the user input to get a proper url 
+                findPictures(url, false);
+                userInputFiltered.removeFirst();
+            }
         }
-        
-         //System.out.println("Helper empty?" +helper.isEmpty());
-        
-         //update picture list if picture is found
-         if(!helper.isEmpty()){
-        System.out.println("helper" + helper);
-        PrGenerator.mainDatabase.setPictureList(helper); // set up the pictureList in the database with founded pictures
-        System.out.println("Picture list after choose picture: " +PrGenerator.mainDatabase.getPictureList()); 
-         }
-         
-         System.out.println("Picture list after choose picture: " +PrGenerator.mainDatabase.getPictureList());
+
+        //update picture list if picture is found
+        if (!helper.isEmpty()) {
+            PrGenerator.mainDatabase.setPictureList(helper); // set up the pictureList in the database with founded pictures
+        }
     }
     
     /**
      * method that searches for the pictures online with help of Google Image Search API
-     * and adds founded pictures to the database in a pictureList.
-     * For each request one image url will be  selected.
+     * and adds founded pictures to the temporarily helper list.
+     * For each request one random image url will be  selected.
      * Uses JSON to get the Web-Content
-     * @return true if a picture for heading could be founded, false otherwise
+     * @return true if a picture for the entire user input could be founded, false in all other cases
      * @param adress - url for image search
-     * @param UserInput - true if picture for the entire user input should be found
+     * @param UserInput - true if picture for the entire user input should be found, false otherwise
      */
     
     private boolean findPictures(String address, boolean UserInput) {
         //open url, establish connection and read content
         try {
-           // System.out.println("Picture list in findPictures at the beginning: " +PrGenerator.mainDatabase.getPictureList()); 
             URL url = new URL(address);
-            System.out.println("Url to search: " +url);
             URLConnection connection = url.openConnection();
             String line;
             StringBuilder builder = new StringBuilder();
@@ -153,47 +129,32 @@ public class PictureChooser {
             while ((line = reader.readLine()) != null) {
                 builder.append(line);
             }
-            reader.close(); //added by Dawid
-            
-            //System.out.println("after reader.close()");
-            JSONObject json = new JSONObject(builder.toString());  // construct a JSONObject from page content
-            System.out.println("after json is constructed");
-            if (json.getJSONObject("responseData").getJSONArray("results").length()==0){
-                System.out.println("if teil");
-                System.out.println("no pics found");
-                System.out.println("Picture List if no picture found" +PrGenerator.mainDatabase.getPictureList());
+            reader.close();
+
+            // construct a JSONObject from page content
+            JSONObject json = new JSONObject(builder.toString());
+            if (json.getJSONObject("responseData").getJSONArray("results").length() == 0) {
                 return false;
-            }
-            else{
-                System.out.println("found smth");
-                int randNumb=(int)(Math.random() * 6);
-            String imageUrl = json.getJSONObject("responseData").getJSONArray("results").getJSONObject(randNumb).getString("unescapedUrl"); //get the url-property of a json object           
-            //String tbImageUrl = json.getJSONObject("responseData").getJSONArray("results").getJSONObject(0).getString("tbUrl");
-            
-            System.out.println("founded imageUrl" +imageUrl);
-            helper.add(imageUrl);   // add  founded picture to helper list
-            System.out.println("helper" +helper);
-            if (UserInput == true) {
-                return true;
             } else {
-                return false;
-            }
+                int randNumb = (int) (Math.random() * 6);
+                //chooses random picture of first 6 url returned
+                String imageUrl = json.getJSONObject("responseData").getJSONArray("results").getJSONObject(randNumb).getString("unescapedUrl"); //get the url-property of a json object              
+                helper.add(imageUrl);   // add  founded picture to helper list
+
+                if (UserInput == true) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
         } catch (UnknownHostException e) {
-                
-               // e.printStackTrace();
+            // if no internet connection                  
             System.out.println("no internet connection");
-                return false;
-            } 
-        catch (Exception e) {
-           // e.printStackTrace();
+            return false;
+        } catch (Exception e) {
+            // catch all other exceptions
             System.out.println("something went wrong in the google search api");
-           return false;
+            return false;
         }
-
-        /* other api 
-         * URL url = new URL("https://www.googleapis.com/customsearch/v1?key=AIzaSyAoFTQH58kb6GEF-o0v7qKh5kMqPmZl5oo&cx=006298392676923811362:bsx_ivypxlm&q=dhbw&searchType=image");
-         * String imageUrl = json.getJSONArray("items").getJSONObject(i).getString("link"); 
-         */
     }
 }
