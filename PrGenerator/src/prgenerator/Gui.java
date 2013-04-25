@@ -223,7 +223,7 @@ public class Gui extends JFrame implements Runnable {
      *
      * @return
      */
-    public boolean saveResult() {
+    public void saveResult() {
 
         String path = System.getProperty("user.home");
         JFileChooser chooser;
@@ -242,28 +242,28 @@ public class Gui extends JFrame implements Runnable {
         if (result == JFileChooser.APPROVE_OPTION) {
 
             path = chooser.getSelectedFile().toString();
+            if (path.matches("[\\/:\\*\\?\"<>\\|]")){
+                JOptionPane.showMessageDialog(null, "Bitte ungültige Sonderzeichen vermeiden!");
+            }else {
+                
             file = new File(path);
 
             if (!(path.endsWith(".html") || path.endsWith(".htm"))) {
                 path = path + ".html";
             }
+            
             try {
                 PrGenerator.mainDatabase.writeFile(finalHtmlDocument, path);
                 JOptionPane.showMessageDialog(null, "Datei wurde gespeichert in: \"" + path + "\"");
 
             } catch (Exception ex) {
-                if (path.contains("\\")) {
-                    JOptionPane.showMessageDialog(null, "Bitte ungültige Sonderzeichen vermeiden!");
-                } else {
-                    JOptionPane.showMessageDialog(null, "Datei konnte nicht gespeichert werden.");
-                }
+                
+                 JOptionPane.showMessageDialog(null, "Datei konnte nicht gespeichert werden.");
+ 
             }
-
-            chooser.setVisible(false);
-            return true;
+            chooser.setVisible(false); 
+            }
         }
-        chooser.setVisible(false);
-        return false;
     }
 
     /**
