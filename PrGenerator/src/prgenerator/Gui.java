@@ -227,7 +227,6 @@ public class Gui extends JFrame implements Runnable {
 
         String path = System.getProperty("user.home");
         JFileChooser chooser;
-        File file = new File(path.trim());
         chooser = new JFileChooser(path);
         chooser.setDialogType(JFileChooser.SAVE_DIALOG);
         FileNameExtensionFilter markUpFilter = new FileNameExtensionFilter(
@@ -242,13 +241,8 @@ public class Gui extends JFrame implements Runnable {
         if (result == JFileChooser.APPROVE_OPTION) {
 
             path = chooser.getSelectedFile().toString();
-            if (path.matches("[\\/:\\*\\?\"<>\\|]")){
-                JOptionPane.showMessageDialog(null, "Bitte ungültige Sonderzeichen vermeiden!");
-            }else {
-                
-            file = new File(path);
-
-            if (!(path.endsWith(".html") || path.endsWith(".htm"))) {
+          
+           if (!(path.endsWith(".html") || path.endsWith(".htm"))) {
                 path = path + ".html";
             }
             
@@ -258,13 +252,12 @@ public class Gui extends JFrame implements Runnable {
 
             } catch (Exception ex) {
                 
-                 JOptionPane.showMessageDialog(null, "Datei konnte nicht gespeichert werden.");
+                 JOptionPane.showConfirmDialog(null, "Datei konnte nicht gespeichert werden. Bitte ungültige Sonderzeichen vermeiden.", "Fehler", JOptionPane.PLAIN_MESSAGE, JOptionPane.ERROR_MESSAGE);
  
-            }
-            chooser.setVisible(false); 
+            } 
             }
         }
-    }
+    
 
     /**
      * calculates the coordinates to display the GUI in the center of the screen
