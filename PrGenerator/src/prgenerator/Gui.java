@@ -221,7 +221,6 @@ public class Gui extends JFrame implements Runnable {
      * method opens a browser dialog window and implements the possibility to
      * save the file
      *
-     * @return
      */
     public void saveResult() {
 
@@ -229,6 +228,8 @@ public class Gui extends JFrame implements Runnable {
         JFileChooser chooser;
         chooser = new JFileChooser(path);
         chooser.setDialogType(JFileChooser.SAVE_DIALOG);
+        
+        //allows only html format 
         FileNameExtensionFilter markUpFilter = new FileNameExtensionFilter(
                 "Markup: htm, html", "html", "htm");
         chooser.removeChoosableFileFilter(chooser.getAcceptAllFileFilter());
@@ -242,6 +243,7 @@ public class Gui extends JFrame implements Runnable {
 
             path = chooser.getSelectedFile().toString();
           
+            //sets automatically the right ending 
            if (!(path.endsWith(".html") || path.endsWith(".htm"))) {
                 path = path + ".html";
             }
