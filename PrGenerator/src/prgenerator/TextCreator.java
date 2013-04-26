@@ -136,7 +136,7 @@ public class TextCreator {
 
         //iteration through the list to find all sentences with a relation to the user input
         while (!input.isEmpty()) {
-            currentinput = (String) input.getFirst().toString().toLowerCase();
+            currentinput =" "+ (String) input.getFirst().toString().toLowerCase()+" ";
             Iterator<String> i = databaseText.iterator();
             while (i.hasNext()) {
                 current = i.next();
