@@ -189,7 +189,7 @@ public class AbstractCreator {
     }
     
        /**
-        * 
+        *@author Dominik Künne, Jörg Woditschka
         */
        public void createAbstract(){
        analyzeText();
@@ -335,14 +335,7 @@ public class AbstractCreator {
   //  private void fetchSentences(int i,String path, String tagName){
     //    Template templateReader = new Template();
       //  sentences[i] = templateReader.readXML(path, tagName);
-         public static void main(String [ ] args)
-{
-      AbstractCreator abstractCreator = new AbstractCreator();
-      abstractCreator.createAbstract();
-            // Deliver the robot to the origin (1,1),
-            // facing East, with no beepers.
-     
-}   
+         
         }   
 
 

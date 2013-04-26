@@ -5,8 +5,6 @@
 package prgenerator;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URL;
 import java.util.Random;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -19,11 +17,21 @@ import org.w3c.dom.NodeList;
  *
  * @author Dominik Künne
  */
-class Template {
+ class Template {
 
+    /**
+     *
+     */
     public Template() {
     }
 
+    /**
+     *
+     * @param path path to the xml file
+     * @param tagName tagName which you want to choose from the XML-File
+     * @param type type/category of that XML-Tag e.g. "DHBW"
+     * @return
+     */
     public String readXML(String path, String tagName, String type) {
         try {
       
@@ -32,7 +40,7 @@ class Template {
         
 	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-	Document doc = dBuilder.parse(fXmlFile);
+	Document doc = dBuilder.parse(fXmlFile); //parse file in doc
         
 
 
@@ -53,12 +61,4 @@ class Template {
         }
         return null;
   }
-    /*
-     public static void main(String [ ] args)
-{
-    Template test = new Template();
-    test.readXML("/sources/templates_abstract.xml", "templateLocation");
-     
-}   */
-
 }
