@@ -48,7 +48,6 @@ import org.w3c.dom.NodeList;
 
             Element typeNode = (Element) doc.getElementsByTagName(type).item(0);
             NodeList nList = typeNode.getElementsByTagName(tagName);
-            System.out.println(tagName);
             Random generator = new Random();
             int length = nList.getLength();
             int i = length - 1 - generator.nextInt(length);
