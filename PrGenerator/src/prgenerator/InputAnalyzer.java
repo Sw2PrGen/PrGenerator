@@ -136,7 +136,6 @@ public class InputAnalyzer {
             finalInputList.addFirst(cleanStringArray[i].replaceAll(" ",""));
         }
         PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
-           System.out.println("final list " +PrGenerator.mainDatabase.getUserInputFiltered());
 
         }
         else {
