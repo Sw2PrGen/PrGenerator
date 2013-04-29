@@ -17,7 +17,7 @@ import org.w3c.dom.NodeList;
  *
  * @author Dominik Künne
  */
- class Template {
+class Template {
 
     /**
      *
@@ -34,21 +34,21 @@ import org.w3c.dom.NodeList;
      */
     public String readXML(String path, String tagName, String type) {
         try {
-      
-	//read XML-File
-        File fXmlFile = new File(path);
-        
-	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-	Document doc = dBuilder.parse(fXmlFile); //parse file in doc
-        doc.getDocumentElement().normalize();
-            
+
+            //read XML-File
+            File fXmlFile = new File(path);
+
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(fXmlFile); //parse file in doc
+            doc.getDocumentElement().normalize();
+
             Element typeNode = (Element) doc.getElementsByTagName(type).item(0);
             NodeList nList = typeNode.getElementsByTagName(tagName);
             /*
-            / in an random pattern an element from the tag you want is picked,
-            / here you see the calculation of the random number
-            */
+             * / in an random pattern an element from the tag you want is
+             * picked, / here you see the calculation of the random number
+             */
             Random generator = new Random();
             int length = nList.getLength();
             int i = length - 1 - generator.nextInt(length);
@@ -59,5 +59,5 @@ import org.w3c.dom.NodeList;
             e.printStackTrace();
         }
         return null;
-  }
+    }
 }

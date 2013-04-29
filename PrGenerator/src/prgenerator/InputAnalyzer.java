@@ -12,16 +12,16 @@ import java.util.LinkedList;
  */
 public class InputAnalyzer {
 
-    
     /**
-     * Method to filter the userinput to get the best result when searching for the input
-     * 
+     * Method to filter the userinput to get the best result when searching for
+     * the input
+     *
      */
     public static void modifyInputToString() {
-       //Assign rareStirng the unfiltered userinput from the database to filter it 
-        
+        //Assign rareStirng the unfiltered userinput from the database to filter it 
+
         String rareString = PrGenerator.mainDatabase.getUserInput();
-   
+
 
         if (rareString.equals(PrGenerator.mainDatabase.getSEARCH_DEFAULT()) || rareString.isEmpty()) {
             clearInput();
@@ -84,76 +84,70 @@ public class InputAnalyzer {
 
             //Deletion of unecessary spaces
             rareString = rareString.replaceAll("\\s\\s+", " ");
-           
+
             //calling the method to put the input in a list
             inputStrToList(rareString);
         }
     }
 
-    private static void clearInput(){
-                 LinkedList finalInputList = new <String>LinkedList();
+    private static void clearInput() {
+        LinkedList finalInputList = new <String>LinkedList();
 
         finalInputList.clear();
-            PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
+        PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
     }
-    
-    
+
     /**
      * Method to transform the filtered input from String to a linkedList
      *
      * @param cleanString clean String(user input String without any special
-     * caracters, abreviation, fillwords and unnecessary spaces
+     * characters, abbreviation, fill words and unnecessary spaces
      */
     private static void inputStrToList(String cleanString) {
-        
-       
+
+
         //deletion of blanks at beginning or end of String
-        if(cleanString.startsWith(" ")){
-            cleanString=cleanString.substring(1);
+        if (cleanString.startsWith(" ")) {
+            cleanString = cleanString.substring(1);
         }
-        
-        
+
+
         //temporary linked list with userInput
         LinkedList finalInputList = new <String>LinkedList();
-       
-        if(cleanString.equalsIgnoreCase(" ") || cleanString.isEmpty()){
+
+        if (cleanString.equalsIgnoreCase(" ") || cleanString.isEmpty()) {
             clearInput();
-        }else{
-        //checking if there are more than one word
-        if(cleanString.contains(" ")){
-            
-            
-       //Array for the splitted String
-        String[] cleanStringArray;
-        
-        //splitting the input string into an array
-        cleanStringArray = cleanString.split(" ");
-       
-        
-        
-        //filling the list with the array-content
-        for (int i = 0; i < cleanStringArray.length; i++) {
-            finalInputList.addFirst(cleanStringArray[i].replaceAll(" ",""));
-        }
-        PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
+        } else {
+            //checking if there are more than one word
+            if (cleanString.contains(" ")) {
+
+
+                //Array for the splitted String
+                String[] cleanStringArray;
+
+                //splitting the input string into an array
+                cleanStringArray = cleanString.split(" ");
+
+
+
+                //filling the list with the array-content
+                for (int i = 0; i < cleanStringArray.length; i++) {
+                    finalInputList.addFirst(cleanStringArray[i].replaceAll(" ", ""));
+                }
+                PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
+
+            } else {
+                //adding the only word
+
+                finalInputList.add(cleanString);
+
+                //set the userinput
+                PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
+
+            }
 
         }
-        else {
-            //adding the only word
-            
-            finalInputList.add(cleanString);
-                   
-            //set the userinput
-            PrGenerator.mainDatabase.setUserInputFiltered(finalInputList);
-            
-        }
-        
-        }
-        
 
-    }
-
-    public static void main(String[] args) {
 
     }
 }

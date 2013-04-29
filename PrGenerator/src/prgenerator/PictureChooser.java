@@ -14,35 +14,35 @@ import java.util.LinkedList;
 import org.json.JSONObject;
 
 /**
- * PictureChooser is responsible for picture search for the application.
- * Google Image Search API is used
+ * PictureChooser is responsible for picture search for the application. Google
+ * Image Search API is used
+ *
  * @author Yuliya Kuznetsova
  */
 public class PictureChooser {
-                
-    private final String START_URL="https://ajax.googleapis.com/ajax/services/search/images?v=1.0";   //start of image search url
+
+    private final String START_URL = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0";   //start of image search url
     private LinkedList<String> helper = new <String>LinkedList();  //helper list for temporary pictures collection
-     
     /*
-     * special parameters of  image search url:
-     * &rsz - number of images to be found. Allowed Values: 1 - 8
-     * &imgsz - image size (icon|small|medium|large|xlarge|xxlarge|huge)
-     * &as_filetype -  image search to the specific file types (jpg|gif|png|bmp)
-     * &userip - supplies the IP address of the end-user on whose behalf the request is being made  
-     *  in order to indetify the user and avoid a violation of the Terms of Service of the Google Image Search API.
-     * &hl -  host language of the application making the request
+     * special parameters of image search url: &rsz - number of images to be
+     * found. Allowed Values: 1 - 8 &imgsz - image size
+     * (icon|small|medium|large|xlarge|xxlarge|huge) &as_filetype - image search
+     * to the specific file types (jpg|gif|png|bmp) &userip - supplies the IP
+     * address of the end-user on whose behalf the request is being made in
+     * order to indetify the user and avoid a violation of the Terms of Service
+     * of the Google Image Search API. &hl - host language of the application
+     * making the request
      */
-    private final String PARAMETERS_URL="&rsz=8&imgsz=medium&as_filetype=jpg&userip=192.168.0.1&hl=de&q=";
-    
+    private final String PARAMETERS_URL = "&rsz=8&imgsz=medium&as_filetype=jpg&userip=192.168.0.1&hl=de&q=";
+
     /**
-     * Method for choosing a picture for the application,
-     * invokes sendRequests() and then chooses randomly
-     * a picture from a created pictures list
-     * 
+     * Method for choosing a picture for the application, invokes sendRequests()
+     * and then chooses randomly a picture from a created pictures list
+     *
      */
     public void choosePicture() {
 
-        helper = new <String>LinkedList(); 
+        helper = new <String>LinkedList();
 
         //google search only if user input exists      
         if (!PrGenerator.mainDatabase.getUserInputFiltered().isEmpty()) {
@@ -54,23 +54,23 @@ public class PictureChooser {
         String choosenPicture = PrGenerator.mainDatabase.getPictureList().get(randomNumber);
         PrGenerator.mainDatabase.setChosenPicture(choosenPicture); //write choosen picture in the database         
 
-        /*    
-         System.out.println("pictureList after choosePicture():  ");
-         for (Iterator<String> i = PrGenerator.mainDatabase.getPictureList().iterator(); i.hasNext();) {
-         String s = i.next();
-         System.out.println(s);
-         }
-            
-         System.out.println("\n" + "Choosen Picture is " + PrGenerator.mainDatabase.getChosenPicture());
+        /*
+         * System.out.println("pictureList after choosePicture(): "); for
+         * (Iterator<String> i =
+         * PrGenerator.mainDatabase.getPictureList().iterator(); i.hasNext();) {
+         * String s = i.next(); System.out.println(s); }
+         *
+         * System.out.println("\n" + "Choosen Picture is " +
+         * PrGenerator.mainDatabase.getChosenPicture());
          */
     }
-    
+
     /**
      * method which configures search parameters for google image search api,
-     * key search parameters are: either the entire  user input 
-     * or (if nothing found) separated parts of user input - if there is more than one word.
-     * invokes findPictures (String adress) 
-     * 
+     * key search parameters are: either the entire user input or (if nothing
+     * found) separated parts of user input - if there is more than one word.
+     * invokes findPictures (String adress)
+     *
      */
     private void configureRequests() {
 
@@ -103,17 +103,19 @@ public class PictureChooser {
             PrGenerator.mainDatabase.setPictureList(helper); // set up the pictureList in the database with founded pictures
         }
     }
-    
+
     /**
-     * method that searches for the pictures online with help of Google Image Search API
-     * and adds founded pictures to the temporarily helper list.
-     * For each request one random image url will be  selected.
-     * Uses JSON to get the Web-Content
-     * @return true if a picture for the entire user input could be founded, false in all other cases
+     * method that searches for the pictures online with help of Google Image
+     * Search API and adds founded pictures to the temporarily helper list. For
+     * each request one random image url will be selected. Uses JSON to get the
+     * Web-Content
+     *
+     * @return true if a picture for the entire user input could be founded,
+     * false in all other cases
      * @param adress - url for image search
-     * @param UserInput - true if picture for the entire user input should be found, false otherwise
+     * @param UserInput - true if picture for the entire user input should be
+     * found, false otherwise
      */
-    
     private boolean findPictures(String address, boolean UserInput) {
         //open url, establish connection and read content
         try {

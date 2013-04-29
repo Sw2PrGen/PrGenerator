@@ -125,6 +125,7 @@ public class Gui extends JFrame implements Runnable {
 
         //resets the main page if the output frame is closed
         outputFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+
             public void windowClosing(WindowEvent winEvt) {
                 resetGui();
             }
@@ -297,8 +298,8 @@ public class Gui extends JFrame implements Runnable {
     }
 
     /*
-     * function that reactivates the Gui main page
-     * is called if outputFrame is closed or the back button is used
+     * function that reactivates the Gui main page is called if outputFrame is
+     * closed or the back button is used
      */
     public void resetGui() {
         PrGenerator.mainDatabase.setPictureList(new LinkedList<String>());

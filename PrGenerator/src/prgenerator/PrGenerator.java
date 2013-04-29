@@ -51,7 +51,7 @@ public class PrGenerator {
                     JOptionPane.showConfirmDialog(null, "Kritischer Fehler! Bitte Programm neustarten.", "Kritischer Fehler", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
                 }
             }
-            
+
             //main control flow
             PrGenerator.mainInputAnalyzer.modifyInputToString();
             PrGenerator.mainDatabase.manageData();

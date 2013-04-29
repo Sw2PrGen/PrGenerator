@@ -235,6 +235,7 @@ public class Database {
 
     /**
      * Searches an online press release for the picture
+     *
      * @param reader the reader with the web site, will not be closed!
      * @return the URL to the picture
      */
@@ -257,7 +258,9 @@ public class Database {
     }
 
     /**
-     * Downloads the picture specified and saves it as BACKUP_PICTURE + num + .jpg
+     * Downloads the picture specified and saves it as BACKUP_PICTURE + num +
+     * .jpg
+     *
      * @param link URL to the picture
      * @param num index for the picture name
      * @return true if successful, false otherwise
@@ -428,7 +431,7 @@ public class Database {
         } else {
             String path = "file://" + PrGenerator.class.getProtectionDomain().getCodeSource().getLocation().getPath();
             String end;
-            if(path.contains((end = "PrGenerator.jar")) || path.contains((end = "PrGenerator.exe")) || path.contains((end = "build/classes/"))){
+            if (path.contains((end = "PrGenerator.jar")) || path.contains((end = "PrGenerator.exe")) || path.contains((end = "build/classes/"))) {
                 path = path.replace(end, "");
             }
             try {
@@ -445,15 +448,16 @@ public class Database {
 
     /**
      * save currentData or pictureList as a backup
+     *
      * @param pic determines if you want to save the pictureList
      * @return true if successful, false otherwise
      */
     private boolean updateBackup(boolean pic) {
         StringBuilder sb = new StringBuilder();
         LinkedList<String> help = null;
-        if(pic){
+        if (pic) {
             help = new LinkedList<>(pictureList);
-        } else{
+        } else {
             help = new LinkedList<>(currentData);
         }
         if (!pic) {
@@ -469,17 +473,17 @@ public class Database {
                 i++;
             } while (j < 5 && help.size() > i);
         }
-        
+
         while (help.size() > 0) {
             sb.append(help.pop());
             sb.append("\n");
         }
         String filepath;
-            if(pic){
-                filepath = BACKUP_PICTURE_FILE_PATH;
-            }else {
-                filepath = BACKUP_FILE_PATH;
-            }
+        if (pic) {
+            filepath = BACKUP_PICTURE_FILE_PATH;
+        } else {
+            filepath = BACKUP_FILE_PATH;
+        }
         try {
             writeFile(sb.toString(), filepath);
         } catch (Exception e) {
@@ -499,7 +503,7 @@ public class Database {
         if (!controlVar) {
             controlVar = loadBackup();      //load backup if no connection or no new items
         }
-        if (!controlVar){
+        if (!controlVar) {
             JOptionPane.showConfirmDialog(null, "Kritischer Fehler! \nEs können keine Pressemitteilungen \naus dem Internet geladen werden \nund die Backup-Datei kann nicht geöffnet werden. \nGenerierung der Pressemitteilung ist nicht möglich.\nDas Programm wird beendet.", "Kritischer Fehler", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -686,10 +690,11 @@ public class Database {
     }
 
     /**
-     * 
+     *
      * @return the constant SEARCH_DEFAULT
      */
-    @Deprecated public String getSEARCH_DEFAULT() {
+    @Deprecated
+    public String getSEARCH_DEFAULT() {
         return SEARCH_DEFAULT;
     }
 }

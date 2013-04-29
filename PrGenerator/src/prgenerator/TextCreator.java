@@ -74,7 +74,7 @@ public class TextCreator {
                 }
             }
         }
-        
+
         for (Iterator<String> it = placeText.iterator(); it.hasNext();) {
             String s = it.next();
         }
@@ -85,7 +85,6 @@ public class TextCreator {
      *
      * Funtion to find a sentence related to the DH
      */
-    
     private void findDhRelation() {
 
         String current; //String for the current sentence
@@ -136,7 +135,7 @@ public class TextCreator {
 
         //iteration through the list to find all sentences with a relation to the user input
         while (!input.isEmpty()) {
-            currentinput =" "+ (String) input.getFirst().toString().toLowerCase()+" ";
+            currentinput = " " + (String) input.getFirst().toString().toLowerCase() + " ";
             Iterator<String> i = databaseText.iterator();
             while (i.hasNext()) {
                 current = i.next();
@@ -195,7 +194,7 @@ public class TextCreator {
         preText.clear();
         dhText.clear();
         timeText.clear();
-        placeText.clear();        
+        placeText.clear();
         databaseText = PrGenerator.mainDatabase.getCurrentData();
         String textStr = "";
         LinkedList<String> userInputFiltered = new <String> LinkedList(PrGenerator.mainDatabase.getUserInputFiltered());
@@ -204,7 +203,7 @@ public class TextCreator {
         findDhRelation();
         findTime();
         selectSentences();
-       
+
         //avoiding of sentence which should not start the text
         while (finalText.getFirst().toString().startsWith("(Sie)|(Er)|(Das)")) {
             Collections.shuffle(finalText);
