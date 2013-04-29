@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package prgenerator;
 
 import java.util.Arrays;
@@ -11,8 +7,11 @@ import java.util.Random;
 
 
 /**
+ * Objects of this class can create abstracts.
+ * The class contains two main methods,
+ * the "analyzeText()" and the "createAbstract()" methods, where "createAbstract" is
+ * called for creating an abstract.
  * @author Dominik Künne, Jörg Woditschka, Tobias Mauritz
- * Abstractgenerator: Methode createAbstract() funktioniert. Als Eingabe wurde folgende XML-DAtei verwendet:
  */
 public class AbstractCreator {
        
@@ -182,36 +181,27 @@ public class AbstractCreator {
         PrGenerator.mainDatabase.setTemplateFill(awords);             
     }
     
-       /**
-        *@author Dominik Künne, Jörg Woditschka
-        */
-       public void createAbstract(){
+    /**
+     * This method generates an abstract and hands it to the database to store it.
+     * At the very beginning it starts the "analyzeText()" method, which stores 
+     * filling words in the database.
+     * Matching templates are picked, modified and filled with the picked filling words.
+     * At the end the created abstract is handed to the database to store it.
+     * @author Dominik Künne, Jörg Woditschka
+     */
+    public void createAbstract(){
        analyzeText();
 
-       //String path = "src\\sources\\templates_abstract.xml";
        String path = "data/templates_abstract.xml";
        String location = PrGenerator.mainDatabase.getTemplateFill()[0];
        String date = PrGenerator.mainDatabase.getTemplateFill()[1];
-       String keyAspect = PrGenerator.mainDatabase.getTemplateFill()[2];
-       
-       
-        
-      /*
-       * in each array element of the array sentences there is one type of template loaded
-       * position 0: templateLocation
-       * position 1: templateDate
-       * position 2: templateKeyAspect
-       * position 3: templateKeyAspectandLocation
-       * position 4: templateLocationandDate
-       */
-     
+       String keyAspect = PrGenerator.mainDatabase.getTemplateFill()[2];   
       
-       //added by Jörg: dynamic approach for concatenating sentences 
        String abstractTemplateQuery=""; //String to be returned as abstract
        Template template = new Template();
        Random generator = new Random(); // a random number generator helps picking sentences for the abstract   
        
-       String nextType="DHBW"; //
+       String nextType="DHBW"; //the first template should be of type "None" or "DHBW"
        int nonCounter = 0;
        LinkedList<String> availableTagNames = new LinkedList(); //list of available TagNames. Get's reduced during the picking.
        availableTagNames.add("templateLocation");
@@ -246,7 +236,7 @@ public class AbstractCreator {
            }
        }
        
-       //"am" -> "Am" & "heute" -> "Heute"
+       //making the first letter capital after a "." or at the beginning of the abstract eg. "am" -> "Am" & "heute" -> "Heute"
        if(abstractTemplateQuery.indexOf("_date_")==1 ||(abstractTemplateQuery.indexOf("_date_")>1 && abstractTemplateQuery.charAt(abstractTemplateQuery.indexOf("_date_")-2)=='.')){
            date=date.substring(0,1).toUpperCase()+date.substring(1);
        }
@@ -254,9 +244,8 @@ public class AbstractCreator {
        //replace place holders in abstractTemplateQuery
        abstractTemplateQuery=abstractTemplateQuery.replace("_location_", location).replace("_date_", date).replace("_keyAspect_", keyAspect);
        
-
-        PrGenerator.mainDatabase.setCreatedAbstract(abstractTemplateQuery);
-        System.out.println(abstractTemplateQuery);
+       //store the abstract in the database
+       PrGenerator.mainDatabase.setCreatedAbstract(abstractTemplateQuery);
    }
 
 }   
