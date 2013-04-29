@@ -7,6 +7,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.LinkedList;
 import javax.swing.*;
@@ -25,6 +26,7 @@ public class Gui extends JFrame implements Runnable {
     private JProgressBar bar = new JProgressBar();
     private JTextField userInput = new JTextField();
     private JButton generateTextButton = new JButton();
+    private JFrame outputFrame;
 
     /**
      * this method will display the main page
@@ -37,7 +39,7 @@ public class Gui extends JFrame implements Runnable {
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("PrGenerator");
-        
+
         openBar();
         bar.setVisible(false);
 
@@ -120,7 +122,13 @@ public class Gui extends JFrame implements Runnable {
 
         finalHtmlDocument = PrGenerator.mainDatabase.getFinalHtmlDocument();
         bar.setVisible(false);
-        final JFrame outputFrame = new JFrame();
+        outputFrame = new JFrame();
+
+        outputFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(WindowEvent winEvt) {
+                resetGui();
+            }
+        });
         JPanel lowerPanel = new JPanel();
         JEditorPane mainPanel = new JEditorPane();
         JScrollPane leftScrollPane = new JScrollPane(mainPanel);
@@ -193,10 +201,7 @@ public class Gui extends JFrame implements Runnable {
 
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PrGenerator.mainDatabase.setPictureList(new LinkedList<String>());
-                outputFrame.dispose();
-                userInput.setEnabled(true);
-                generateTextButton.setEnabled(true);
+                resetGui();
             }
         });
 
@@ -230,7 +235,7 @@ public class Gui extends JFrame implements Runnable {
         JFileChooser chooser;
         chooser = new JFileChooser(path);
         chooser.setDialogType(JFileChooser.SAVE_DIALOG);
-        
+
         //allows only html format 
         FileNameExtensionFilter markUpFilter = new FileNameExtensionFilter(
                 "Markup: htm, html", "html", "htm");
@@ -244,24 +249,23 @@ public class Gui extends JFrame implements Runnable {
         if (result == JFileChooser.APPROVE_OPTION) {
 
             path = chooser.getSelectedFile().toString();
-          
+
             //sets automatically the right ending 
-           if (!(path.endsWith(".html") || path.endsWith(".htm"))) {
+            if (!(path.endsWith(".html") || path.endsWith(".htm"))) {
                 path = path + ".html";
             }
-            
+
             try {
                 PrGenerator.mainDatabase.writeFile(finalHtmlDocument, path);
                 JOptionPane.showMessageDialog(null, "Datei wurde gespeichert in: \"" + path + "\"");
 
             } catch (Exception ex) {
-                
-                 JOptionPane.showConfirmDialog(null, "Datei konnte nicht gespeichert werden. Bitte ungültige Sonderzeichen vermeiden.", "Fehler", JOptionPane.PLAIN_MESSAGE, JOptionPane.ERROR_MESSAGE);
- 
-            } 
+
+                JOptionPane.showConfirmDialog(null, "Datei konnte nicht gespeichert werden. Bitte ungültige Sonderzeichen vermeiden.", "Fehler", JOptionPane.PLAIN_MESSAGE, JOptionPane.ERROR_MESSAGE);
+
             }
         }
-    
+    }
 
     /**
      * calculates the coordinates to display the GUI in the center of the screen
@@ -289,6 +293,13 @@ public class Gui extends JFrame implements Runnable {
         add(bar);
 
 
+    }
+
+    public void resetGui() {
+        PrGenerator.mainDatabase.setPictureList(new LinkedList<String>());
+        outputFrame.dispose();
+        userInput.setEnabled(true);
+        generateTextButton.setEnabled(true);
     }
 
     /**
