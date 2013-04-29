@@ -36,7 +36,8 @@ public class Gui extends JFrame implements Runnable {
 
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        setTitle("PrGenerator");
+        
         openBar();
         bar.setVisible(false);
 
@@ -130,6 +131,7 @@ public class Gui extends JFrame implements Runnable {
 
         outputFrame.setLayout(null);
         outputFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        outputFrame.setTitle("Vorschau");
 
         lowerPanel.setBounds(0, 570, 550, 50);
         lowerPanel.setBackground(Color.white);
