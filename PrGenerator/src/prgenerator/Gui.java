@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.util.LinkedList;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -124,6 +123,7 @@ public class Gui extends JFrame implements Runnable {
         bar.setVisible(false);
         outputFrame = new JFrame();
 
+        //resets the main page if the output frame is closed
         outputFrame.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(WindowEvent winEvt) {
                 resetGui();
@@ -197,6 +197,7 @@ public class Gui extends JFrame implements Runnable {
             }
         });
 
+        // back button calls resetGui() that reactivate the GUI main page
         backButton.addActionListener(new java.awt.event.ActionListener() {
 
             @Override
@@ -295,6 +296,10 @@ public class Gui extends JFrame implements Runnable {
 
     }
 
+    /*
+     * function that reactivates the Gui main page
+     * is called if outputFrame is closed or the back button is used
+     */
     public void resetGui() {
         PrGenerator.mainDatabase.setPictureList(new LinkedList<String>());
         outputFrame.dispose();
