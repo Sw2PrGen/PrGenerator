@@ -27,8 +27,6 @@ public class AbstractCreator {
     
     
     private String maintext;// = PrGenerator.mainDatabase.getCreatedText();
-    //String maintext = "Nach meiner In August Montag heute Montag 1. Februar 2012 12.März Dezember 2012 Promotion habe ich Mittwoch heute eine Professur 3 Wochen einer Woche eine Woche fünf Wochen in Mannheim für ABWL, Personal und Organisation an der Ostfalia HAW in Wolfsburg verwaltet, bevor ich am 1.März 2013 an die DHBW Mannheim berufen wurde. Dies hat z.B. dazu geführt, dass ich an der Universität Mannheim gemeinsam mit Kollegen ein Seminar zur Mitarbeiterführung entwickelt habe, das stark auf meinen Erfahrungen aus der beruflichen Praxis aufbaute.Für Studieninteressierte, die gerne Studium und Praxisausbildung verbinden möchten, bietet das duale Studium an der DHBW eine attraktive Möglichkeit mit hervorragenden Berufsaussichten und Karrierechancen. August. ";
-
     
     
     /**
@@ -42,13 +40,11 @@ public class AbstractCreator {
     public void storeWord(String sWord, List WL, List CL){
         if (WL.contains(sWord)){
             int i = WL.indexOf(sWord);          // als Wahrheitswert benutzen?
-                //System.out.println(WL.get(i)+" "+CL.get(i));
             int counter = (Integer) CL.get(i);  // current value of counter
             counter++;  // inc counter
             CL.remove(i);       // delete list object at index i
             CL.add(i, counter); // add list object at index i with new counter value
                                 // old list object has to be removed because with "add" it would not be overwriten 
-                //System.out.println(WL.get(i)+" "+CL.get(i));
         } else {
             // adds new word and sets counter to 1
             WL.add(sWord); 
@@ -107,8 +103,7 @@ public class AbstractCreator {
      * @author Tobias Mauritz
      */
     public void analyzeText(){    
-        maintext = PrGenerator.mainDatabase.getCreatedText();
-        
+        maintext = PrGenerator.mainDatabase.getCreatedText(); 
         
         maintext = maintext.replaceAll("([0-9]{1,2})\\. ","$1.");   // alle "ZAHL. " in "ZAHL." umwandeln
         maintext = maintext.replaceAll("\\. "," ");                 // alle ". " in " " umwandeln
@@ -116,8 +111,7 @@ public class AbstractCreator {
         maintext = maintext.replaceAll("!","");
         maintext = maintext.replaceAll("\\?","");
         maintext = maintext.replaceAll(";","");
-        maintext = maintext.replaceAll(",","");
-        
+        maintext = maintext.replaceAll(",","");    
         
         LinkedList<String> words = new LinkedList<>(Arrays.asList(maintext.split(" ")));
         int txtLength = words.size();
@@ -172,7 +166,7 @@ public class AbstractCreator {
                 }
               
             // "what" words: stores words which stat with a capital letter
-            } else if (nWord.matches("[A-Z]{1,}.{3,}") && !nWord.matches("Duale|Dualen|Hochschule|DHBW|Mannheim|Baden-Württemberg|Prof|Ein|Nach|Außerdem|Dies|Jahr|Jahre|Auswirkungen|Fragen")){ 
+            } else if (nWord.matches("[A-Z]{1,}.{3,}") && !nWord.matches("Duale|Dualen|Hochschule|DHBW|Mannheim|Baden-Württemberg|Studiums|Prof|Ein|Nach|Außerdem|Dies|Jahr|Jahre|Auswirkungen|Fragen")){ 
                 storeWord(nWord, whatWL, whatCL);
             }
             
@@ -260,86 +254,9 @@ public class AbstractCreator {
        //replace place holders in abstractTemplateQuery
        abstractTemplateQuery=abstractTemplateQuery.replace("_location_", location).replace("_date_", date).replace("_keyAspect_", keyAspect);
        
-       
-       /*
-       String[] sentences= new String[5]; 
-        
-        Template templateReader = new Template();
-        String abstractTemplateQuery = "";
-        //initialising array
-        for ( int i = 0; i < sentences.length; i++ ) {
-           sentences[i] = "";
-       }
-        if(location != null){
-            sentences[0] = templateReader.readXML(path, "templateLocation")[0];
-            sentences[0] = sentences[0].replace("_location_", location);
-        }
-        
-        if(date != null){
-            sentences[1] = templateReader.readXML(path, "templateDate")[0];
-            sentences[1] = sentences[1].replace("_date_", date);
-        }
-        if (keyAspect != null){
-            sentences[2] = templateReader.readXML(path, "templateKeyAspect")[0];
-            sentences[2] = sentences[2].replace("_keyAspect_", keyAspect);
-        }
-        
-        if ((keyAspect != null) && (location != null)){
-            sentences[3] = templateReader.readXML(path, "templateKeyAspectandLocation")[0];
-            sentences[3] = sentences[3].replace("_keyAspect_", keyAspect);
-            sentences[3] = sentences[3].replace("_location_", location);
-        }
-        
-        if ((date != null) && (location != null)){
-            sentences[4] = templateReader.readXML(path, "templateLocationandDate")[0];
-            sentences[4] = sentences[4].replace("_date_", date);
-            sentences[4] = sentences[4].replace("_location_", location);
-        }
-        
-        
-        
-        
-        //randomly a predefined combination how the template sentences are concatenated is chosen
-        Random generator = new Random();
-        int combinations = 11;
-        int i = combinations - generator.nextInt(combinations);
-        
-        switch(i){
-            case 1: abstractTemplateQuery = sentences [0] + sentences [1] + sentences [2];
-                    break;
-            case 2: abstractTemplateQuery = sentences [0] + sentences [2] + sentences [1];
-                    break;
-            case 3: abstractTemplateQuery = sentences [1] + sentences [0] + sentences [2];
-                    break;
-            case 4: abstractTemplateQuery = sentences [1] + sentences [2] + sentences [0];
-                    break;
-            case 5: abstractTemplateQuery = sentences [2] + sentences [0] + sentences [1];
-                    break;
-            case 6: abstractTemplateQuery = sentences [2] + sentences [1] + sentences [0];
-                    break;
-            case 7: abstractTemplateQuery = sentences [2] + sentences [1] + sentences [0];
-                    break;
-            case 8: abstractTemplateQuery = sentences [1] + sentences [3];
-                    break;
-            case 9: abstractTemplateQuery = sentences [3] + sentences [1];
-                    break;
-            case 10: abstractTemplateQuery = sentences [2] + sentences [4];
-                    break;
-            case 11 : abstractTemplateQuery = sentences [4] + sentences [2];
-                    break;
-        
-        }*/
+
         PrGenerator.mainDatabase.setCreatedAbstract(abstractTemplateQuery);
         System.out.println(abstractTemplateQuery);
    }
-  //  private void fetchSentences(int i,String path, String tagName){
-    //    Template templateReader = new Template();
-      //  sentences[i] = templateReader.readXML(path, tagName);
-         
-        }   
 
-
-
-
-    
-    
+}   
