@@ -4,7 +4,6 @@
  */
 package prgenerator;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -12,9 +11,6 @@ import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.LinkedList;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 import org.json.JSONObject;
 
 /**
