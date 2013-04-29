@@ -30,29 +30,28 @@ import org.w3c.dom.NodeList;
      * @param path path to the xml file
      * @param tagName tagName which you want to choose from the XML-File
      * @param type type/category of that XML-Tag e.g. "DHBW"
-     * @return
+     * @return returns the content out of the chosen tag in the XML-File
      */
     public String readXML(String path, String tagName, String type) {
         try {
       
-	
+	//read XML-File
         File fXmlFile = new File(path);
         
 	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 	Document doc = dBuilder.parse(fXmlFile); //parse file in doc
-        
-
-
-            doc.getDocumentElement().normalize();
-
+        doc.getDocumentElement().normalize();
+            
             Element typeNode = (Element) doc.getElementsByTagName(type).item(0);
             NodeList nList = typeNode.getElementsByTagName(tagName);
-            System.out.println(tagName);
+            /*
+            / in an random pattern an element from the tag you want is picked,
+            / here you see the calculation of the random number
+            */
             Random generator = new Random();
             int length = nList.getLength();
             int i = length - 1 - generator.nextInt(length);
-
             Node nNode = nList.item(i);
             return nNode.getTextContent();
 
